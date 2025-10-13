@@ -139,7 +139,7 @@ class DashboardPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Simple bar chart
-                  Container(
+                  SizedBox(
                     height: 200,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
