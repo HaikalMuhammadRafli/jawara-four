@@ -1,28 +1,9 @@
 import 'package:flutter/material.dart';
 
-class PengeluaranPage extends StatefulWidget {
+class PengeluaranPage extends StatelessWidget {
   const PengeluaranPage({super.key});
 
-  @override
-  State<PengeluaranPage> createState() => _PengeluaranPageState();
-}
-
-class _PengeluaranPageState extends State<PengeluaranPage> {
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _jenisController = TextEditingController();
-  final TextEditingController _nominalController = TextEditingController();
-  final TextEditingController _tanggalController = TextEditingController();
-
-  @override
-  void dispose() {
-    _namaController.dispose();
-    _jenisController.dispose();
-    _nominalController.dispose();
-    _tanggalController.dispose();
-    super.dispose();
-  }
-
-  String _formatCurrency(String value) {
+  static String _formatCurrency(String value) {
     if (value.isEmpty) return '';
     final number = int.parse(value.replaceAll(RegExp(r'[^0-9]'), ''));
     final parts = number.toString().split('');
@@ -36,22 +17,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
     return result;
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2025),
-      lastDate: DateTime(2026),
-    );
-    if (picked != null) {
-      final day = picked.day.toString().padLeft(2, '0');
-      final month = _getIndonesianMonth(picked.month);
-      final year = picked.year;
-      _tanggalController.text = '$day $month $year';
-    }
-  }
-
-  String _getIndonesianMonth(int month) {
+  static String _getIndonesianMonth(int month) {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
       'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'
@@ -59,7 +25,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
     return months[month - 1];
   }
 
-  void _showAddForm() {
+  void _showAddForm(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -68,106 +34,11 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
           'Tambah Pengeluaran',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _namaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nama Pengeluaran',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.receipt_long),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _jenisController,
-                  decoration: const InputDecoration(
-                    labelText: 'Jenis',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.category_outlined),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _nominalController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nominal',
-                    prefixText: 'Rp ',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.attach_money),
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    final formatted = _formatCurrency(value);
-                    _nominalController.value = TextEditingValue(
-                      text: formatted,
-                      selection: TextSelection.collapsed(offset: formatted.length),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _tanggalController,
-                  decoration: const InputDecoration(
-                    labelText: 'Tanggal',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.calendar_today),
-                  ),
-                  readOnly: true,
-                  onTap: () => _selectDate(context),
-                ),
-              ),
-            ],
-          ),
+        content: const Text(
+          'Fitur tambah pengeluaran akan segera tersedia dalam versi selanjutnya.',
+          style: TextStyle(fontSize: 16),
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              _namaController.clear();
-              _jenisController.clear();
-              _nominalController.clear();
-              _tanggalController.clear();
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.grey[600],
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-            child: const Text('Batal'),
-          ),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -180,35 +51,19 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
             ),
             child: TextButton(
               onPressed: () {
-                if (_namaController.text.isNotEmpty &&
-                    _jenisController.text.isNotEmpty &&
-                    _nominalController.text.isNotEmpty &&
-                    _tanggalController.text.isNotEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pengeluaran berhasil ditambahkan'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  _namaController.clear();
-                  _jenisController.clear();
-                  _nominalController.clear();
-                  _tanggalController.clear();
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Mohon lengkapi semua field'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Fitur akan segera tersedia'),
+                    backgroundColor: Colors.blue,
+                  ),
+                );
+                Navigator.pop(context);
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              child: const Text('Simpan'),
+              child: const Text('OK'),
             ),
           ),
         ],
@@ -286,7 +141,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
           ],
         ),
         child: FloatingActionButton(
-          onPressed: _showAddForm,
+          onPressed: () => _showAddForm(context),
           backgroundColor: Theme.of(context).primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -302,7 +157,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final item = pengeluaranDummy[index];
-                return _buildPengeluaranCard(item);
+                return _buildPengeluaranCard(context, item);
               },
             ),
     );
@@ -347,7 +202,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
     );
   }
 
-  Widget _buildPengeluaranCard(Map<String, dynamic> item) {
+  Widget _buildPengeluaranCard(BuildContext context, Map<String, dynamic> item) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -459,7 +314,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
                         ),
                         child: TextButton.icon(
                           onPressed: () {
-                            _showEditDialog(item);
+                            _showEditDialog(context, item);
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.blue[600],
@@ -485,7 +340,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
                         ),
                         child: TextButton.icon(
                           onPressed: () {
-                            _showDeleteDialog(item);
+                            _showDeleteDialog(context, item);
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.red[600],
@@ -511,13 +366,13 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
     );
   }
 
-  void _showEditDialog(Map<String, dynamic> item) {
+  void _showEditDialog(BuildContext context, Map<String, dynamic> item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Edit Pengeluaran'),
-        content: Text('Edit pengeluaran: ${item['nama']}'),
+        content: Text('Edit pengeluaran: ${item['nama']} (statik)'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -528,7 +383,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
     );
   }
 
-  void _showDeleteDialog(Map<String, dynamic> item) {
+  void _showDeleteDialog(BuildContext context, Map<String, dynamic> item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -544,7 +399,7 @@ class _PengeluaranPageState extends State<PengeluaranPage> {
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${item['nama']} telah dihapus')),
+                SnackBar(content: Text('${item['nama']} telah dihapus (dummy)')),
               );
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),

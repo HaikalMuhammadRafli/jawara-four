@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 
-class LaporanKeuanganPage extends StatefulWidget {
+class LaporanKeuanganPage extends StatelessWidget {
   const LaporanKeuanganPage({super.key});
 
-  @override
-  State<LaporanKeuanganPage> createState() => _LaporanKeuanganPageState();
-}
-
-class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
-  DateTime? _selectedDate;
-
   // Dummy data for expenses
-  final List<Map<String, dynamic>> _pengeluaranData = [
+  static const List<Map<String, dynamic>> _pengeluaranData = [
     {
       'nama': 'Perbaikan Jalan',
       'jenis': 'Operasional',
@@ -46,7 +39,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
     },
   ];
 
-  String _formatCurrency(int amount) {
+  static String _formatCurrency(int amount) {
     final parts = amount.toString().split('');
     String result = '';
     for (var i = parts.length - 1, count = 0; i >= 0; i--, count++) {
@@ -58,7 +51,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
     return 'Rp $result';
   }
 
-  String _getIndonesianMonth(int month) {
+  static String _getIndonesianMonth(int month) {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
       'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'
@@ -66,25 +59,29 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
     return months[month - 1];
   }
 
-  String _formatDate(DateTime date) {
+  static String _formatDate(DateTime date) {
     final day = date.day.toString().padLeft(2, '0');
     final month = _getIndonesianMonth(date.month);
     final year = date.year;
     return '$day $month $year';
   }
 
-  int get _totalPengeluaran {
+  static int get _totalPengeluaran {
     return _pengeluaranData.fold(0, (sum, item) => sum + (item['nominal'] as int));
   }
 
-  void _pilihTanggal() async {
+  void _pilihTanggal(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2024),
       lastDate: DateTime(2026),
     );
-    if (picked != null) setState(() => _selectedDate = picked);
+    if (picked != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Periode dipilih: ${_formatDate(picked)} (statik)')),
+      );
+    }
   }
 
   @override
@@ -143,11 +140,9 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          _selectedDate == null
-                              ? 'Pilih periode laporan'
-                              : _formatDate(_selectedDate!),
-                          style: const TextStyle(
+                        const Text(
+                          'Oktober 2025 (Default)',
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -161,7 +156,7 @@ class _LaporanKeuanganPageState extends State<LaporanKeuanganPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: IconButton(
-                      onPressed: _pilihTanggal,
+                      onPressed: () => _pilihTanggal(context),
                       icon: Icon(Icons.calendar_today, 
                         color: Theme.of(context).primaryColor),
                     ),
