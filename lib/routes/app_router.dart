@@ -4,17 +4,17 @@ import '../pages/register_page.dart';
 import '../pages/dashboard_page.dart';
 import '../pages/kegiatan_page.dart';
 import '../pages/broadcast_page.dart';
-import '../pages/keuangan.dart';
+import '../pages/keuangan_page.dart';
 import '../pages/iuran_tagihan_page.dart';
 import '../pages/pemasukan_lain_page.dart';
 import '../pages/kategori_iuran_page.dart';
 import '../pages/keuangan_pengeluaran.dart';
 import '../pages/laporan_keuangan_page.dart';
-import '../pages/kependudukan.dart';
-import '../pages/kependudukan_warga.dart';
-import '../pages/kependudukan_keluarga.dart';
-import '../pages/kependudukan_rumah.dart';
-import '../pages/kependudukan_tambah.dart';
+import '../pages/kependudukan_page.dart';
+import '../pages/kependudukan_warga_page.dart';
+import '../pages/kependudukan_keluarga_page.dart';
+import '../pages/kependudukan_rumah_page.dart';
+import '../pages/kependudukan_tambah_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/dashboard',
@@ -34,8 +34,6 @@ final GoRouter appRouter = GoRouter(
       name: 'dashboard',
       builder: (context, state) => const DashboardPage(),
     ),
-
-
     GoRoute(
       path: '/kegiatan',
       name: 'kegiatan',
