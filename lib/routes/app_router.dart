@@ -1,4 +1,8 @@
 import 'package:go_router/go_router.dart';
+import 'package:jawara_four/pages/mutasi_keluarga/mutasi_keluarga_page.dart';
+import 'package:jawara_four/pages/mutasi_keluarga/mutasi_keluarga_tambah_page.dart';
+import 'package:jawara_four/pages/penerimaan_warga/penerimaan_warga_page.dart';
+import 'package:jawara_four/pages/pesan_warga/informasi_aspirasi_page.dart';
 
 import '../pages/dashboard_page.dart';
 import '../pages/kegiatan_and_broadcast/broadcast_page.dart';
@@ -96,5 +100,21 @@ final GoRouter appRouter = GoRouter(
       name: 'broadcast',
       builder: (context, state) => const BroadcastPage(),
     ),
+
+    // ===========================================================
+    // Pesan Warga Routes
+    // ===========================================================
+    GoRoute(path: '/informasi-aspirasi', name: 'informasi-aspirasi', builder: (context, state) => const InformasiAspirasiPage()),
+
+    // ===========================================================
+    // Penerimaan Warga Routes
+    // ===========================================================
+    GoRoute(path: '/penerimaan-warga', name: 'penerimaan-warga', builder: (context, state) => const PenerimaanWargaPage()),
+
+    // ===========================================================
+    // Mutasi Keluarga Routes
+    // ===========================================================
+    GoRoute(path: '/mutasi-keluarga', name: 'mutasi-keluarga', builder: (context, state) => const MutasiKeluargaPage()),
+    GoRoute(path: '/mutasi-keluarga/tambah', name: 'mutasi-keluarga-tambah', builder: (context, state) => const MutasiKeluargaTambahPage()),
   ],
 );
