@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'mocks/tagihan_mocks.dart';
+import 'models/tagihan_model.dart';
+
 class IuranTagihanPage extends StatelessWidget {
   const IuranTagihanPage({super.key});
 
@@ -136,40 +139,7 @@ class IuranTagihanPage extends StatelessWidget {
   }
 
   Widget _buildTagihanList() {
-    final List<Map<String, String>> tagihanData = [
-      {
-        'judul': 'Iuran Bulanan Januari 2025',
-        'kategori': 'Iuran Bulanan',
-        'total': 'Rp 1.500.000',
-        'status': 'Belum Lunas',
-        'tanggal': '15 Jan 2025',
-        'warga': '150',
-      },
-      {
-        'judul': 'Iuran Keamanan',
-        'kategori': 'Iuran Keamanan',
-        'total': 'Rp 750.000',
-        'status': 'Lunas',
-        'tanggal': '10 Jan 2025',
-        'warga': '75',
-      },
-      {
-        'judul': 'Iuran Kebersihan',
-        'kategori': 'Iuran Kebersihan',
-        'total': 'Rp 500.000',
-        'status': 'Belum Lunas',
-        'tanggal': '5 Jan 2025',
-        'warga': '100',
-      },
-      {
-        'judul': 'Iuran Pemeliharaan',
-        'kategori': 'Iuran Pemeliharaan',
-        'total': 'Rp 2.000.000',
-        'status': 'Lunas',
-        'tanggal': '1 Jan 2025',
-        'warga': '200',
-      },
-    ];
+    final List<Tagihan> tagihanData = tagihanMock;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -181,8 +151,8 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTagihanCard(Map<String, String> tagihan) {
-    Color statusColor = tagihan['status'] == 'Lunas' ? Colors.green : Colors.orange;
+  Widget _buildTagihanCard(Tagihan tagihan) {
+    Color statusColor = tagihan.status == 'Lunas' ? Colors.green : Colors.orange;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -213,7 +183,7 @@ class IuranTagihanPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tagihan['judul']!,
+                      tagihan.judul,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -221,7 +191,7 @@ class IuranTagihanPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      tagihan['kategori']!,
+                      tagihan.kategori,
                       style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
@@ -234,7 +204,7 @@ class IuranTagihanPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  tagihan['status']!,
+                  tagihan.status,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),
@@ -243,9 +213,9 @@ class IuranTagihanPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _buildInfoItem('Total', tagihan['total']!)),
-              Expanded(child: _buildInfoItem('Warga', '${tagihan['warga']} orang')),
-              Expanded(child: _buildInfoItem('Tanggal', tagihan['tanggal']!)),
+              Expanded(child: _buildInfoItem('Total', tagihan.total)),
+              Expanded(child: _buildInfoItem('Warga', '${tagihan.warga} orang')),
+              Expanded(child: _buildInfoItem('Tanggal', tagihan.tanggal)),
             ],
           ),
           const SizedBox(height: 12),

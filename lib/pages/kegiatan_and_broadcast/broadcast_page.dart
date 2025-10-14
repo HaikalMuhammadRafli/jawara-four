@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../widgets/app_drawer.dart';
+import 'mocks/broadcast_mocks.dart';
+import 'models/broadcast_model.dart';
 
 class BroadcastPage extends StatefulWidget {
   const BroadcastPage({super.key});
@@ -139,7 +142,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
               child: const Text('Simpan'),
             ),
@@ -151,35 +157,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> broadcastDummy = [
-      {
-        'no': 1,
-        'nama': 'Pengumuman Kebersihan',
-        'pengirim': 'Admin RW 05',
-        'judul': 'Kerja Bakti Minggu Depan',
-        'tanggal': '11 Okt 2025',
-        'icon': Icons.cleaning_services,
-        'color': Colors.green,
-      },
-      {
-        'no': 2,
-        'nama': 'Peringatan Hari Santri',
-        'pengirim': 'Pak RT 02',
-        'judul': 'Akan diadakan doa bersama',
-        'tanggal': '14 Okt 2025',
-        'icon': Icons.mosque,
-        'color': Colors.purple,
-      },
-      {
-        'no': 3,
-        'nama': 'Tagihan Iuran',
-        'pengirim': 'Admin Keuangan',
-        'judul': 'Pembayaran Iuran Bulan Oktober',
-        'tanggal': '15 Okt 2025',
-        'icon': Icons.payment,
-        'color': Colors.orange,
-      },
-    ];
+    final List<BroadcastItem> broadcasts = broadcastMock;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -193,7 +171,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
           child: Container(height: 3, color: Colors.purple),
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+            color: Colors.purple,
+          ),
         ],
       ),
 
@@ -218,14 +200,14 @@ class _BroadcastPageState extends State<BroadcastPage> {
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
-      body: broadcastDummy.isEmpty
+      body: broadcasts.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
               padding: const EdgeInsets.all(20),
-              itemCount: broadcastDummy.length,
+              itemCount: broadcasts.length,
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
-                final item = broadcastDummy[index];
+                final item = broadcasts[index];
                 return _buildBroadcastCard(item);
               },
             ),
@@ -261,17 +243,14 @@ class _BroadcastPageState extends State<BroadcastPage> {
           const SizedBox(height: 8),
           Text(
             'Tap tombol + untuk menambah broadcast baru',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBroadcastCard(Map<String, dynamic> item) {
+  Widget _buildBroadcastCard(BroadcastItem item) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -290,7 +269,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: (item['color'] as Color).withOpacity(0.1),
+              color: item.color.withOpacity(0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -301,19 +280,15 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: item['color'] as Color,
+                    color: item.color,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    item['icon'] as IconData,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: Icon(item.icon, color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    item['nama'],
+                    item.nama,
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
@@ -324,7 +299,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
               ],
             ),
           ),
-          
+
           // Content
           Padding(
             padding: const EdgeInsets.all(16),
@@ -333,11 +308,15 @@ class _BroadcastPageState extends State<BroadcastPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
+                    Icon(
+                      Icons.person_outline,
+                      size: 16,
+                      color: Colors.grey[600],
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        item['pengirim'],
+                        item.pengirim,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -348,17 +327,14 @@ class _BroadcastPageState extends State<BroadcastPage> {
                     Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
                     const SizedBox(width: 4),
                     Text(
-                      item['tanggal'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
+                      item.tanggal,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  item['judul'],
+                  item.judul,
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -367,7 +343,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Action buttons
                 Row(
                   children: [
@@ -432,13 +408,13 @@ class _BroadcastPageState extends State<BroadcastPage> {
     );
   }
 
-  void _showEditDialog(Map<String, dynamic> item) {
+  void _showEditDialog(BroadcastItem item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Edit Broadcast'),
-        content: Text('Edit broadcast: ${item['nama']}'),
+        content: Text('Edit broadcast: ${item.nama}'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -449,13 +425,13 @@ class _BroadcastPageState extends State<BroadcastPage> {
     );
   }
 
-  void _showDeleteDialog(Map<String, dynamic> item) {
+  void _showDeleteDialog(BroadcastItem item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Hapus Broadcast'),
-        content: Text('Yakin ingin menghapus "${item['nama']}"?'),
+        content: Text('Yakin ingin menghapus "${item.nama}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -465,7 +441,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${item['nama']} telah dihapus')),
+                SnackBar(content: Text('${item.nama} telah dihapus')),
               );
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),

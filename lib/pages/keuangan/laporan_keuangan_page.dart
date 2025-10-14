@@ -14,10 +14,7 @@ class LaporanKeuanganPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.green,
-          ),
+          child: Container(height: 3, color: Colors.green),
         ),
         actions: [
           IconButton(
@@ -73,11 +70,21 @@ class LaporanKeuanganPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildSummaryItem('Pemasukan', 'Rp 5.000.000', Colors.green, Icons.trending_up),
+                child: _buildSummaryItem(
+                  'Pemasukan',
+                  'Rp 5.000.000',
+                  Colors.green,
+                  Icons.trending_up,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: _buildSummaryItem('Pengeluaran', 'Rp 2.500.000', Colors.red, Icons.trending_down),
+                child: _buildSummaryItem(
+                  'Pengeluaran',
+                  'Rp 2.500.000',
+                  Colors.red,
+                  Icons.trending_down,
+                ),
               ),
             ],
           ),
@@ -122,7 +129,12 @@ class LaporanKeuanganPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryItem(String label, String value, Color color, IconData icon) {
+  Widget _buildSummaryItem(
+    String label,
+    String value,
+    Color color,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -144,10 +156,7 @@ class LaporanKeuanganPage extends StatelessWidget {
           ),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-            ),
+            style: TextStyle(fontSize: 12, color: color),
             textAlign: TextAlign.center,
           ),
         ],
@@ -191,10 +200,7 @@ class LaporanKeuanganPage extends StatelessWidget {
             child: const Center(
               child: Text(
                 'Chart akan ditampilkan di sini',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
             ),
           ),
@@ -230,16 +236,46 @@ class LaporanKeuanganPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          _buildTransactionItem('Iuran Bulanan', 'Rp 50.000', '10 Jan 2025', Icons.trending_up, Colors.green),
-          _buildTransactionItem('Perbaikan Jalan', 'Rp 2.000.000', '9 Jan 2025', Icons.trending_down, Colors.red),
-          _buildTransactionItem('Donasi Acara', 'Rp 5.000.000', '8 Jan 2025', Icons.trending_up, Colors.blue),
-          _buildTransactionItem('Alat Kebersihan', 'Rp 500.000', '7 Jan 2025', Icons.trending_down, Colors.red),
+          _buildTransactionItem(
+            'Iuran Bulanan',
+            'Rp 50.000',
+            '10 Jan 2025',
+            Icons.trending_up,
+            Colors.green,
+          ),
+          _buildTransactionItem(
+            'Perbaikan Jalan',
+            'Rp 2.000.000',
+            '9 Jan 2025',
+            Icons.trending_down,
+            Colors.red,
+          ),
+          _buildTransactionItem(
+            'Donasi Acara',
+            'Rp 5.000.000',
+            '8 Jan 2025',
+            Icons.trending_up,
+            Colors.blue,
+          ),
+          _buildTransactionItem(
+            'Alat Kebersihan',
+            'Rp 500.000',
+            '7 Jan 2025',
+            Icons.trending_down,
+            Colors.red,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTransactionItem(String title, String amount, String date, IconData icon, Color color) {
+  Widget _buildTransactionItem(
+    String title,
+    String amount,
+    String date,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
@@ -272,10 +308,7 @@ class LaporanKeuanganPage extends StatelessWidget {
                 ),
                 Text(
                   date,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),

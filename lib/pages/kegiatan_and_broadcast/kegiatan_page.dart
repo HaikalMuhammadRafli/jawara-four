@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../widgets/app_drawer.dart';
+import 'mocks/kegiatan_mocks.dart';
+import 'models/kegiatan_model.dart';
 
 class KegiatanPage extends StatefulWidget {
   const KegiatanPage({super.key});
@@ -11,7 +14,8 @@ class KegiatanPage extends StatefulWidget {
 class _KegiatanPageState extends State<KegiatanPage> {
   final TextEditingController _namaController = TextEditingController();
   final TextEditingController _kategoriController = TextEditingController();
-  final TextEditingController _penanggungJawabController = TextEditingController();
+  final TextEditingController _penanggungJawabController =
+      TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
 
   @override
@@ -61,7 +65,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Tambah Kegiatan', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: const Text(
+          'Tambah Kegiatan',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -191,7 +198,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
               child: const Text('Simpan'),
             ),
@@ -203,35 +213,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> kegiatanDummy = [
-      {
-        'no': 1,
-        'nama': 'Kerja Bakti Mingguan',
-        'kategori': 'Kebersihan',
-        'penanggungJawab': 'Pak Dedi',
-        'tanggal': '15 Okt 2025',
-        'icon': Icons.cleaning_services,
-        'color': Colors.green,
-      },
-      {
-        'no': 2,
-        'nama': 'Rapat Bulanan Warga',
-        'kategori': 'Rapat',
-        'penanggungJawab': 'Bu Rina',
-        'tanggal': '20 Okt 2025',
-        'icon': Icons.groups,
-        'color': Colors.blue,
-      },
-      {
-        'no': 3,
-        'nama': 'Senam Bersama',
-        'kategori': 'Kesehatan',
-        'penanggungJawab': 'Pak Agus',
-        'tanggal': '27 Okt 2025',
-        'icon': Icons.fitness_center,
-        'color': Colors.orange,
-      },
-    ];
+    final List<Kegiatan> kegiatanList = kegiatanMock;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -245,7 +227,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
           child: Container(height: 3, color: Colors.purple),
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+            color: Colors.purple,
+          ),
         ],
       ),
 
@@ -264,18 +250,20 @@ class _KegiatanPageState extends State<KegiatanPage> {
         child: FloatingActionButton(
           onPressed: _showAddForm,
           backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
-      body: kegiatanDummy.isEmpty
+      body: kegiatanList.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
               padding: const EdgeInsets.all(20),
-              itemCount: kegiatanDummy.length,
+              itemCount: kegiatanList.length,
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
-                final item = kegiatanDummy[index];
+                final item = kegiatanList[index];
                 return _buildKegiatanCard(item);
               },
             ),
@@ -289,13 +277,24 @@ class _KegiatanPageState extends State<KegiatanPage> {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
-            child: Icon(Icons.event_available_outlined, size: 64, color: Colors.grey[400]),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.event_available_outlined,
+              size: 64,
+              color: Colors.grey[400],
+            ),
           ),
           const SizedBox(height: 24),
           Text(
             'Belum Ada Kegiatan',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -307,7 +306,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
     );
   }
 
-  Widget _buildKegiatanCard(Map<String, dynamic> item) {
+  Widget _buildKegiatanCard(Kegiatan item) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -326,7 +325,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: (item['color'] as Color).withOpacity(0.1),
+              color: item.color.withOpacity(0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -337,15 +336,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: item['color'] as Color,
+                    color: item.color,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(item['icon'] as IconData, color: Colors.white, size: 20),
+                  child: Icon(item.icon, color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    item['nama'],
+                    item.nama,
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
@@ -354,17 +353,20 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    item['kategori'],
+                    item.kategori,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: item['color'] as Color,
+                      color: item.color,
                     ),
                   ),
                 ),
@@ -380,11 +382,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
+                    Icon(
+                      Icons.person_outline,
+                      size: 16,
+                      color: Colors.grey[600],
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        item['penanggungJawab'],
+                        item.penanggungJawab,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[700],
@@ -395,7 +401,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                     Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
                     const SizedBox(width: 4),
                     Text(
-                      item['tanggal'],
+                      item.tanggal,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[600],
@@ -422,10 +428,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.blue[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           icon: const Icon(Icons.edit_outlined, size: 16),
-                          label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
+                          label: const Text(
+                            'Edit',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ),
@@ -443,10 +454,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.red[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                           icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w600)),
+                          label: const Text(
+                            'Hapus',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ),
@@ -460,33 +476,41 @@ class _KegiatanPageState extends State<KegiatanPage> {
     );
   }
 
-  void _showEditDialog(Map<String, dynamic> item) {
+  void _showEditDialog(Kegiatan item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Edit Kegiatan'),
-        content: Text('Edit kegiatan: ${item['nama']}'),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+        content: Text('Edit kegiatan: ${item.nama}'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }
 
-  void _showDeleteDialog(Map<String, dynamic> item) {
+  void _showDeleteDialog(Kegiatan item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Hapus Kegiatan'),
-        content: Text('Yakin ingin menghapus kegiatan "${item['nama']}"?'),
+        content: Text('Yakin ingin menghapus kegiatan "${item.nama}"?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${item['nama']} telah dihapus')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('${item.nama} telah dihapus')),
+              );
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),
           ),

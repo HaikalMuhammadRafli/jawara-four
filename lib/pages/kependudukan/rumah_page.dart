@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'mocks/rumah_mocks.dart';
+import 'models/rumah_model.dart';
+
 class RumahPage extends StatelessWidget {
   const RumahPage({super.key});
 
@@ -88,12 +91,7 @@ class RumahPage extends StatelessWidget {
   }
 
   Widget _buildRumahList() {
-    final List<Map<String, String>> rumahData = [
-      {'alamat': 'Jl. Merdeka No. 15', 'status': 'Ditempati', 'pemilik': 'Ahmad Budiman'},
-      {'alamat': 'Jl. Sudirman No. 25', 'status': 'Ditempati', 'pemilik': 'Budi Santoso'},
-      {'alamat': 'Jl. Gatot Subroto No. 8', 'status': 'Ditempati', 'pemilik': 'Suryadi'},
-      {'alamat': 'Jl. Veteran No. 5', 'status': 'Tersedia', 'pemilik': '-'},
-    ];
+    final List<Rumah> rumahData = rumahMock;
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -105,8 +103,8 @@ class RumahPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRumahCard(Map<String, String> rumah) {
-    Color statusColor = rumah['status'] == 'Ditempati' ? Colors.green : Colors.red;
+  Widget _buildRumahCard(Rumah rumah) {
+    Color statusColor = rumah.status == 'Ditempati' ? Colors.green : Colors.red;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -137,7 +135,7 @@ class RumahPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      rumah['alamat']!,
+                      rumah.alamat,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -145,7 +143,7 @@ class RumahPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Pemilik: ${rumah['pemilik']}',
+                      'Pemilik: ${rumah.pemilik}',
                       style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
@@ -158,7 +156,7 @@ class RumahPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  rumah['status']!,
+                  rumah.status,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'mocks/warga_mocks.dart';
+import 'models/warga_model.dart';
+
 class WargaPage extends StatelessWidget {
   const WargaPage({super.key});
 
@@ -90,13 +93,7 @@ class WargaPage extends StatelessWidget {
   }
 
   Widget _buildWargaList() {
-    final List<Map<String, String>> wargaData = [
-      {'nama': 'Ahmad Budiman', 'nik': '1234567890123456', 'jenisKelamin': 'Laki-laki'},
-      {'nama': 'Siti Aminah', 'nik': '1234567890123457', 'jenisKelamin': 'Perempuan'},
-      {'nama': 'Muhammad Ali', 'nik': '1234567890123458', 'jenisKelamin': 'Laki-laki'},
-      {'nama': 'Budi Santoso', 'nik': '1234567890123459', 'jenisKelamin': 'Laki-laki'},
-      {'nama': 'Fatimah Zahra', 'nik': '1234567890123460', 'jenisKelamin': 'Perempuan'},
-    ];
+    final List<Warga> wargaData = wargaMock;
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -108,7 +105,7 @@ class WargaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildWargaCard(Map<String, String> warga) {
+  Widget _buildWargaCard(Warga warga) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -125,12 +122,12 @@ class WargaPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundColor: warga['jenisKelamin'] == 'Laki-laki'
+                backgroundColor: warga.jenisKelamin == 'Laki-laki'
                     ? Colors.blue[100]
                     : Colors.pink[100],
                 child: Icon(
-                  warga['jenisKelamin'] == 'Laki-laki' ? Icons.person : Icons.person_outline,
-                  color: warga['jenisKelamin'] == 'Laki-laki' ? Colors.blue : Colors.pink,
+                  warga.jenisKelamin == 'Laki-laki' ? Icons.person : Icons.person_outline,
+                  color: warga.jenisKelamin == 'Laki-laki' ? Colors.blue : Colors.pink,
                   size: 24,
                 ),
               ),
@@ -140,7 +137,7 @@ class WargaPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      warga['nama']!,
+                      warga.nama,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -148,7 +145,7 @@ class WargaPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'NIK: ${warga['nik']}',
+                      'NIK: ${warga.nik}',
                       style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
@@ -177,7 +174,7 @@ class WargaPage extends StatelessWidget {
               Icon(Icons.person, size: 16, color: Colors.grey[400]),
               const SizedBox(width: 8),
               Text(
-                'Jenis Kelamin: ${warga['jenisKelamin']}',
+                'Jenis Kelamin: ${warga.jenisKelamin}',
                 style: const TextStyle(fontSize: 12, color: Colors.black87),
               ),
               const Spacer(),

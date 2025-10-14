@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'mocks/pemasukan_mocks.dart';
+import 'models/pemasukan_model.dart';
+
 class PemasukanLainPage extends StatelessWidget {
   const PemasukanLainPage({super.key});
 
@@ -135,36 +138,7 @@ class PemasukanLainPage extends StatelessWidget {
   }
 
   Widget _buildPemasukanList() {
-    final List<Map<String, String>> pemasukanData = [
-      {
-        'judul': 'Donasi Acara 17 Agustus',
-        'kategori': 'Donasi',
-        'jumlah': 'Rp 5.000.000',
-        'tanggal': '17 Agustus 2025',
-        'keterangan': 'Donasi dari warga untuk acara kemerdekaan',
-      },
-      {
-        'judul': 'Sewa Lapangan',
-        'kategori': 'Pendapatan Sewa',
-        'jumlah': 'Rp 2.500.000',
-        'tanggal': '15 Jan 2025',
-        'keterangan': 'Sewa lapangan olahraga RW',
-      },
-      {
-        'judul': 'Bantuan Pemerintah',
-        'kategori': 'Bantuan',
-        'jumlah': 'Rp 10.000.000',
-        'tanggal': '10 Jan 2025',
-        'keterangan': 'Bantuan pembangunan infrastruktur',
-      },
-      {
-        'judul': 'Penjualan Barang Bekas',
-        'kategori': 'Penjualan',
-        'jumlah': 'Rp 1.200.000',
-        'tanggal': '5 Jan 2025',
-        'keterangan': 'Hasil penjualan barang bekas warga',
-      },
-    ];
+    final List<Pemasukan> pemasukanData = pemasukanMock;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -176,7 +150,7 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPemasukanCard(Map<String, String> pemasukan) {
+  Widget _buildPemasukanCard(Pemasukan pemasukan) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -206,7 +180,7 @@ class PemasukanLainPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      pemasukan['judul']!,
+                      pemasukan.judul,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -214,7 +188,7 @@ class PemasukanLainPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      pemasukan['kategori']!,
+                      pemasukan.kategori,
                       style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
@@ -240,8 +214,8 @@ class PemasukanLainPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _buildInfoItem('Jumlah', pemasukan['jumlah']!)),
-              Expanded(child: _buildInfoItem('Tanggal', pemasukan['tanggal']!)),
+              Expanded(child: _buildInfoItem('Jumlah', pemasukan.jumlah)),
+              Expanded(child: _buildInfoItem('Tanggal', pemasukan.tanggal)),
             ],
           ),
           const SizedBox(height: 8),
@@ -253,7 +227,7 @@ class PemasukanLainPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              'Keterangan: ${pemasukan['keterangan']}',
+              'Keterangan: ${pemasukan.keterangan}',
               style: const TextStyle(
                 fontSize: 12,
                 color: Colors.black87,

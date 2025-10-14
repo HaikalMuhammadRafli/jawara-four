@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'mocks/keluarga_mocks.dart';
+import 'models/keluarga_model.dart';
+
 class KeluargaPage extends StatelessWidget {
   const KeluargaPage({super.key});
 
@@ -14,23 +17,17 @@ class KeluargaPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.green,
-          ),
+          child: Container(height: 3, color: Colors.green),
         ),
       ),
       body: Column(
         children: [
           _buildSearchAndFilter(),
-          Expanded(
-            child: _buildKeluargaList(),
-          ),
+          Expanded(child: _buildKeluargaList()),
         ],
       ),
     );
   }
-
 
   Widget _buildSearchAndFilter() {
     return Container(
@@ -88,28 +85,7 @@ class KeluargaPage extends StatelessWidget {
   }
 
   Widget _buildKeluargaList() {
-    final List<Map<String, String>> keluargaData = [
-      {
-        'kepalaKeluarga': 'Ahmad Budiman',
-        'alamat': 'Jl. Merdeka No. 15',
-        'jumlahAnggota': '4'
-      },
-      {
-        'kepalaKeluarga': 'Budi Santoso',
-        'alamat': 'Jl. Sudirman No. 25',
-        'jumlahAnggota': '3'
-      },
-      {
-        'kepalaKeluarga': 'Suryadi',
-        'alamat': 'Jl. Gatot Subroto No. 8',
-        'jumlahAnggota': '2'
-      },
-      {
-        'kepalaKeluarga': 'Muhammad Yusuf',
-        'alamat': 'Jl. Pahlawan No. 12',
-        'jumlahAnggota': '5'
-      },
-    ];
+    final List<Keluarga> keluargaData = keluargaMock;
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -121,7 +97,7 @@ class KeluargaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildKeluargaCard(Map<String, String> keluarga) {
+  Widget _buildKeluargaCard(Keluarga keluarga) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -129,13 +105,7 @@ class KeluargaPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +127,7 @@ class KeluargaPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      keluarga['kepalaKeluarga']!,
+                      keluarga.kepalaKeluarga,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -165,11 +135,8 @@ class KeluargaPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${keluarga['jumlahAnggota']} Anggota',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      '${keluarga.jumlahAnggota} Anggota',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -198,11 +165,8 @@ class KeluargaPage extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  keluarga['alamat']!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
+                  keluarga.alamat,
+                  style: const TextStyle(fontSize: 12, color: Colors.black87),
                 ),
               ),
               IconButton(

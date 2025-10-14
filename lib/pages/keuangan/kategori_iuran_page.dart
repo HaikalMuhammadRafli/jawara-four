@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'mocks/kategori_mocks.dart';
+import 'models/kategori_iuran_model.dart';
+
 class KategoriIuranPage extends StatelessWidget {
   const KategoriIuranPage({super.key});
 
@@ -106,72 +109,7 @@ class KategoriIuranPage extends StatelessWidget {
   }
 
   Widget _buildKategoriList() {
-    final List<Map<String, String>> kategoriData = [
-      {
-        'nama': 'Iuran Bulanan',
-        'deskripsi': 'Iuran bulanan untuk operasional RW',
-        'nominal': 'Rp 25.000',
-        'periode': 'Bulanan',
-        'status': 'Aktif',
-        'warna': 'blue',
-      },
-      {
-        'nama': 'Iuran Keamanan',
-        'deskripsi': 'Iuran untuk keamanan lingkungan',
-        'nominal': 'Rp 15.000',
-        'periode': 'Bulanan',
-        'status': 'Aktif',
-        'warna': 'green',
-      },
-      {
-        'nama': 'Iuran Kebersihan',
-        'deskripsi': 'Iuran untuk kebersihan lingkungan',
-        'nominal': 'Rp 10.000',
-        'periode': 'Bulanan',
-        'status': 'Aktif',
-        'warna': 'orange',
-      },
-      {
-        'nama': 'Iuran Pemeliharaan',
-        'deskripsi': 'Iuran untuk pemeliharaan fasilitas umum',
-        'nominal': 'Rp 50.000',
-        'periode': 'Tahunan',
-        'status': 'Aktif',
-        'warna': 'purple',
-      },
-      {
-        'nama': 'Iuran Acara',
-        'deskripsi': 'Iuran untuk kegiatan dan acara RW',
-        'nominal': 'Rp 20.000',
-        'periode': 'Per Acara',
-        'status': 'Aktif',
-        'warna': 'red',
-      },
-      {
-        'nama': 'Iuran Darurat',
-        'deskripsi': 'Iuran untuk keperluan darurat',
-        'nominal': 'Rp 100.000',
-        'periode': 'Per Kejadian',
-        'status': 'Aktif',
-        'warna': 'teal',
-      },
-      {
-        'nama': 'Iuran Pembangunan',
-        'deskripsi': 'Iuran untuk pembangunan infrastruktur',
-        'nominal': 'Rp 200.000',
-        'periode': 'Sekali',
-        'status': 'Nonaktif',
-        'warna': 'brown',
-      },
-      {
-        'nama': 'Iuran Sosial',
-        'deskripsi': 'Iuran untuk kegiatan sosial',
-        'nominal': 'Rp 30.000',
-        'periode': 'Per Kegiatan',
-        'status': 'Nonaktif',
-        'warna': 'pink',
-      },
-    ];
+    final List<KategoriIuran> kategoriData = kategoriMock;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -183,9 +121,9 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-  Widget _buildKategoriCard(Map<String, String> kategori) {
-    Color statusColor = kategori['status'] == 'Aktif' ? Colors.green : Colors.orange;
-    Color categoryColor = _getCategoryColor(kategori['warna']!);
+  Widget _buildKategoriCard(KategoriIuran kategori) {
+    Color statusColor = kategori.status == 'Aktif' ? Colors.green : Colors.orange;
+    Color categoryColor = _getCategoryColor(kategori.warna);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -216,7 +154,7 @@ class KategoriIuranPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      kategori['nama']!,
+                      kategori.nama,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -224,7 +162,7 @@ class KategoriIuranPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      kategori['deskripsi']!,
+                      kategori.deskripsi,
                       style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
@@ -237,7 +175,7 @@ class KategoriIuranPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  kategori['status']!,
+                  kategori.status,
                   style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),
@@ -246,8 +184,8 @@ class KategoriIuranPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _buildInfoItem('Nominal', kategori['nominal']!)),
-              Expanded(child: _buildInfoItem('Periode', kategori['periode']!)),
+              Expanded(child: _buildInfoItem('Nominal', kategori.nominal)),
+              Expanded(child: _buildInfoItem('Periode', kategori.periode)),
             ],
           ),
           const SizedBox(height: 12),
