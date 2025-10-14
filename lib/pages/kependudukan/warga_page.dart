@@ -15,14 +15,11 @@ class WargaPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.blue,
-          ),
+          child: Container(height: 3, color: Colors.blue),
         ),
         actions: [
           IconButton(
-            onPressed: () => context.go('/kependudukan/tambah'),
+            onPressed: () => context.goNamed('kependudukan-tambah'),
             icon: const Icon(Icons.add),
             color: Colors.blue,
           ),
@@ -31,14 +28,11 @@ class WargaPage extends StatelessWidget {
       body: Column(
         children: [
           _buildSearchAndFilter(),
-          Expanded(
-            child: _buildWargaList(),
-          ),
+          Expanded(child: _buildWargaList()),
         ],
       ),
     );
   }
-
 
   Widget _buildSearchAndFilter() {
     return Container(
@@ -122,13 +116,7 @@ class WargaPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,8 +125,8 @@ class WargaPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 25,
-                backgroundColor: warga['jenisKelamin'] == 'Laki-laki' 
-                    ? Colors.blue[100] 
+                backgroundColor: warga['jenisKelamin'] == 'Laki-laki'
+                    ? Colors.blue[100]
                     : Colors.pink[100],
                 child: Icon(
                   warga['jenisKelamin'] == 'Laki-laki' ? Icons.person : Icons.person_outline,
@@ -161,10 +149,7 @@ class WargaPage extends StatelessWidget {
                     ),
                     Text(
                       'NIK: ${warga['nik']}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -193,10 +178,7 @@ class WargaPage extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Jenis Kelamin: ${warga['jenisKelamin']}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black87,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.black87),
               ),
               const Spacer(),
               IconButton(

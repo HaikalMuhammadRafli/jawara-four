@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../widgets/app_drawer.dart';
 
 class KeuanganPage extends StatelessWidget {
@@ -16,17 +17,10 @@ class KeuanganPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.green,
-          ),
+          child: Container(height: 3, color: Colors.green),
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-            color: Colors.green,
-          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.green),
         ],
       ),
       drawer: const AppDrawer(),
@@ -55,32 +49,19 @@ class KeuanganPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Keuangan RW',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 16),
           const Text(
             'Kelola keuangan RW secara terintegrasi dan transparan',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
       ),
@@ -91,7 +72,12 @@ class KeuanganPage extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard('Saldo', 'Rp 15.000.000', Colors.green, Icons.account_balance_wallet),
+          child: _buildStatCard(
+            'Saldo',
+            'Rp 15.000.000',
+            Colors.green,
+            Icons.account_balance_wallet,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -112,13 +98,7 @@ class KeuanganPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         children: [
@@ -133,19 +113,12 @@ class KeuanganPage extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
             textAlign: TextAlign.center,
           ),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
         ],
@@ -159,11 +132,7 @@ class KeuanganPage extends StatelessWidget {
       children: [
         const Text(
           'Menu Keuangan',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         const SizedBox(height: 16),
         GridView.count(
@@ -180,7 +149,7 @@ class KeuanganPage extends StatelessWidget {
               'Kelola iuran dan tagihan warga',
               Icons.receipt_long,
               Colors.green,
-              '/keuangan/iuran-tagihan',
+              'keuangan-iuran-tagihan',
             ),
             _buildMenuCard(
               context,
@@ -188,7 +157,7 @@ class KeuanganPage extends StatelessWidget {
               'Kelola pemasukan selain iuran',
               Icons.account_balance_wallet,
               Colors.blue,
-              '/keuangan/pemasukan-lain',
+              'keuangan-pemasukan-lain',
             ),
             _buildMenuCard(
               context,
@@ -196,7 +165,7 @@ class KeuanganPage extends StatelessWidget {
               'Master data kategori iuran',
               Icons.category,
               Colors.purple,
-              '/keuangan/kategori-iuran',
+              'keuangan-kategori-iuran',
             ),
             _buildMenuCard(
               context,
@@ -204,7 +173,7 @@ class KeuanganPage extends StatelessWidget {
               'Kelola pengeluaran RW',
               Icons.trending_down,
               Colors.red,
-              '/keuangan/pengeluaran',
+              'keuangan-pengeluaran',
             ),
           ],
         ),
@@ -219,18 +188,13 @@ class KeuanganPage extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () => context.push('/keuangan/laporan'),
+            onPressed: () => context.pushNamed('keuangan-laporan'),
             icon: const Icon(Icons.analytics, color: Colors.white),
-            label: const Text(
-              'Laporan Keuangan',
-              style: TextStyle(color: Colors.white),
-            ),
+            label: const Text('Laporan Keuangan', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
           ),
         ),
@@ -246,15 +210,10 @@ class KeuanganPage extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.download, color: Colors.green),
-            label: const Text(
-              'Export Data',
-              style: TextStyle(color: Colors.green),
-            ),
+            label: const Text('Export Data', style: TextStyle(color: Colors.green)),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               side: const BorderSide(color: Colors.green, width: 2),
             ),
           ),
@@ -263,10 +222,16 @@ class KeuanganPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuCard(BuildContext context, String title, String subtitle,
-      IconData icon, Color color, String route) {
+  Widget _buildMenuCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    String routeName,
+  ) {
     return GestureDetector(
-      onTap: () => context.push(route),
+      onTap: () => context.pushNamed(routeName),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -274,11 +239,7 @@ class KeuanganPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey[300]!, width: 1),
           boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-            ),
+            BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
           ],
         ),
         child: Column(
@@ -304,13 +265,7 @@ class KeuanganPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
+            Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),
@@ -324,43 +279,60 @@ class KeuanganPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Transaksi Terbaru',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 20),
-          _buildTransactionItem('Iuran Bulanan - Pak Budi', 'Rp 50.000', '10 Jan 2025', Icons.trending_up, Colors.green),
-          _buildTransactionItem('Perbaikan Jalan', 'Rp 2.000.000', '9 Jan 2025', Icons.trending_down, Colors.red),
-          _buildTransactionItem('Donasi Acara 17 Agustus', 'Rp 5.000.000', '8 Jan 2025', Icons.trending_up, Colors.blue),
-          _buildTransactionItem('Pembelian Alat Kebersihan', 'Rp 500.000', '7 Jan 2025', Icons.trending_down, Colors.red),
+          _buildTransactionItem(
+            'Iuran Bulanan - Pak Budi',
+            'Rp 50.000',
+            '10 Jan 2025',
+            Icons.trending_up,
+            Colors.green,
+          ),
+          _buildTransactionItem(
+            'Perbaikan Jalan',
+            'Rp 2.000.000',
+            '9 Jan 2025',
+            Icons.trending_down,
+            Colors.red,
+          ),
+          _buildTransactionItem(
+            'Donasi Acara 17 Agustus',
+            'Rp 5.000.000',
+            '8 Jan 2025',
+            Icons.trending_up,
+            Colors.blue,
+          ),
+          _buildTransactionItem(
+            'Pembelian Alat Kebersihan',
+            'Rp 500.000',
+            '7 Jan 2025',
+            Icons.trending_down,
+            Colors.red,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTransactionItem(String title, String amount, String date, IconData icon, Color color) {
+  Widget _buildTransactionItem(
+    String title,
+    String amount,
+    String date,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: Colors.grey[50], borderRadius: BorderRadius.circular(8)),
       child: Row(
         children: [
           Container(
@@ -384,23 +356,13 @@ class KeuanganPage extends StatelessWidget {
                     color: Colors.black87,
                   ),
                 ),
-                Text(
-                  date,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
+                Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
               ],
             ),
           ),
           Text(
             amount,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
           ),
         ],
       ),

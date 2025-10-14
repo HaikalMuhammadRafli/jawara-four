@@ -15,14 +15,11 @@ class RumahPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.orange,
-          ),
+          child: Container(height: 3, color: Colors.orange),
         ),
         actions: [
           IconButton(
-            onPressed: () => context.go('/kependudukan/tambah'),
+            onPressed: () => context.goNamed('kependudukan-tambah'),
             icon: const Icon(Icons.add),
             color: Colors.orange,
           ),
@@ -31,14 +28,11 @@ class RumahPage extends StatelessWidget {
       body: Column(
         children: [
           _buildSearchAndFilter(),
-          Expanded(
-            child: _buildRumahList(),
-          ),
+          Expanded(child: _buildRumahList()),
         ],
       ),
     );
   }
-
 
   Widget _buildSearchAndFilter() {
     return Container(
@@ -95,26 +89,10 @@ class RumahPage extends StatelessWidget {
 
   Widget _buildRumahList() {
     final List<Map<String, String>> rumahData = [
-      {
-        'alamat': 'Jl. Merdeka No. 15',
-        'status': 'Ditempati',
-        'pemilik': 'Ahmad Budiman'
-      },
-      {
-        'alamat': 'Jl. Sudirman No. 25',
-        'status': 'Ditempati',
-        'pemilik': 'Budi Santoso'
-      },
-      {
-        'alamat': 'Jl. Gatot Subroto No. 8',
-        'status': 'Ditempati',
-        'pemilik': 'Suryadi'
-      },
-      {
-        'alamat': 'Jl. Veteran No. 5',
-        'status': 'Tersedia',
-        'pemilik': '-'
-      },
+      {'alamat': 'Jl. Merdeka No. 15', 'status': 'Ditempati', 'pemilik': 'Ahmad Budiman'},
+      {'alamat': 'Jl. Sudirman No. 25', 'status': 'Ditempati', 'pemilik': 'Budi Santoso'},
+      {'alamat': 'Jl. Gatot Subroto No. 8', 'status': 'Ditempati', 'pemilik': 'Suryadi'},
+      {'alamat': 'Jl. Veteran No. 5', 'status': 'Tersedia', 'pemilik': '-'},
     ];
 
     return ListView.builder(
@@ -129,7 +107,7 @@ class RumahPage extends StatelessWidget {
 
   Widget _buildRumahCard(Map<String, String> rumah) {
     Color statusColor = rumah['status'] == 'Ditempati' ? Colors.green : Colors.red;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -137,13 +115,7 @@ class RumahPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,10 +146,7 @@ class RumahPage extends StatelessWidget {
                     ),
                     Text(
                       'Pemilik: ${rumah['pemilik']}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -190,11 +159,7 @@ class RumahPage extends StatelessWidget {
                 ),
                 child: Text(
                   rumah['status']!,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: statusColor,
-                  ),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),
             ],

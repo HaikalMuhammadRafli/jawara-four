@@ -15,10 +15,7 @@ class KependudukanTambahPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.purple,
-          ),
+          child: Container(height: 3, color: Colors.purple),
         ),
       ),
       body: Padding(
@@ -27,15 +24,12 @@ class KependudukanTambahPage extends StatelessWidget {
           children: [
             _buildHeader(),
             const SizedBox(height: 20),
-            Expanded(
-              child: _buildMenuOptions(context),
-            ),
+            Expanded(child: _buildMenuOptions(context)),
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildHeader() {
     return Container(
@@ -45,32 +39,19 @@ class KependudukanTambahPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Tambah Data Kependudukan',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 16),
           const Text(
             'Pilih jenis data yang ingin ditambahkan',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
       ),
@@ -83,11 +64,7 @@ class KependudukanTambahPage extends StatelessWidget {
       children: [
         const Text(
           'Pilihan Menu',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         const SizedBox(height: 16),
         Expanded(
@@ -102,7 +79,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Tambahkan data warga baru ke sistem',
                 Icons.person_add,
                 Colors.blue,
-                '/kependudukan/tambah-warga',
+                'kependudukan-tambah',
               ),
               _buildOptionCard(
                 context,
@@ -110,7 +87,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Tambahkan data rumah baru ke sistem',
                 Icons.home_work,
                 Colors.orange,
-                '/kependudukan/tambah-rumah',
+                'kependudukan-tambah',
               ),
               _buildOptionCard(
                 context,
@@ -118,7 +95,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Buat keluarga baru dan hubungkan warga',
                 Icons.family_restroom,
                 Colors.green,
-                '/kependudukan/tambah-keluarga',
+                'kependudukan-tambah',
               ),
               _buildOptionCard(
                 context,
@@ -126,7 +103,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Import data dari file Excel',
                 Icons.upload_file,
                 Colors.purple,
-                '/kependudukan/import',
+                'kependudukan-tambah',
               ),
             ],
           ),
@@ -135,10 +112,16 @@ class KependudukanTambahPage extends StatelessWidget {
     );
   }
 
-  Widget _buildOptionCard(BuildContext context, String title, String subtitle,
-      IconData icon, Color color, String route) {
+  Widget _buildOptionCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    String routeName,
+  ) {
     return GestureDetector(
-      onTap: () => context.go(route),
+      onTap: () => context.goNamed(routeName),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -146,11 +129,7 @@ class KependudukanTambahPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey[300]!, width: 1),
           boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-            ),
+            BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
           ],
         ),
         child: Column(
@@ -176,13 +155,7 @@ class KependudukanTambahPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
+            Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),

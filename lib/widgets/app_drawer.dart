@@ -20,16 +20,9 @@ class AppDrawer extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   'Jawara Pintar',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  'admin1@gmail.com',
-                  style: TextStyle(color: Colors.white70),
-                ),
+                Text('admin1@gmail.com', style: TextStyle(color: Colors.white70)),
               ],
             ),
           ),
@@ -38,21 +31,21 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dashboard),
             title: const Text('Dashboard'),
-            onTap: () => context.go('/dashboard'),
+            onTap: () => context.goNamed('dashboard'),
           ),
 
           // Menu Keuangan
           ListTile(
             leading: const Icon(Icons.account_balance_wallet),
             title: const Text('Keuangan'),
-            onTap: () => context.go('/keuangan'),
+            onTap: () => context.goNamed('keuangan'),
           ),
 
           // Menu Kependudukan
           ListTile(
             leading: const Icon(Icons.people),
             title: const Text('Kependudukan'),
-            onTap: () => context.go('/kependudukan'),
+            onTap: () => context.goNamed('kependudukan'),
           ),
 
           // Menu Kegiatan & Broadcast
@@ -60,14 +53,8 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.event),
             title: const Text('Kegiatan & Broadcast'),
             children: [
-              ListTile(
-                title: const Text('Kegiatan'),
-                onTap: () => context.go('/kegiatan'),
-              ),
-              ListTile(
-                title: const Text('Broadcast'),
-                onTap: () => context.go('/broadcast'),
-              ),
+              ListTile(title: const Text('Kegiatan'), onTap: () => context.goNamed('kegiatan')),
+              ListTile(title: const Text('Broadcast'), onTap: () => context.goNamed('broadcast')),
             ],
           ),
         ],

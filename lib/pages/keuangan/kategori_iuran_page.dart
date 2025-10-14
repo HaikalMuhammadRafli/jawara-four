@@ -15,14 +15,11 @@ class KategoriIuranPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.purple,
-          ),
+          child: Container(height: 3, color: Colors.purple),
         ),
         actions: [
           IconButton(
-            onPressed: () => context.go('/tambah-kategori'),
+            onPressed: () => context.goNamed('keuangan-kategori-iuran'),
             icon: const Icon(Icons.add),
             color: Colors.purple,
           ),
@@ -32,9 +29,7 @@ class KategoriIuranPage extends StatelessWidget {
         children: [
           _buildHeader(),
           _buildQuickStats(),
-          Expanded(
-            child: _buildKategoriList(),
-          ),
+          Expanded(child: _buildKategoriList()),
         ],
       ),
     );
@@ -49,32 +44,19 @@ class KategoriIuranPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Kategori Iuran',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 16),
           const Text(
             'Master data untuk mengelola jenis-jenis iuran dan pungutan',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
       ),
@@ -86,17 +68,11 @@ class KategoriIuranPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Expanded(
-            child: _buildStatCard('Total Kategori', '8', Colors.purple, Icons.category),
-          ),
+          Expanded(child: _buildStatCard('Total Kategori', '8', Colors.purple, Icons.category)),
           const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard('Aktif', '6', Colors.green, Icons.check_circle),
-          ),
+          Expanded(child: _buildStatCard('Aktif', '6', Colors.green, Icons.check_circle)),
           const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard('Nonaktif', '2', Colors.orange, Icons.pause_circle),
-          ),
+          Expanded(child: _buildStatCard('Nonaktif', '2', Colors.orange, Icons.pause_circle)),
         ],
       ),
     );
@@ -109,13 +85,7 @@ class KategoriIuranPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         children: [
@@ -123,18 +93,11 @@ class KategoriIuranPage extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),
           ),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
         ],
@@ -150,7 +113,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 25.000',
         'periode': 'Bulanan',
         'status': 'Aktif',
-        'warna': 'blue'
+        'warna': 'blue',
       },
       {
         'nama': 'Iuran Keamanan',
@@ -158,7 +121,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 15.000',
         'periode': 'Bulanan',
         'status': 'Aktif',
-        'warna': 'green'
+        'warna': 'green',
       },
       {
         'nama': 'Iuran Kebersihan',
@@ -166,7 +129,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 10.000',
         'periode': 'Bulanan',
         'status': 'Aktif',
-        'warna': 'orange'
+        'warna': 'orange',
       },
       {
         'nama': 'Iuran Pemeliharaan',
@@ -174,7 +137,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 50.000',
         'periode': 'Tahunan',
         'status': 'Aktif',
-        'warna': 'purple'
+        'warna': 'purple',
       },
       {
         'nama': 'Iuran Acara',
@@ -182,7 +145,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 20.000',
         'periode': 'Per Acara',
         'status': 'Aktif',
-        'warna': 'red'
+        'warna': 'red',
       },
       {
         'nama': 'Iuran Darurat',
@@ -190,7 +153,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 100.000',
         'periode': 'Per Kejadian',
         'status': 'Aktif',
-        'warna': 'teal'
+        'warna': 'teal',
       },
       {
         'nama': 'Iuran Pembangunan',
@@ -198,7 +161,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 200.000',
         'periode': 'Sekali',
         'status': 'Nonaktif',
-        'warna': 'brown'
+        'warna': 'brown',
       },
       {
         'nama': 'Iuran Sosial',
@@ -206,7 +169,7 @@ class KategoriIuranPage extends StatelessWidget {
         'nominal': 'Rp 30.000',
         'periode': 'Per Kegiatan',
         'status': 'Nonaktif',
-        'warna': 'pink'
+        'warna': 'pink',
       },
     ];
 
@@ -223,7 +186,7 @@ class KategoriIuranPage extends StatelessWidget {
   Widget _buildKategoriCard(Map<String, String> kategori) {
     Color statusColor = kategori['status'] == 'Aktif' ? Colors.green : Colors.orange;
     Color categoryColor = _getCategoryColor(kategori['warna']!);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -231,13 +194,7 @@ class KategoriIuranPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,10 +225,7 @@ class KategoriIuranPage extends StatelessWidget {
                     ),
                     Text(
                       kategori['deskripsi']!,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -284,11 +238,7 @@ class KategoriIuranPage extends StatelessWidget {
                 ),
                 child: Text(
                   kategori['status']!,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: statusColor,
-                  ),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),
             ],
@@ -296,12 +246,8 @@ class KategoriIuranPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(
-                child: _buildInfoItem('Nominal', kategori['nominal']!),
-              ),
-              Expanded(
-                child: _buildInfoItem('Periode', kategori['periode']!),
-              ),
+              Expanded(child: _buildInfoItem('Nominal', kategori['nominal']!)),
+              Expanded(child: _buildInfoItem('Periode', kategori['periode']!)),
             ],
           ),
           const SizedBox(height: 12),
@@ -336,19 +282,11 @@ class KategoriIuranPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w500),
         ),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w600),
         ),
       ],
     );

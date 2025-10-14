@@ -15,14 +15,11 @@ class PemasukanLainPage extends StatelessWidget {
         elevation: 1,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
-          child: Container(
-            height: 3,
-            color: Colors.blue,
-          ),
+          child: Container(height: 3, color: Colors.blue),
         ),
         actions: [
           IconButton(
-            onPressed: () => context.go('/tambah-pemasukan'),
+            onPressed: () => context.goNamed('keuangan-pemasukan-lain'),
             icon: const Icon(Icons.add),
             color: Colors.blue,
           ),
@@ -32,9 +29,7 @@ class PemasukanLainPage extends StatelessWidget {
         children: [
           _buildHeader(),
           _buildQuickActions(context),
-          Expanded(
-            child: _buildPemasukanList(),
-          ),
+          Expanded(child: _buildPemasukanList()),
         ],
       ),
     );
@@ -49,32 +44,19 @@ class PemasukanLainPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Pemasukan Lain',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 16),
           const Text(
             'Kelola pemasukan selain iuran warga',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
       ),
@@ -92,7 +74,7 @@ class PemasukanLainPage extends StatelessWidget {
               'Tambah Pemasukan',
               Icons.add_circle,
               Colors.blue,
-              '/tambah-pemasukan',
+              'keuangan-pemasukan-lain',
             ),
           ),
           const SizedBox(width: 12),
@@ -102,7 +84,7 @@ class PemasukanLainPage extends StatelessWidget {
               'Laporan Pemasukan',
               Icons.analytics,
               Colors.purple,
-              '/laporan-pemasukan',
+              'keuangan-pemasukan-lain',
             ),
           ),
         ],
@@ -110,9 +92,15 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionCard(BuildContext context, String title, IconData icon, Color color, String route) {
+  Widget _buildActionCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    String routeName,
+  ) {
     return GestureDetector(
-      onTap: () => context.go(route),
+      onTap: () => context.goNamed(routeName),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -120,11 +108,7 @@ class PemasukanLainPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey[300]!, width: 1),
           boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-            ),
+            BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
           ],
         ),
         child: Column(
@@ -141,11 +125,7 @@ class PemasukanLainPage extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
               textAlign: TextAlign.center,
             ),
           ],
@@ -161,28 +141,28 @@ class PemasukanLainPage extends StatelessWidget {
         'kategori': 'Donasi',
         'jumlah': 'Rp 5.000.000',
         'tanggal': '17 Agustus 2025',
-        'keterangan': 'Donasi dari warga untuk acara kemerdekaan'
+        'keterangan': 'Donasi dari warga untuk acara kemerdekaan',
       },
       {
         'judul': 'Sewa Lapangan',
         'kategori': 'Pendapatan Sewa',
         'jumlah': 'Rp 2.500.000',
         'tanggal': '15 Jan 2025',
-        'keterangan': 'Sewa lapangan olahraga RW'
+        'keterangan': 'Sewa lapangan olahraga RW',
       },
       {
         'judul': 'Bantuan Pemerintah',
         'kategori': 'Bantuan',
         'jumlah': 'Rp 10.000.000',
         'tanggal': '10 Jan 2025',
-        'keterangan': 'Bantuan pembangunan infrastruktur'
+        'keterangan': 'Bantuan pembangunan infrastruktur',
       },
       {
         'judul': 'Penjualan Barang Bekas',
         'kategori': 'Penjualan',
         'jumlah': 'Rp 1.200.000',
         'tanggal': '5 Jan 2025',
-        'keterangan': 'Hasil penjualan barang bekas warga'
+        'keterangan': 'Hasil penjualan barang bekas warga',
       },
     ];
 
@@ -204,13 +184,7 @@ class PemasukanLainPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,10 +215,7 @@ class PemasukanLainPage extends StatelessWidget {
                     ),
                     Text(
                       pemasukan['kategori']!,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -269,12 +240,8 @@ class PemasukanLainPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(
-                child: _buildInfoItem('Jumlah', pemasukan['jumlah']!),
-              ),
-              Expanded(
-                child: _buildInfoItem('Tanggal', pemasukan['tanggal']!),
-              ),
+              Expanded(child: _buildInfoItem('Jumlah', pemasukan['jumlah']!)),
+              Expanded(child: _buildInfoItem('Tanggal', pemasukan['tanggal']!)),
             ],
           ),
           const SizedBox(height: 8),
@@ -326,19 +293,11 @@ class PemasukanLainPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 10,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w500),
         ),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w600),
         ),
       ],
     );
