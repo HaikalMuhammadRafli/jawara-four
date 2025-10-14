@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/app_drawer.dart';
 
 class KegiatanPage extends StatefulWidget {
   const KegiatanPage({super.key});
@@ -39,8 +40,18 @@ class _KegiatanPageState extends State<KegiatanPage> {
 
   String _getIndonesianMonth(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agt',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
     ];
     return months[month - 1];
   }
@@ -50,10 +61,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          'Tambah Kegiatan',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: const Text('Tambah Kegiatan', style: TextStyle(fontWeight: FontWeight.w600)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -228,21 +236,20 @@ class _KegiatanPageState extends State<KegiatanPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text(
-          'Kegiatan',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: const Text('Kegiatan'),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        elevation: 0,
+        foregroundColor: Colors.black,
+        elevation: 1,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: Colors.grey[200],
-            height: 1,
-          ),
+          preferredSize: const Size.fromHeight(3),
+          child: Container(height: 3, color: Colors.purple),
         ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
+        ],
       ),
+
+      drawer: const AppDrawer(),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -257,9 +264,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
         child: FloatingActionButton(
           onPressed: _showAddForm,
           backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
@@ -284,32 +289,18 @@ class _KegiatanPageState extends State<KegiatanPage> {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.event_available_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
+            decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
+            child: Icon(Icons.event_available_outlined, size: 64, color: Colors.grey[400]),
           ),
           const SizedBox(height: 24),
           Text(
             'Belum Ada Kegiatan',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey[700]),
           ),
           const SizedBox(height: 8),
           Text(
             'Tap tombol + untuk menambah kegiatan baru',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
           ),
         ],
       ),
@@ -349,11 +340,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                     color: item['color'] as Color,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    item['icon'] as IconData,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: Icon(item['icon'] as IconData, color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -384,7 +371,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
               ],
             ),
           ),
-          
+
           // Content
           Padding(
             padding: const EdgeInsets.all(16),
@@ -418,7 +405,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Action buttons
                 Row(
                   children: [
@@ -435,15 +422,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.blue[600],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           icon: const Icon(Icons.edit_outlined, size: 16),
-                          label: const Text(
-                            'Edit',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
+                          label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
                         ),
                       ),
                     ),
@@ -461,15 +443,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: Colors.red[600],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text(
-                            'Hapus',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
+                          label: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w600)),
                         ),
                       ),
                     ),
@@ -490,12 +467,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Edit Kegiatan'),
         content: Text('Edit kegiatan: ${item['nama']}'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
       ),
     );
   }
@@ -508,16 +480,13 @@ class _KegiatanPageState extends State<KegiatanPage> {
         title: const Text('Hapus Kegiatan'),
         content: Text('Yakin ingin menghapus kegiatan "${item['nama']}"?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${item['nama']} telah dihapus')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('${item['nama']} telah dihapus')));
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),
           ),

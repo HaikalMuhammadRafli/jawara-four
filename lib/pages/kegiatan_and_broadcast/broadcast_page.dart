@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/app_drawer.dart';
 
 class BroadcastPage extends StatefulWidget {
   const BroadcastPage({super.key});
@@ -183,21 +184,20 @@ class _BroadcastPageState extends State<BroadcastPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text(
-          'Broadcast',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: const Text('Broadcast'),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        elevation: 0,
+        foregroundColor: Colors.black,
+        elevation: 1,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: Colors.grey[200],
-            height: 1,
-          ),
+          preferredSize: const Size.fromHeight(3),
+          child: Container(height: 3, color: Colors.purple),
         ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
+        ],
       ),
+
+      drawer: const AppDrawer(),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
