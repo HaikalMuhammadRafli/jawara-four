@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import '../widgets/app_drawer.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -29,7 +29,7 @@ class DashboardPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: _buildDrawer(context),
+      drawer: const AppDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -47,81 +47,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-          // Header drawer
-            const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.apartment, size: 48, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text(
-                    'Jawara Pintar',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'admin1@gmail.com',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                ],
-              ),
-            ),
-
-          // Menu Dashboard
-            ListTile(
-              leading: const Icon(Icons.dashboard),
-              title: const Text('Dashboard'),
-              onTap: () => context.go('/dashboard'),
-            ),
-
-          // Menu Keuangan
-            ExpansionTile(
-              leading: const Icon(Icons.account_balance_wallet),
-              title: const Text('Keuangan'),
-              children: [
-                ListTile(
-                  title: const Text('Pemasukan'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  title: const Text('Pengeluaran'),
-                  onTap: () => context.go('/pengeluaran'),
-                ),
-                ListTile(
-                  title: const Text('Laporan Keuangan'),
-                  onTap: () => context.go('/laporan'),
-                ),
-              ],
-            ),
-
-          // Menu Kegiatan & Broadcast
-            ExpansionTile(
-              leading: const Icon(Icons.event),
-              title: const Text('Kegiatan & Broadcast'),
-              children: [
-                ListTile(
-                  title: const Text('Kegiatan'),
-                  onTap: () => context.go('/kegiatan'),
-                ),
-                ListTile(
-                  title: const Text('Broadcast'),
-                  onTap: () => context.go('/broadcast'),
-                ),
-              ],
-            ),
-          ],
-        ),
-    );
-  }
   Widget _buildWelcomeCard() {
     return Container(
       width: double.infinity,
