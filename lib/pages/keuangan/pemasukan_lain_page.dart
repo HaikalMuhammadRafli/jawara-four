@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
 
-class IuranTagihanPage extends StatelessWidget {
-  const IuranTagihanPage({super.key});
+class PemasukanLainPage extends StatelessWidget {
+  const PemasukanLainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class IuranTagihanPage extends StatelessWidget {
       backgroundColor: Colors.white,
       
       appBar: AppBar(
-        title: const Text('Iuran dan Tagihan'),
+        title: const Text('Pemasukan Lain'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
@@ -19,7 +19,7 @@ class IuranTagihanPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(3),
           child: Container(
             height: 3,
-            color: Colors.green,
+            color: Colors.blue,
           ),
         ),
         leading: IconButton(
@@ -28,9 +28,9 @@ class IuranTagihanPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () => context.go('/buat-tagihan'),
+            onPressed: () => context.go('/tambah-pemasukan'),
             icon: const Icon(Icons.add),
-            color: Colors.green,
+            color: Colors.blue,
           ),
         ],
       ),
@@ -41,7 +41,7 @@ class IuranTagihanPage extends StatelessWidget {
           _buildHeader(),
           _buildQuickActions(context),
           Expanded(
-            child: _buildTagihanList(),
+            child: _buildPemasukanList(),
           ),
         ],
       ),
@@ -69,7 +69,7 @@ class IuranTagihanPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Iuran dan Tagihan',
+            'Pemasukan Lain',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -78,7 +78,7 @@ class IuranTagihanPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const Text(
-            'Kelola tagihan iuran warga dan pemungutan pembayaran',
+            'Kelola pemasukan selain iuran warga',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -97,20 +97,20 @@ class IuranTagihanPage extends StatelessWidget {
           Expanded(
             child: _buildActionCard(
               context,
-              'Buat Tagihan Baru',
+              'Tambah Pemasukan',
               Icons.add_circle,
-              Colors.green,
-              '/buat-tagihan',
+              Colors.blue,
+              '/tambah-pemasukan',
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: _buildActionCard(
               context,
-              'Tagih Iuran',
-              Icons.receipt_long,
-              Colors.blue,
-              '/tagih-iuran',
+              'Laporan Pemasukan',
+              Icons.analytics,
+              Colors.purple,
+              '/laporan-pemasukan',
             ),
           ),
         ],
@@ -162,55 +162,49 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTagihanList() {
-    final List<Map<String, String>> tagihanData = [
+  Widget _buildPemasukanList() {
+    final List<Map<String, String>> pemasukanData = [
       {
-        'judul': 'Iuran Bulanan Januari 2025',
-        'kategori': 'Iuran Bulanan',
-        'total': 'Rp 1.500.000',
-        'status': 'Belum Lunas',
+        'judul': 'Donasi Acara 17 Agustus',
+        'kategori': 'Donasi',
+        'jumlah': 'Rp 5.000.000',
+        'tanggal': '17 Agustus 2025',
+        'keterangan': 'Donasi dari warga untuk acara kemerdekaan'
+      },
+      {
+        'judul': 'Sewa Lapangan',
+        'kategori': 'Pendapatan Sewa',
+        'jumlah': 'Rp 2.500.000',
         'tanggal': '15 Jan 2025',
-        'warga': '150'
+        'keterangan': 'Sewa lapangan olahraga RW'
       },
       {
-        'judul': 'Iuran Keamanan',
-        'kategori': 'Iuran Keamanan',
-        'total': 'Rp 750.000',
-        'status': 'Lunas',
+        'judul': 'Bantuan Pemerintah',
+        'kategori': 'Bantuan',
+        'jumlah': 'Rp 10.000.000',
         'tanggal': '10 Jan 2025',
-        'warga': '75'
+        'keterangan': 'Bantuan pembangunan infrastruktur'
       },
       {
-        'judul': 'Iuran Kebersihan',
-        'kategori': 'Iuran Kebersihan',
-        'total': 'Rp 500.000',
-        'status': 'Belum Lunas',
+        'judul': 'Penjualan Barang Bekas',
+        'kategori': 'Penjualan',
+        'jumlah': 'Rp 1.200.000',
         'tanggal': '5 Jan 2025',
-        'warga': '100'
-      },
-      {
-        'judul': 'Iuran Pemeliharaan',
-        'kategori': 'Iuran Pemeliharaan',
-        'total': 'Rp 2.000.000',
-        'status': 'Lunas',
-        'tanggal': '1 Jan 2025',
-        'warga': '200'
+        'keterangan': 'Hasil penjualan barang bekas warga'
       },
     ];
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: tagihanData.length,
+      itemCount: pemasukanData.length,
       itemBuilder: (context, index) {
-        final tagihan = tagihanData[index];
-        return _buildTagihanCard(tagihan);
+        final pemasukan = pemasukanData[index];
+        return _buildPemasukanCard(pemasukan);
       },
     );
   }
 
-  Widget _buildTagihanCard(Map<String, String> tagihan) {
-    Color statusColor = tagihan['status'] == 'Lunas' ? Colors.green : Colors.orange;
-    
+  Widget _buildPemasukanCard(Map<String, String> pemasukan) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -234,11 +228,11 @@ class IuranTagihanPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green[50],
+                  color: Colors.blue[50],
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green[200]!, width: 1),
+                  border: Border.all(color: Colors.blue[200]!, width: 1),
                 ),
-                child: const Icon(Icons.receipt_long, color: Colors.green, size: 24),
+                child: const Icon(Icons.account_balance_wallet, color: Colors.blue, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -246,7 +240,7 @@ class IuranTagihanPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tagihan['judul']!,
+                      pemasukan['judul']!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -254,7 +248,7 @@ class IuranTagihanPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      tagihan['kategori']!,
+                      pemasukan['kategori']!,
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -266,15 +260,15 @@ class IuranTagihanPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: Colors.green[100],
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  tagihan['status']!,
+                  'Masuk',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: statusColor,
+                    color: Colors.green[700],
                   ),
                 ),
               ),
@@ -284,15 +278,29 @@ class IuranTagihanPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildInfoItem('Total', tagihan['total']!),
+                child: _buildInfoItem('Jumlah', pemasukan['jumlah']!),
               ),
               Expanded(
-                child: _buildInfoItem('Warga', '${tagihan['warga']} orang'),
-              ),
-              Expanded(
-                child: _buildInfoItem('Tanggal', tagihan['tanggal']!),
+                child: _buildInfoItem('Tanggal', pemasukan['tanggal']!),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'Keterangan: ${pemasukan['keterangan']}',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           Row(

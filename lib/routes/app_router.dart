@@ -2,19 +2,19 @@ import 'package:go_router/go_router.dart';
 import '../pages/login_page.dart';
 import '../pages/register_page.dart';
 import '../pages/dashboard_page.dart';
-import '../pages/kegiatan_page.dart';
-import '../pages/broadcast_page.dart';
-import '../pages/keuangan_page.dart';
-import '../pages/iuran_tagihan_page.dart';
-import '../pages/pemasukan_lain_page.dart';
-import '../pages/kategori_iuran_page.dart';
-import '../pages/keuangan_pengeluaran.dart';
-import '../pages/laporan_keuangan_page.dart';
-import '../pages/kependudukan_page.dart';
-import '../pages/kependudukan_warga_page.dart';
-import '../pages/kependudukan_keluarga_page.dart';
-import '../pages/kependudukan_rumah_page.dart';
-import '../pages/kependudukan_tambah_page.dart';
+import '../pages/kegiatan_and_broadcast/kegiatan_page.dart';
+import '../pages/kegiatan_and_broadcast/broadcast_page.dart';
+import '../pages/keuangan/keuangan_page.dart';
+import '../pages/keuangan/iuran_tagihan_page.dart';
+import '../pages/keuangan/pemasukan_lain_page.dart';
+import '../pages/keuangan/kategori_iuran_page.dart';
+import '../pages/keuangan/keuangan_pengeluaran.dart';
+import '../pages/keuangan/laporan_keuangan_page.dart';
+import '../pages/kependudukan/kependudukan_page.dart';
+import '../pages/kependudukan/warga_page.dart';
+import '../pages/kependudukan/keluarga_page.dart';
+import '../pages/kependudukan/rumah_page.dart';
+import '../pages/kependudukan/tambah_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/dashboard',
@@ -82,17 +82,17 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/kependudukan/warga',
       name: 'kependudukan-warga',
-      builder: (context, state) => const KependudukanWargaPage(),
+      builder: (context, state) => const WargaPage(),
     ),
     GoRoute(
       path: '/kependudukan/keluarga',
       name: 'kependudukan-keluarga',
-      builder: (context, state) => const KependudukanKeluargaPage(),
+      builder: (context, state) => const KeluargaPage(),
     ),
     GoRoute(
       path: '/kependudukan/rumah',
       name: 'kependudukan-rumah',
-      builder: (context, state) => const KependudukanRumahPage(),
+      builder: (context, state) => const RumahPage(),
     ),
     GoRoute(
       path: '/kependudukan/tambah',

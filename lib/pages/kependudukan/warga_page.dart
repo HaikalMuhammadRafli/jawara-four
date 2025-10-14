@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
 
-class KependudukanKeluargaPage extends StatelessWidget {
-  const KependudukanKeluargaPage({super.key});
+class WargaPage extends StatelessWidget {
+  const WargaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class KependudukanKeluargaPage extends StatelessWidget {
       backgroundColor: Colors.white,
       
       appBar: AppBar(
-        title: const Text('Data Keluarga'),
+        title: const Text('Data Warga'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
@@ -19,13 +19,20 @@ class KependudukanKeluargaPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(3),
           child: Container(
             height: 3,
-            color: Colors.green,
+            color: Colors.blue,
           ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/kependudukan'),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => context.go('/kependudukan/tambah'),
+            icon: const Icon(Icons.add),
+            color: Colors.blue,
+          ),
+        ],
       ),
       
       drawer: const AppDrawer(),
@@ -33,7 +40,7 @@ class KependudukanKeluargaPage extends StatelessWidget {
         children: [
           _buildSearchAndFilter(),
           Expanded(
-            child: _buildKeluargaList(),
+            child: _buildWargaList(),
           ),
         ],
       ),
@@ -49,7 +56,7 @@ class KependudukanKeluargaPage extends StatelessWidget {
         children: [
           TextField(
             decoration: InputDecoration(
-              hintText: 'Cari keluarga...',
+              hintText: 'Cari warga...',
               prefixIcon: const Icon(Icons.search, color: Colors.grey),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -57,7 +64,7 @@ class KependudukanKeluargaPage extends StatelessWidget {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.green, width: 2),
+                borderSide: const BorderSide(color: Colors.blue, width: 2),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
@@ -69,11 +76,11 @@ class KependudukanKeluargaPage extends StatelessWidget {
               children: [
                 _buildFilterChip('Semua', true),
                 const SizedBox(width: 8),
-                _buildFilterChip('Kepemilikan', false),
+                _buildFilterChip('Laki-laki', false),
                 const SizedBox(width: 8),
-                _buildFilterChip('Sewa', false),
+                _buildFilterChip('Perempuan', false),
                 const SizedBox(width: 8),
-                _buildFilterChip('Kontrak', false),
+                _buildFilterChip('Kepala Keluarga', false),
               ],
             ),
           ),
@@ -87,50 +94,35 @@ class KependudukanKeluargaPage extends StatelessWidget {
       label: Text(label),
       selected: isSelected,
       onSelected: (selected) {},
-      selectedColor: Colors.green[100],
-      checkmarkColor: Colors.green,
+      selectedColor: Colors.blue[100],
+      checkmarkColor: Colors.blue,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.green : Colors.grey[600],
+        color: isSelected ? Colors.blue : Colors.grey[600],
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
     );
   }
 
-  Widget _buildKeluargaList() {
-    final List<Map<String, String>> keluargaData = [
-      {
-        'kepalaKeluarga': 'Ahmad Budiman',
-        'alamat': 'Jl. Merdeka No. 15',
-        'jumlahAnggota': '4'
-      },
-      {
-        'kepalaKeluarga': 'Budi Santoso',
-        'alamat': 'Jl. Sudirman No. 25',
-        'jumlahAnggota': '3'
-      },
-      {
-        'kepalaKeluarga': 'Suryadi',
-        'alamat': 'Jl. Gatot Subroto No. 8',
-        'jumlahAnggota': '2'
-      },
-      {
-        'kepalaKeluarga': 'Muhammad Yusuf',
-        'alamat': 'Jl. Pahlawan No. 12',
-        'jumlahAnggota': '5'
-      },
+  Widget _buildWargaList() {
+    final List<Map<String, String>> wargaData = [
+      {'nama': 'Ahmad Budiman', 'nik': '1234567890123456', 'jenisKelamin': 'Laki-laki'},
+      {'nama': 'Siti Aminah', 'nik': '1234567890123457', 'jenisKelamin': 'Perempuan'},
+      {'nama': 'Muhammad Ali', 'nik': '1234567890123458', 'jenisKelamin': 'Laki-laki'},
+      {'nama': 'Budi Santoso', 'nik': '1234567890123459', 'jenisKelamin': 'Laki-laki'},
+      {'nama': 'Fatimah Zahra', 'nik': '1234567890123460', 'jenisKelamin': 'Perempuan'},
     ];
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: keluargaData.length,
+      itemCount: wargaData.length,
       itemBuilder: (context, index) {
-        final keluarga = keluargaData[index];
-        return _buildKeluargaCard(keluarga);
+        final warga = wargaData[index];
+        return _buildWargaCard(warga);
       },
     );
   }
 
-  Widget _buildKeluargaCard(Map<String, String> keluarga) {
+  Widget _buildWargaCard(Map<String, String> warga) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -151,14 +143,16 @@ class KependudukanKeluargaPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green[200]!, width: 1),
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: warga['jenisKelamin'] == 'Laki-laki' 
+                    ? Colors.blue[100] 
+                    : Colors.pink[100],
+                child: Icon(
+                  warga['jenisKelamin'] == 'Laki-laki' ? Icons.person : Icons.person_outline,
+                  color: warga['jenisKelamin'] == 'Laki-laki' ? Colors.blue : Colors.pink,
+                  size: 24,
                 ),
-                child: const Icon(Icons.family_restroom, color: Colors.green, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -166,7 +160,7 @@ class KependudukanKeluargaPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      keluarga['kepalaKeluarga']!,
+                      warga['nama']!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -174,7 +168,7 @@ class KependudukanKeluargaPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${keluarga['jumlahAnggota']} Anggota',
+                      'NIK: ${warga['nik']}',
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -203,17 +197,16 @@ class KependudukanKeluargaPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.location_on, size: 16, color: Colors.grey[400]),
+              Icon(Icons.person, size: 16, color: Colors.grey[400]),
               const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  keluarga['alamat']!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black87,
-                  ),
+              Text(
+                'Jenis Kelamin: ${warga['jenisKelamin']}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black87,
                 ),
               ),
+              const Spacer(),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.edit, size: 18, color: Colors.grey),

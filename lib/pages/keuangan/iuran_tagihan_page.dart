@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
 
-class PemasukanLainPage extends StatelessWidget {
-  const PemasukanLainPage({super.key});
+class IuranTagihanPage extends StatelessWidget {
+  const IuranTagihanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class PemasukanLainPage extends StatelessWidget {
       backgroundColor: Colors.white,
       
       appBar: AppBar(
-        title: const Text('Pemasukan Lain'),
+        title: const Text('Iuran dan Tagihan'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
@@ -19,7 +19,7 @@ class PemasukanLainPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(3),
           child: Container(
             height: 3,
-            color: Colors.blue,
+            color: Colors.green,
           ),
         ),
         leading: IconButton(
@@ -28,9 +28,9 @@ class PemasukanLainPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () => context.go('/tambah-pemasukan'),
+            onPressed: () => context.go('/buat-tagihan'),
             icon: const Icon(Icons.add),
-            color: Colors.blue,
+            color: Colors.green,
           ),
         ],
       ),
@@ -41,7 +41,7 @@ class PemasukanLainPage extends StatelessWidget {
           _buildHeader(),
           _buildQuickActions(context),
           Expanded(
-            child: _buildPemasukanList(),
+            child: _buildTagihanList(),
           ),
         ],
       ),
@@ -69,7 +69,7 @@ class PemasukanLainPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Pemasukan Lain',
+            'Iuran dan Tagihan',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -78,7 +78,7 @@ class PemasukanLainPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const Text(
-            'Kelola pemasukan selain iuran warga',
+            'Kelola tagihan iuran warga dan pemungutan pembayaran',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -97,20 +97,20 @@ class PemasukanLainPage extends StatelessWidget {
           Expanded(
             child: _buildActionCard(
               context,
-              'Tambah Pemasukan',
+              'Buat Tagihan Baru',
               Icons.add_circle,
-              Colors.blue,
-              '/tambah-pemasukan',
+              Colors.green,
+              '/buat-tagihan',
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: _buildActionCard(
               context,
-              'Laporan Pemasukan',
-              Icons.analytics,
-              Colors.purple,
-              '/laporan-pemasukan',
+              'Tagih Iuran',
+              Icons.receipt_long,
+              Colors.blue,
+              '/tagih-iuran',
             ),
           ),
         ],
@@ -162,49 +162,55 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPemasukanList() {
-    final List<Map<String, String>> pemasukanData = [
+  Widget _buildTagihanList() {
+    final List<Map<String, String>> tagihanData = [
       {
-        'judul': 'Donasi Acara 17 Agustus',
-        'kategori': 'Donasi',
-        'jumlah': 'Rp 5.000.000',
-        'tanggal': '17 Agustus 2025',
-        'keterangan': 'Donasi dari warga untuk acara kemerdekaan'
-      },
-      {
-        'judul': 'Sewa Lapangan',
-        'kategori': 'Pendapatan Sewa',
-        'jumlah': 'Rp 2.500.000',
+        'judul': 'Iuran Bulanan Januari 2025',
+        'kategori': 'Iuran Bulanan',
+        'total': 'Rp 1.500.000',
+        'status': 'Belum Lunas',
         'tanggal': '15 Jan 2025',
-        'keterangan': 'Sewa lapangan olahraga RW'
+        'warga': '150'
       },
       {
-        'judul': 'Bantuan Pemerintah',
-        'kategori': 'Bantuan',
-        'jumlah': 'Rp 10.000.000',
+        'judul': 'Iuran Keamanan',
+        'kategori': 'Iuran Keamanan',
+        'total': 'Rp 750.000',
+        'status': 'Lunas',
         'tanggal': '10 Jan 2025',
-        'keterangan': 'Bantuan pembangunan infrastruktur'
+        'warga': '75'
       },
       {
-        'judul': 'Penjualan Barang Bekas',
-        'kategori': 'Penjualan',
-        'jumlah': 'Rp 1.200.000',
+        'judul': 'Iuran Kebersihan',
+        'kategori': 'Iuran Kebersihan',
+        'total': 'Rp 500.000',
+        'status': 'Belum Lunas',
         'tanggal': '5 Jan 2025',
-        'keterangan': 'Hasil penjualan barang bekas warga'
+        'warga': '100'
+      },
+      {
+        'judul': 'Iuran Pemeliharaan',
+        'kategori': 'Iuran Pemeliharaan',
+        'total': 'Rp 2.000.000',
+        'status': 'Lunas',
+        'tanggal': '1 Jan 2025',
+        'warga': '200'
       },
     ];
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: pemasukanData.length,
+      itemCount: tagihanData.length,
       itemBuilder: (context, index) {
-        final pemasukan = pemasukanData[index];
-        return _buildPemasukanCard(pemasukan);
+        final tagihan = tagihanData[index];
+        return _buildTagihanCard(tagihan);
       },
     );
   }
 
-  Widget _buildPemasukanCard(Map<String, String> pemasukan) {
+  Widget _buildTagihanCard(Map<String, String> tagihan) {
+    Color statusColor = tagihan['status'] == 'Lunas' ? Colors.green : Colors.orange;
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -228,11 +234,11 @@ class PemasukanLainPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue[50],
+                  color: Colors.green[50],
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue[200]!, width: 1),
+                  border: Border.all(color: Colors.green[200]!, width: 1),
                 ),
-                child: const Icon(Icons.account_balance_wallet, color: Colors.blue, size: 24),
+                child: const Icon(Icons.receipt_long, color: Colors.green, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -240,7 +246,7 @@ class PemasukanLainPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      pemasukan['judul']!,
+                      tagihan['judul']!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -248,7 +254,7 @@ class PemasukanLainPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      pemasukan['kategori']!,
+                      tagihan['kategori']!,
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -260,15 +266,15 @@ class PemasukanLainPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green[100],
+                  color: statusColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Masuk',
+                  tagihan['status']!,
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: Colors.green[700],
+                    color: statusColor,
                   ),
                 ),
               ),
@@ -278,29 +284,15 @@ class PemasukanLainPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildInfoItem('Jumlah', pemasukan['jumlah']!),
+                child: _buildInfoItem('Total', tagihan['total']!),
               ),
               Expanded(
-                child: _buildInfoItem('Tanggal', pemasukan['tanggal']!),
+                child: _buildInfoItem('Warga', '${tagihan['warga']} orang'),
+              ),
+              Expanded(
+                child: _buildInfoItem('Tanggal', tagihan['tanggal']!),
               ),
             ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'Keterangan: ${pemasukan['keterangan']}',
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black87,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
           ),
           const SizedBox(height: 12),
           Row(

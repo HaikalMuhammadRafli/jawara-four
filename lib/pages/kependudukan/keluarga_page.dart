@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/app_drawer.dart';
+import '../../widgets/app_drawer.dart';
 
-class KependudukanRumahPage extends StatelessWidget {
-  const KependudukanRumahPage({super.key});
+class KeluargaPage extends StatelessWidget {
+  const KeluargaPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class KependudukanRumahPage extends StatelessWidget {
       backgroundColor: Colors.white,
       
       appBar: AppBar(
-        title: const Text('Data Rumah'),
+        title: const Text('Data Keluarga'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
@@ -19,20 +19,13 @@ class KependudukanRumahPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(3),
           child: Container(
             height: 3,
-            color: Colors.orange,
+            color: Colors.green,
           ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/kependudukan'),
         ),
-        actions: [
-          IconButton(
-            onPressed: () => context.go('/kependudukan/tambah'),
-            icon: const Icon(Icons.add),
-            color: Colors.orange,
-          ),
-        ],
       ),
       
       drawer: const AppDrawer(),
@@ -40,7 +33,7 @@ class KependudukanRumahPage extends StatelessWidget {
         children: [
           _buildSearchAndFilter(),
           Expanded(
-            child: _buildRumahList(),
+            child: _buildKeluargaList(),
           ),
         ],
       ),
@@ -56,7 +49,7 @@ class KependudukanRumahPage extends StatelessWidget {
         children: [
           TextField(
             decoration: InputDecoration(
-              hintText: 'Cari rumah...',
+              hintText: 'Cari keluarga...',
               prefixIcon: const Icon(Icons.search, color: Colors.grey),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -64,7 +57,7 @@ class KependudukanRumahPage extends StatelessWidget {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.orange, width: 2),
+                borderSide: const BorderSide(color: Colors.green, width: 2),
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
@@ -76,9 +69,11 @@ class KependudukanRumahPage extends StatelessWidget {
               children: [
                 _buildFilterChip('Semua', true),
                 const SizedBox(width: 8),
-                _buildFilterChip('Ditempati', false),
+                _buildFilterChip('Kepemilikan', false),
                 const SizedBox(width: 8),
-                _buildFilterChip('Tersedia', false),
+                _buildFilterChip('Sewa', false),
+                const SizedBox(width: 8),
+                _buildFilterChip('Kontrak', false),
               ],
             ),
           ),
@@ -92,52 +87,50 @@ class KependudukanRumahPage extends StatelessWidget {
       label: Text(label),
       selected: isSelected,
       onSelected: (selected) {},
-      selectedColor: Colors.orange[100],
-      checkmarkColor: Colors.orange,
+      selectedColor: Colors.green[100],
+      checkmarkColor: Colors.green,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.orange : Colors.grey[600],
+        color: isSelected ? Colors.green : Colors.grey[600],
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
     );
   }
 
-  Widget _buildRumahList() {
-    final List<Map<String, String>> rumahData = [
+  Widget _buildKeluargaList() {
+    final List<Map<String, String>> keluargaData = [
       {
+        'kepalaKeluarga': 'Ahmad Budiman',
         'alamat': 'Jl. Merdeka No. 15',
-        'status': 'Ditempati',
-        'pemilik': 'Ahmad Budiman'
+        'jumlahAnggota': '4'
       },
       {
+        'kepalaKeluarga': 'Budi Santoso',
         'alamat': 'Jl. Sudirman No. 25',
-        'status': 'Ditempati',
-        'pemilik': 'Budi Santoso'
+        'jumlahAnggota': '3'
       },
       {
+        'kepalaKeluarga': 'Suryadi',
         'alamat': 'Jl. Gatot Subroto No. 8',
-        'status': 'Ditempati',
-        'pemilik': 'Suryadi'
+        'jumlahAnggota': '2'
       },
       {
-        'alamat': 'Jl. Veteran No. 5',
-        'status': 'Tersedia',
-        'pemilik': '-'
+        'kepalaKeluarga': 'Muhammad Yusuf',
+        'alamat': 'Jl. Pahlawan No. 12',
+        'jumlahAnggota': '5'
       },
     ];
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: rumahData.length,
+      itemCount: keluargaData.length,
       itemBuilder: (context, index) {
-        final rumah = rumahData[index];
-        return _buildRumahCard(rumah);
+        final keluarga = keluargaData[index];
+        return _buildKeluargaCard(keluarga);
       },
     );
   }
 
-  Widget _buildRumahCard(Map<String, String> rumah) {
-    Color statusColor = rumah['status'] == 'Ditempati' ? Colors.green : Colors.red;
-    
+  Widget _buildKeluargaCard(Map<String, String> keluarga) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -161,11 +154,11 @@ class KependudukanRumahPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.orange[50],
+                  color: Colors.green[50],
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.orange[200]!, width: 1),
+                  border: Border.all(color: Colors.green[200]!, width: 1),
                 ),
-                child: const Icon(Icons.home, color: Colors.orange, size: 24),
+                child: const Icon(Icons.family_restroom, color: Colors.green, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -173,7 +166,7 @@ class KependudukanRumahPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      rumah['alamat']!,
+                      keluarga['kepalaKeluarga']!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -181,7 +174,7 @@ class KependudukanRumahPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Pemilik: ${rumah['pemilik']}',
+                      '${keluarga['jumlahAnggota']} Anggota',
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -193,15 +186,15 @@ class KependudukanRumahPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: Colors.green[100],
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  rumah['status']!,
+                  'Aktif',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: statusColor,
+                    color: Colors.green[700],
                   ),
                 ),
               ),
@@ -209,17 +202,27 @@ class KependudukanRumahPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.visibility, size: 18, color: Colors.grey),
-                tooltip: 'Lihat Detail',
+              Icon(Icons.location_on, size: 16, color: Colors.grey[400]),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  keluarga['alamat']!,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
+                ),
               ),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.edit, size: 18, color: Colors.grey),
                 tooltip: 'Edit',
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.visibility, size: 18, color: Colors.grey),
+                tooltip: 'Lihat Detail',
               ),
             ],
           ),
