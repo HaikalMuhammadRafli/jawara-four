@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class LaporanKeuanganPage extends StatelessWidget {
   const LaporanKeuanganPage({super.key});
@@ -9,7 +7,6 @@ class LaporanKeuanganPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Laporan Keuangan'),
         backgroundColor: Colors.white,
@@ -22,10 +19,6 @@ class LaporanKeuanganPage extends StatelessWidget {
             color: Colors.green,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/keuangan'),
-        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -34,8 +27,6 @@ class LaporanKeuanganPage extends StatelessWidget {
           ),
         ],
       ),
-      
-      drawer: const AppDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

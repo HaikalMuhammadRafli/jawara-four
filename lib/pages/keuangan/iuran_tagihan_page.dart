@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class IuranTagihanPage extends StatelessWidget {
   const IuranTagihanPage({super.key});
@@ -22,10 +21,6 @@ class IuranTagihanPage extends StatelessWidget {
             color: Colors.green,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/keuangan'),
-        ),
         actions: [
           IconButton(
             onPressed: () => context.go('/buat-tagihan'),
@@ -34,8 +29,6 @@ class IuranTagihanPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
-      
       body: Column(
         children: [
           _buildHeader(),

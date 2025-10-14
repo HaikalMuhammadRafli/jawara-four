@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class PemasukanLainPage extends StatelessWidget {
   const PemasukanLainPage({super.key});
@@ -9,7 +8,6 @@ class PemasukanLainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Pemasukan Lain'),
         backgroundColor: Colors.white,
@@ -22,10 +20,6 @@ class PemasukanLainPage extends StatelessWidget {
             color: Colors.blue,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/keuangan'),
-        ),
         actions: [
           IconButton(
             onPressed: () => context.go('/tambah-pemasukan'),
@@ -34,8 +28,6 @@ class PemasukanLainPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
-      
       body: Column(
         children: [
           _buildHeader(),

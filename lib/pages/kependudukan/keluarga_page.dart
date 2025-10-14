@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class KeluargaPage extends StatelessWidget {
   const KeluargaPage({super.key});
@@ -9,7 +7,6 @@ class KeluargaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Data Keluarga'),
         backgroundColor: Colors.white,
@@ -22,13 +19,7 @@ class KeluargaPage extends StatelessWidget {
             color: Colors.green,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/kependudukan'),
-        ),
       ),
-      
-      drawer: const AppDrawer(),
       body: Column(
         children: [
           _buildSearchAndFilter(),

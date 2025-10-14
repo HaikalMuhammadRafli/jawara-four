@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class KeuanganPengeluaranPage extends StatelessWidget {
   const KeuanganPengeluaranPage({super.key});
@@ -22,10 +20,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
             color: Colors.red,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/keuangan'),
-        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -34,8 +28,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           ),
         ],
       ),
-      
-      drawer: const AppDrawer(),
       body: Column(
         children: [
           _buildHeader(),

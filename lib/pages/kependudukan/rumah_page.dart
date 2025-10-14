@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class RumahPage extends StatelessWidget {
   const RumahPage({super.key});
@@ -9,7 +8,6 @@ class RumahPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Data Rumah'),
         backgroundColor: Colors.white,
@@ -22,10 +20,6 @@ class RumahPage extends StatelessWidget {
             color: Colors.orange,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/kependudukan'),
-        ),
         actions: [
           IconButton(
             onPressed: () => context.go('/kependudukan/tambah'),
@@ -34,8 +28,6 @@ class RumahPage extends StatelessWidget {
           ),
         ],
       ),
-      
-      drawer: const AppDrawer(),
       body: Column(
         children: [
           _buildSearchAndFilter(),

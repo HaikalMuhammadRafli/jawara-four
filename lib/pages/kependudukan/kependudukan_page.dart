@@ -211,7 +211,7 @@ class KependudukanPage extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () => context.go('/kependudukan/tambah'),
+            onPressed: () => context.push('/kependudukan/tambah'),
             icon: const Icon(Icons.add, color: Colors.white),
             label: const Text(
               'Tambah Data',
@@ -258,7 +258,7 @@ class KependudukanPage extends StatelessWidget {
   Widget _buildMenuCard(BuildContext context, String title, String subtitle,
       IconData icon, Color color, String route) {
     return GestureDetector(
-      onTap: () => context.go(route),
+      onTap: () => context.push(route),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(

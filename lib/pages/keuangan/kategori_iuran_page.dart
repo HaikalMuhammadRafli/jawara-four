@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class KategoriIuranPage extends StatelessWidget {
   const KategoriIuranPage({super.key});
@@ -9,7 +8,6 @@ class KategoriIuranPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Kategori Iuran'),
         backgroundColor: Colors.white,
@@ -22,10 +20,6 @@ class KategoriIuranPage extends StatelessWidget {
             color: Colors.purple,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/keuangan'),
-        ),
         actions: [
           IconButton(
             onPressed: () => context.go('/tambah-kategori'),
@@ -34,8 +28,6 @@ class KategoriIuranPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
-      
       body: Column(
         children: [
           _buildHeader(),

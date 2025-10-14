@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class WargaPage extends StatelessWidget {
   const WargaPage({super.key});
@@ -9,7 +8,6 @@ class WargaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Data Warga'),
         backgroundColor: Colors.white,
@@ -22,10 +20,6 @@ class WargaPage extends StatelessWidget {
             color: Colors.blue,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/kependudukan'),
-        ),
         actions: [
           IconButton(
             onPressed: () => context.go('/kependudukan/tambah'),
@@ -34,8 +28,6 @@ class WargaPage extends StatelessWidget {
           ),
         ],
       ),
-      
-      drawer: const AppDrawer(),
       body: Column(
         children: [
           _buildSearchAndFilter(),

@@ -9,7 +9,6 @@ class KeuanganPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Keuangan'),
         backgroundColor: Colors.white,
@@ -30,7 +29,6 @@ class KeuanganPage extends StatelessWidget {
           ),
         ],
       ),
-      
       drawer: const AppDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -221,7 +219,7 @@ class KeuanganPage extends StatelessWidget {
       children: [
         Expanded(
           child: ElevatedButton.icon(
-            onPressed: () => context.go('/keuangan/laporan'),
+            onPressed: () => context.push('/keuangan/laporan'),
             icon: const Icon(Icons.analytics, color: Colors.white),
             label: const Text(
               'Laporan Keuangan',
@@ -268,7 +266,7 @@ class KeuanganPage extends StatelessWidget {
   Widget _buildMenuCard(BuildContext context, String title, String subtitle,
       IconData icon, Color color, String route) {
     return GestureDetector(
-      onTap: () => context.go(route),
+      onTap: () => context.push(route),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(

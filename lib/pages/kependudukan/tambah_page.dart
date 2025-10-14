@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/app_drawer.dart';
 
 class KependudukanTambahPage extends StatelessWidget {
   const KependudukanTambahPage({super.key});
@@ -9,7 +8,6 @@ class KependudukanTambahPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      
       appBar: AppBar(
         title: const Text('Tambah Data'),
         backgroundColor: Colors.white,
@@ -22,13 +20,7 @@ class KependudukanTambahPage extends StatelessWidget {
             color: Colors.purple,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/kependudukan'),
-        ),
       ),
-      
-      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
