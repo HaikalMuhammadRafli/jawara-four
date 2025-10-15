@@ -78,6 +78,20 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Mutasi Keluarga'),
             onTap: () => context.goNamed('mutasi-keluarga'),
           ),
+
+          // Menu Log Aktifitas
+          ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text('Log Aktifitas'),
+            onTap: () => context.goNamed('log-aktifitas'),
+          ),
+
+          // Menu Daftar Pengguna
+          ListTile(
+            leading: const Icon(Icons.supervised_user_circle),
+            title: const Text('Daftar Pengguna'),
+            onTap: () => context.goNamed('daftar-pengguna'),
+          ),
         ],
       ),
     );

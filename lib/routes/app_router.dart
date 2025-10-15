@@ -20,6 +20,8 @@ import '../pages/keuangan/laporan_keuangan_page.dart';
 import '../pages/keuangan/pemasukan_lain_page.dart';
 import '../pages/login_page.dart';
 import '../pages/register_page.dart';
+import '../pages/log/log_aktifitas_page.dart';
+import '../pages/pengguna/pengguna_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/dashboard',
@@ -100,7 +102,7 @@ final GoRouter appRouter = GoRouter(
       name: 'broadcast',
       builder: (context, state) => const BroadcastPage(),
     ),
-
+    
     // ===========================================================
     // Pesan Warga Routes
     // ===========================================================
@@ -116,5 +118,23 @@ final GoRouter appRouter = GoRouter(
     // ===========================================================
     GoRoute(path: '/mutasi-keluarga', name: 'mutasi-keluarga', builder: (context, state) => const MutasiKeluargaPage()),
     GoRoute(path: '/mutasi-keluarga/tambah', name: 'mutasi-keluarga-tambah', builder: (context, state) => const MutasiKeluargaTambahPage()),
+
+    // ===========================================================
+    // Log Aktifitas Route
+    // ===========================================================
+    GoRoute(
+      path: '/log-aktifitas',
+      name: 'log-aktifitas',
+      builder: (context, state) => const LogAktifitasPage(),
+    ),
+
+    // ===========================================================
+    // Daftar Pengguna Route
+    // ===========================================================
+    GoRoute(
+      path: '/daftar-pengguna',
+      name: 'daftar-pengguna',
+      builder: (context, state) => const PenggunaPage(),
+    ),
   ],
 );
