@@ -18,6 +18,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
       TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
 
+
   @override
   void dispose() {
     _namaController.dispose();
