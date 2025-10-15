@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/widgets/app_drawer.dart';
 
-import '../../widgets/app_drawer.dart';
 import 'mocks/kegiatan_mocks.dart';
 import 'models/kegiatan_model.dart';
 

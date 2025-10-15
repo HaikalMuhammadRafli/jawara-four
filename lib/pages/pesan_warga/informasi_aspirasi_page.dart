@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/widgets/app_drawer.dart';
 
-import '../../widgets/app_drawer.dart';
 import 'mocks/informasi_aspirasi_mocks.dart';
 import 'models/informasi_aspirasi_model.dart';
 
