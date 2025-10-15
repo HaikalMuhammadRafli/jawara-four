@@ -12,19 +12,11 @@ class BroadcastPage extends StatefulWidget {
 }
 
 class _BroadcastPageState extends State<BroadcastPage> {
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _pengirimController = TextEditingController();
-  final TextEditingController _judulController = TextEditingController();
+  void _showAddForm(BuildContext context) {
+    final TextEditingController namaController = TextEditingController();
+    final TextEditingController pengirimController = TextEditingController();
+    final TextEditingController judulController = TextEditingController();
 
-  @override
-  void dispose() {
-    _namaController.dispose();
-    _pengirimController.dispose();
-    _judulController.dispose();
-    super.dispose();
-  }
-
-  void _showAddForm() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -37,69 +29,30 @@ class _BroadcastPageState extends State<BroadcastPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _namaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nama Broadcast',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.campaign_outlined),
-                  ),
-                ),
+              _buildTextField(
+                controller: namaController,
+                label: 'Nama Broadcast',
+                icon: Icons.campaign_outlined,
               ),
               const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _pengirimController,
-                  decoration: const InputDecoration(
-                    labelText: 'Pengirim',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.person_outline),
-                  ),
-                ),
+              _buildTextField(
+                controller: pengirimController,
+                label: 'Pengirim',
+                icon: Icons.person_outline,
               ),
               const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _judulController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Judul/Pesan',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.message_outlined),
-                    alignLabelWithHint: true,
-                  ),
-                ),
+              _buildTextField(
+                controller: judulController,
+                label: 'Judul/Pesan',
+                icon: Icons.message_outlined,
+                maxLines: 3,
               ),
             ],
           ),
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              _namaController.clear();
-              _pengirimController.clear();
-              _judulController.clear();
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Colors.grey[600],
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -118,18 +71,15 @@ class _BroadcastPageState extends State<BroadcastPage> {
             ),
             child: TextButton(
               onPressed: () {
-                if (_namaController.text.isNotEmpty &&
-                    _pengirimController.text.isNotEmpty &&
-                    _judulController.text.isNotEmpty) {
+                if (namaController.text.isNotEmpty &&
+                    pengirimController.text.isNotEmpty &&
+                    judulController.text.isNotEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Broadcast berhasil ditambahkan'),
                       backgroundColor: Colors.green,
                     ),
                   );
-                  _namaController.clear();
-                  _pengirimController.clear();
-                  _judulController.clear();
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -155,62 +105,29 @@ class _BroadcastPageState extends State<BroadcastPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final List<BroadcastItem> broadcasts = broadcastMock;
-
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('Broadcast'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 1,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(3),
-          child: Container(height: 3, color: Colors.purple),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-            color: Colors.purple,
-          ),
-        ],
+  static Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    int maxLines = 1,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
       ),
-
-      drawer: const AppDrawer(),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).primaryColor.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: _showAddForm,
-          backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: const Icon(Icons.add, color: Colors.white),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          labelText: label,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.all(16),
+          prefixIcon: Icon(icon),
+          alignLabelWithHint: true,
         ),
       ),
-      body: broadcasts.isEmpty
-          ? _buildEmptyState()
-          : ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemCount: broadcasts.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                final item = broadcasts[index];
-                return _buildBroadcastCard(item);
-              },
-            ),
     );
   }
 
@@ -243,10 +160,73 @@ class _BroadcastPageState extends State<BroadcastPage> {
           const SizedBox(height: 8),
           Text(
             'Tap tombol + untuk menambah broadcast baru',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<BroadcastItem> broadcasts = broadcastMock;
+
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text('Broadcast'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 1,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(3),
+          child: Container(height: 3, color: Colors.purple),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+            color: Colors.purple,
+            //coba coba
+          ),
+        ],
+      ),
+
+      drawer: const AppDrawer(),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () => _showAddForm(context),
+          backgroundColor: Theme.of(context).primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+      ),
+      body: broadcasts.isEmpty
+          ? _buildEmptyState()
+          : ListView.separated(
+              padding: const EdgeInsets.all(20),
+              itemCount: broadcasts.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
+              itemBuilder: (context, index) {
+                final item = broadcasts[index];
+                return _buildBroadcastCard(item);
+              },
+            ),
     );
   }
 

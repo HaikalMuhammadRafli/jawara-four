@@ -18,6 +18,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
       TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
 
+
   @override
   void dispose() {
     _namaController.dispose();
@@ -27,40 +28,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
     super.dispose();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2026),
-    );
-    if (picked != null) {
-      final day = picked.day.toString().padLeft(2, '0');
-      final month = _getIndonesianMonth(picked.month);
-      final year = picked.year;
-      _tanggalController.text = '$day $month $year';
-    }
-  }
-
-  String _getIndonesianMonth(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Agt',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des',
-    ];
-    return months[month - 1];
-  }
-
-  void _showAddForm() {
+  void _showAddForm(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -69,141 +37,52 @@ class _KegiatanPageState extends State<KegiatanPage> {
           'Tambah Kegiatan',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _namaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nama Kegiatan',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.event),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _kategoriController,
-                  decoration: const InputDecoration(
-                    labelText: 'Kategori',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.category_outlined),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _penanggungJawabController,
-                  decoration: const InputDecoration(
-                    labelText: 'Penanggung Jawab',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.person_outline),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _tanggalController,
-                  decoration: const InputDecoration(
-                    labelText: 'Tanggal',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.calendar_today),
-                  ),
-                  readOnly: true,
-                  onTap: () => _selectDate(context),
-                ),
-              ),
-            ],
-          ),
-        ),
+        content: const Text('Form tambah kegiatan hanya tampilan (belum dinamis).'),
         actions: [
           TextButton(
-            onPressed: () {
-              _namaController.clear();
-              _kategoriController.clear();
-              _penanggungJawabController.clear();
-              _tanggalController.clear();
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Colors.grey[600],
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Batal'),
+            child: const Text('Tutup'),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
           Container(
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.8),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(8),
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
             ),
-            child: TextButton(
-              onPressed: () {
-                if (_namaController.text.isNotEmpty &&
-                    _kategoriController.text.isNotEmpty &&
-                    _penanggungJawabController.text.isNotEmpty &&
-                    _tanggalController.text.isNotEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Kegiatan berhasil ditambahkan'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  _namaController.clear();
-                  _kategoriController.clear();
-                  _penanggungJawabController.clear();
-                  _tanggalController.clear();
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Mohon lengkapi semua field'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-              ),
-              child: const Text('Simpan'),
+            child: Icon(
+              Icons.event_available_outlined,
+              size: 64,
+              color: Colors.grey[400],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Belum Ada Kegiatan',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Tap tombol + untuk menambah kegiatan baru',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
             ),
           ),
         ],
@@ -248,11 +127,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
           ],
         ),
         child: FloatingActionButton(
-          onPressed: _showAddForm,
+          onPressed: () => _showAddForm(context),
           backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
@@ -267,42 +145,6 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 return _buildKegiatanCard(item);
               },
             ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.event_available_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Belum Ada Kegiatan',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Tap tombol + untuk menambah kegiatan baru',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-          ),
-        ],
-      ),
     );
   }
 
