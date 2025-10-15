@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 
-class BroadcastPage extends StatelessWidget {
+import '../../widgets/app_drawer.dart';
+import 'mocks/broadcast_mocks.dart';
+import 'models/broadcast_model.dart';
+
+class BroadcastPage extends StatefulWidget {
   const BroadcastPage({super.key});
 
+  @override
+  State<BroadcastPage> createState() => _BroadcastPageState();
+}
+
+class _BroadcastPageState extends State<BroadcastPage> {
   void _showAddForm(BuildContext context) {
     final TextEditingController namaController = TextEditingController();
     final TextEditingController pengirimController = TextEditingController();
@@ -83,8 +92,10 @@ class BroadcastPage extends StatelessWidget {
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
               child: const Text('Simpan'),
             ),
@@ -116,49 +127,6 @@ class BroadcastPage extends StatelessWidget {
           prefixIcon: Icon(icon),
           alignLabelWithHint: true,
         ),
-      ),
-    );
-  }
-
-  void _showEditDialog(BuildContext context, Map<String, dynamic> item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Edit Broadcast'),
-        content: Text('Edit broadcast: ${item['nama']}'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteDialog(BuildContext context, Map<String, dynamic> item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Hapus Broadcast'),
-        content: Text('Yakin ingin menghapus "${item['nama']}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${item['nama']} telah dihapus')),
-              );
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
-          ),
-        ],
       ),
     );
   }
@@ -202,212 +170,31 @@ class BroadcastPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBroadcastCard(BuildContext context, Map<String, dynamic> item) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: (item['color'] as Color).withOpacity(0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: item['color'] as Color,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    item['icon'] as IconData,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    item['nama'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Body
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.person_outline,
-                        size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        item['pengirim'],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    Icon(Icons.access_time,
-                        size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 4),
-                    Text(
-                      item['tanggal'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  item['judul'],
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _actionButton(
-                        context,
-                        color: Colors.blue[300]!,
-                        textColor: Colors.blue[600]!,
-                        icon: Icons.edit_outlined,
-                        label: 'Edit',
-                        onPressed: () => _showEditDialog(context, item),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _actionButton(
-                        context,
-                        color: Colors.red[300]!,
-                        textColor: Colors.red[600]!,
-                        icon: Icons.delete_outline,
-                        label: 'Hapus',
-                        onPressed: () => _showDeleteDialog(context, item),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _actionButton(BuildContext context,
-      {required Color color,
-      required Color textColor,
-      required IconData icon,
-      required String label,
-      required VoidCallback onPressed}) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: TextButton.icon(
-        onPressed: onPressed,
-        style: TextButton.styleFrom(
-          foregroundColor: textColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        icon: Icon(icon, size: 16),
-        label: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> broadcastDummy = [
-      {
-        'no': 1,
-        'nama': 'Pengumuman Kebersihan',
-        'pengirim': 'Admin RW 05',
-        'judul': 'Kerja Bakti Minggu Depan',
-        'tanggal': '11 Okt 2025',
-        'icon': Icons.cleaning_services,
-        'color': Colors.green,
-      },
-      {
-        'no': 2,
-        'nama': 'Peringatan Hari Santri',
-        'pengirim': 'Pak RT 02',
-        'judul': 'Akan diadakan doa bersama',
-        'tanggal': '14 Okt 2025',
-        'icon': Icons.mosque,
-        'color': Colors.purple,
-      },
-      {
-        'no': 3,
-        'nama': 'Tagihan Iuran',
-        'pengirim': 'Admin Keuangan',
-        'judul': 'Pembayaran Iuran Bulan Oktober',
-        'tanggal': '15 Okt 2025',
-        'icon': Icons.payment,
-        'color': Colors.orange,
-      },
-    ];
+    final List<BroadcastItem> broadcasts = broadcastMock;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text(
-          'Broadcast',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: const Text('Broadcast'),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        elevation: 0,
+        foregroundColor: Colors.black,
+        elevation: 1,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: Colors.grey[200],
-            height: 1,
-          ),
+          preferredSize: const Size.fromHeight(3),
+          child: Container(height: 3, color: Colors.purple),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+            color: Colors.purple,
+          ),
+        ],
       ),
+
+      drawer: const AppDrawer(),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -428,17 +215,218 @@ class BroadcastPage extends StatelessWidget {
           child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
-      body: broadcastDummy.isEmpty
+      body: broadcasts.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
               padding: const EdgeInsets.all(20),
-              itemCount: broadcastDummy.length,
+              itemCount: broadcasts.length,
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
-                final item = broadcastDummy[index];
-                return _buildBroadcastCard(context, item);
+                final item = broadcasts[index];
+                return _buildBroadcastCard(item);
               },
             ),
+    );
+  }
+
+  Widget _buildBroadcastCard(BroadcastItem item) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header with icon and priority
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: item.color.withOpacity(0.1),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: item.color,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(item.icon, color: Colors.white, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    item.nama,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.person_outline,
+                      size: 16,
+                      color: Colors.grey[600],
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        item.pengirim,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
+                    const SizedBox(width: 4),
+                    Text(
+                      item.tanggal,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  item.judul,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Action buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue[300]!),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: TextButton.icon(
+                          onPressed: () {
+                            _showEditDialog(item);
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.blue[600],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          icon: const Icon(Icons.edit_outlined, size: 16),
+                          label: const Text(
+                            'Edit',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.red[300]!),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: TextButton.icon(
+                          onPressed: () {
+                            _showDeleteDialog(item);
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.red[600],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          icon: const Icon(Icons.delete_outline, size: 16),
+                          label: const Text(
+                            'Hapus',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditDialog(BroadcastItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Edit Broadcast'),
+        content: Text('Edit broadcast: ${item.nama}'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BroadcastItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Hapus Broadcast'),
+        content: Text('Yakin ingin menghapus "${item.nama}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('${item.nama} telah dihapus')),
+              );
+            },
+            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }
