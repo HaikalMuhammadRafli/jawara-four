@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 class PenggunaPage extends StatefulWidget {
   const PenggunaPage({super.key});
@@ -189,7 +189,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
         ],
       ),
-      drawer: AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),

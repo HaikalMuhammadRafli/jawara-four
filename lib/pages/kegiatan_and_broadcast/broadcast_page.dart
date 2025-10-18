@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 import 'mocks/broadcast_mocks.dart';
 import 'models/broadcast_model.dart';
@@ -195,7 +195,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
         ],
       ),
 
-      drawer: const AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
