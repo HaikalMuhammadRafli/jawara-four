@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 import 'mocks/mutasi_mocks.dart';
 import 'models/mutasi_model.dart';
@@ -31,7 +31,7 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
         ],
       ),
 
-      drawer: AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       body: Column(
         children: [
           _buildSearchAndFilter(),

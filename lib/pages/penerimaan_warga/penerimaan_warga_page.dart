@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 import 'mocks/penerimaan_warga_mocks.dart';
 import 'models/penerimaan_warga_model.dart';
@@ -32,7 +32,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
         ],
       ),
-      drawer: AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       body: Column(
         children: [
           _buildSearchAndFilter(),

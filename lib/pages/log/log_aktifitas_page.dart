@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 class LogAktifitasPage extends StatelessWidget {
   const LogAktifitasPage({super.key});
@@ -29,7 +29,7 @@ class LogAktifitasPage extends StatelessWidget {
           IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
         ],
       ),
-      drawer: AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

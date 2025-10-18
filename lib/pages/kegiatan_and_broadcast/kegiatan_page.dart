@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 import 'mocks/kegiatan_mocks.dart';
 import 'models/kegiatan_model.dart';
@@ -114,7 +114,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
         ],
       ),
 
-      drawer: const AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),

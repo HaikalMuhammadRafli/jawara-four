@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 class KependudukanPage extends StatelessWidget {
   const KependudukanPage({super.key});
@@ -28,7 +28,7 @@ class KependudukanPage extends StatelessWidget {
         ],
       ),
 
-      drawer: const AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
