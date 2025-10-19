@@ -1,3 +1,7 @@
 {
-    "cmake.sourceDirectory": "D:/College/Semester 5/mobile/08/jawara-four/linux"
+    "cmake.sourceDirectory": "D:/College/Semester 5/mobile/08/jawara-four/linux",
+    "flutterTools.displayGetxContextMenu": false,
+    "flutterTools.displayMobxContextMenu": false,
+    "flutterTools.displayRiverpodContextMenu": false,
+    "flutterTools.displayModularContextMenu": false
 }

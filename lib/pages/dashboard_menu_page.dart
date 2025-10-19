@@ -29,7 +29,13 @@ class DashboardMenuPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha((0.1 * 255).round()),
+            spreadRadius: 1,
+            blurRadius: 5,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +79,11 @@ class DashboardMenuPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey[300]!, width: 1),
                 boxShadow: [
-                  BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
+                  BoxShadow(
+                    color: Colors.grey.withAlpha((0.1 * 255).round()),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                  ),
                 ],
               ),
               child: Column(
@@ -122,7 +132,11 @@ class DashboardMenuPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey[300]!, width: 1),
                 boxShadow: [
-                  BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
+                  BoxShadow(
+                    color: Colors.grey.withAlpha((0.1 * 255).round()),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                  ),
                 ],
               ),
               child: Column(
@@ -169,7 +183,11 @@ class DashboardMenuPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey[300]!, width: 1),
                 boxShadow: [
-                  BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
+                  BoxShadow(
+                    color: Colors.grey.withAlpha((0.1 * 255).round()),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                  ),
                 ],
               ),
               child: Column(
@@ -218,7 +236,11 @@ class DashboardMenuPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey[300]!, width: 1),
                 boxShadow: [
-                  BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5),
+                  BoxShadow(
+                    color: Colors.grey.withAlpha((0.1 * 255).round()),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                  ),
                 ],
               ),
               child: Column(
@@ -268,7 +290,13 @@ class DashboardMenuPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha((0.1 * 255).round()),
+            spreadRadius: 1,
+            blurRadius: 5,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +334,13 @@ class DashboardMenuPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha((0.1 * 255).round()),
+            spreadRadius: 1,
+            blurRadius: 5,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,7 +397,7 @@ class DashboardMenuPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withAlpha((0.1 * 255).round()),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.grey[300]!, width: 1),
             ),

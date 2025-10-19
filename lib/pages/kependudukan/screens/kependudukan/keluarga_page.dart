@@ -92,7 +92,13 @@ class KeluargaPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 5)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withAlpha((0.1 * 255).round()),
+            spreadRadius: 1,
+            blurRadius: 5,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

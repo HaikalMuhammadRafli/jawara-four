@@ -124,7 +124,11 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[300]!, width: 1),
         boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.06), spreadRadius: 1, blurRadius: 6),
+          BoxShadow(
+            color: Colors.grey.withAlpha((0.06 * 255).round()),
+            spreadRadius: 1,
+            blurRadius: 6,
+          ),
         ],
       ),
       child: Row(
@@ -154,7 +158,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.12),
+                    color: statusColor.withAlpha((0.12 * 255).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

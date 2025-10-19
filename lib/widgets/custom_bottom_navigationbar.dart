@@ -15,7 +15,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha((0.1 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -101,8 +101,9 @@ class CustomBottomNavigationbar extends StatelessWidget {
         location == '/penerimaan-warga' ||
         location == '/mutasi-keluarga' ||
         location == '/log-aktifitas' ||
-        location == '/daftar-pengguna')
+        location == '/daftar-pengguna') {
       return 4;
+    }
 
     return 0;
   }

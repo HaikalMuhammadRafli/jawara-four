@@ -93,7 +93,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -118,7 +118,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha((0.05 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -130,7 +130,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: item.color.withOpacity(0.1),
+              color: item.color.withAlpha((0.1 * 255).round()),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -160,7 +160,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withAlpha((0.8 * 255).round()),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

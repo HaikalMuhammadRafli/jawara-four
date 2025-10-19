@@ -118,7 +118,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.8),
+                  Theme.of(context).primaryColor.withAlpha((0.8 * 255).round()),
                 ],
               ),
               borderRadius: BorderRadius.circular(8),
@@ -194,7 +194,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -244,7 +244,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha((0.05 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -256,7 +256,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: item.color.withOpacity(0.1),
+              color: item.color.withAlpha((0.1 * 255).round()),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -286,7 +286,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: item.color.withOpacity(0.2),
+                    color: item.color.withAlpha((0.2 * 255).round()),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
