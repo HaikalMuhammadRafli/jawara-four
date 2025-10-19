@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/app_drawer.dart';
+import '../widgets/bottom_navbar.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -29,7 +29,7 @@ class DashboardPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: const AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -137,7 +137,7 @@ class DashboardPage extends StatelessWidget {
                         ),
                         child: Icon(Icons.account_balance_wallet, color: Colors.green, size: 20),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 15),
                       const Text(
                         'Keuangan',
                         style: TextStyle(
@@ -148,7 +148,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 5),
                   Text(
                     'Rp 15.000.000',
                     style: TextStyle(
@@ -206,7 +206,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 5),
                   Text(
                     '1,250',
                     style: TextStyle(
@@ -264,7 +264,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 5),
                   Text(
                     '8',
                     style: TextStyle(
@@ -323,7 +323,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 5),
                   Text(
                     '+12%',
                     style: TextStyle(

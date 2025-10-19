@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/app_drawer.dart';
+import 'package:jawara_four/widgets/bottom_navbar.dart';
 
 import 'mocks/informasi_aspirasi_mocks.dart';
 import 'models/informasi_aspirasi_model.dart';
@@ -29,7 +29,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           child: Container(height: 3, color: Colors.purple),
         ),
       ),
-      drawer: AppDrawer(),
+      bottomNavigationBar: const BottomNavbar(),
       body: Column(
         children: [
           _buildSearchAndFilters(),
