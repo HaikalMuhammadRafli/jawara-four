@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/widgets/custom_bottom_navigationbar.dart';
+
+// layout and appbar are provided by ShellRoute (LayoutMain); remove local scaffold/nav
 
 import './mocks/kegiatan_mocks.dart';
 import './models/kegiatan_model.dart';
@@ -73,52 +74,45 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
   Widget build(BuildContext context) {
     final List<Kegiatan> kegiatanList = kegiatanMock;
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('Kegiatan'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 1,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(3),
-          child: Container(height: 3, color: Colors.purple),
-        ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search), color: Colors.purple),
-        ],
-      ),
+    // Return only the page content — ShellRoute `LayoutMain` will provide the appBar and bottom nav.
+    return Stack(
+      children: [
+        kegiatanList.isEmpty
+            ? _buildEmptyState()
+            : ListView.separated(
+                padding: const EdgeInsets.all(20),
+                itemCount: kegiatanList.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                itemBuilder: (context, index) {
+                  final item = kegiatanList[index];
+                  return _buildKegiatanCard(item);
+                },
+              ),
 
-      bottomNavigationBar: const CustomBottomNavigationbar(),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+        // Floating action button placed over the content (keeps the same visual as before)
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: FloatingActionButton(
-          onPressed: () => _showAddForm(context),
-          backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
-      ),
-      body: kegiatanList.isEmpty
-          ? _buildEmptyState()
-          : ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemCount: kegiatanList.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                final item = kegiatanList[index];
-                return _buildKegiatanCard(item);
-              },
+            child: FloatingActionButton(
+              onPressed: () => _showAddForm(context),
+              backgroundColor: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
+          ),
+        ),
+      ],
     );
   }
 
