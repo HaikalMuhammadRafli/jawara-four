@@ -13,37 +13,7 @@ class KegiatanMenuPage extends StatefulWidget {
 }
 
 class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _kategoriController = TextEditingController();
-  final TextEditingController _penanggungJawabController = TextEditingController();
-  final TextEditingController _tanggalController = TextEditingController();
-
-  @override
-  void dispose() {
-    _namaController.dispose();
-    _kategoriController.dispose();
-    _penanggungJawabController.dispose();
-    _tanggalController.dispose();
-    super.dispose();
-  }
-
-  void _showAddForm(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Tambah Kegiatan', style: TextStyle(fontWeight: FontWeight.w600)),
-        content: const Text('Form tambah kegiatan hanya tampilan (belum dinamis).'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(foregroundColor: Colors.grey[600]),
-            child: const Text('Tutup'),
-          ),
-        ],
-      ),
-    );
-  }
+  // FAB and add-form were centralized in LayoutMain/LayoutPush; page no longer needs controllers or add dialog
 
   Widget _buildEmptyState() {
     return Center(
@@ -73,46 +43,22 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
   @override
   Widget build(BuildContext context) {
     final List<Kegiatan> kegiatanList = kegiatanMock;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
+    // Reserve space at bottom so a centrally-provided FAB doesn't overlap the last item
+    final listPadding = EdgeInsets.fromLTRB(20, 20, 20, 80 + bottomInset);
 
-    // Return only the page content — ShellRoute `LayoutMain` will provide the appBar and bottom nav.
-    return Stack(
-      children: [
-        kegiatanList.isEmpty
-            ? _buildEmptyState()
-            : ListView.separated(
-                padding: const EdgeInsets.all(20),
-                itemCount: kegiatanList.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
-                itemBuilder: (context, index) {
-                  final item = kegiatanList[index];
-                  return _buildKegiatanCard(item);
-                },
-              ),
+    if (kegiatanList.isEmpty) {
+      return SafeArea(child: _buildEmptyState());
+    }
 
-        // Floating action button placed over the content (keeps the same visual as before)
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: FloatingActionButton(
-              onPressed: () => _showAddForm(context),
-              backgroundColor: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),
-        ),
-      ],
+    return ListView.separated(
+      padding: listPadding,
+      itemCount: kegiatanList.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
+      itemBuilder: (context, index) {
+        final item = kegiatanList[index];
+        return _buildKegiatanCard(item);
+      },
     );
   }
 

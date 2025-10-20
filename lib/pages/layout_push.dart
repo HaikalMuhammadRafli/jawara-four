@@ -80,10 +80,45 @@ class _LayoutPushState extends State<LayoutPush> {
 
   @override
   Widget build(BuildContext context) {
+    final routeName = widget.state.name;
+
+    bool showFab = false;
+    VoidCallback? onFabPressed;
+
+    switch (routeName) {
+      case 'kependudukan-warga':
+      case 'kependudukan-keluarga':
+      case 'kependudukan-rumah':
+        showFab = true;
+        onFabPressed = () => context.goNamed('kependudukan-tambah');
+        break;
+      case 'mutasi-keluarga':
+        showFab = true;
+        onFabPressed = () => context.goNamed('mutasi-keluarga-tambah');
+        break;
+      case 'broadcast':
+        showFab = true;
+        onFabPressed = () => ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Tambah broadcast (not implemented)')));
+        break;
+      default:
+        showFab = false;
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomPushAppbar(title: _getTitle(), accentColor: _getAccentColor()),
       body: widget.child,
+      floatingActionButton: showFab
+          ? FloatingActionButton(
+              onPressed: onFabPressed,
+              backgroundColor: _getAccentColor(),
+              tooltip: 'Tambah',
+              child: const Icon(Icons.add),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
