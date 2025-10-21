@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 import '../../mocks/penerimaan_warga_mocks.dart';
 import '../../models/penerimaan_warga_model.dart';
 
+// ==================== DEFINISI WARNA ====================
+const Color primaryBlue = Color(0xFF1E88E5);
+const Color softGreen = Color(0xFF43A047);
+const Color backgroundWhite = Color(0xFFFFFFFF);
+const Color textPrimary = Color(0xFF212121);
+const Color textSecondary = Color(0xFF757575);
+const Color dividerGray = Color(0xFFE0E0E0);
+
 class PenerimaanWargaPage extends StatefulWidget {
   const PenerimaanWargaPage({super.key});
 
@@ -16,47 +24,56 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildSearchAndFilter(),
-        Expanded(child: _buildPenerimaanList()),
-      ],
+    return Container(
+      color: backgroundWhite,
+      child: Column(
+        children: [
+          _buildSearchAndFilter(),
+          Expanded(child: _buildPenerimaanList()),
+        ],
+      ),
     );
   }
 
   Widget _buildSearchAndFilter() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: backgroundWhite,
+        border: Border(bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5)),
+      ),
       child: Column(
         children: [
           TextField(
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
               hintText: 'Cari nama atau NIK...',
-              prefixIcon: const Icon(Icons.search, color: Colors.grey),
+              hintStyle: TextStyle(color: textSecondary, fontSize: 15),
+              prefixIcon: Icon(Icons.search_rounded, color: textSecondary, size: 22),
+              filled: true,
+              fillColor: dividerGray.withOpacity(0.15),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.green, width: 2),
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: primaryBlue, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 _buildFilterChip('Semua'),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 _buildFilterChip('Diterima'),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 _buildFilterChip('Pending'),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 _buildFilterChip('Ditolak'),
               ],
             ),
@@ -68,15 +85,27 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
 
   Widget _buildFilterChip(String label) {
     final isSelected = _selectedStatus == label;
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (selected) => setState(() => _selectedStatus = label),
-      selectedColor: Colors.green[100],
-      checkmarkColor: Colors.green,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.green : Colors.grey[600],
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? primaryBlue : backgroundWhite,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isSelected ? primaryBlue : dividerGray.withOpacity(0.6),
+          width: 1.5,
+        ),
+      ),
+      child: InkWell(
+        onTap: () => setState(() => _selectedStatus = label),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? backgroundWhite : textSecondary,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            letterSpacing: 0.2,
+          ),
+        ),
       ),
     );
   }
@@ -92,11 +121,27 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     }).toList();
 
     if (data.isEmpty) {
-      return const Center(child: Text('Tidak ada data'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.person_add_disabled_rounded,
+              size: 80,
+              color: textSecondary.withOpacity(0.3),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Tidak ada data pendaftar',
+              style: TextStyle(fontSize: 16, color: textSecondary, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
       itemCount: data.length,
       itemBuilder: (context, index) => _buildPenerimaanCard(data[index]),
     );
@@ -106,83 +151,82 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     Color statusColor;
     switch (w.statusRegistrasi.toLowerCase()) {
       case 'diterima':
-        statusColor = Colors.green;
+        statusColor = const Color(0xFF43A047);
         break;
       case 'pending':
-        statusColor = Colors.orange;
+        statusColor = const Color(0xFFFB8C00);
         break;
       case 'ditolak':
-        statusColor = Colors.red;
+        statusColor = const Color(0xFFE53935);
         break;
       default:
-        statusColor = Colors.grey;
+        statusColor = textSecondary;
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12, top: 8),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withAlpha((0.06 * 255).round()),
-            spreadRadius: 1,
-            blurRadius: 6,
-          ),
-        ],
+        color: backgroundWhite,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 96,
-            height: 64,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.grey[50],
-              border: Border.all(color: Colors.grey[200]!),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                w.fotoIdentitas,
-                fit: BoxFit.cover,
-                errorBuilder: (c, e, s) =>
-                    const Icon(Icons.account_box, size: 40, color: Colors.grey),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  w.nama,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 90,
+                height: 110,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.network(
+                    w.fotoIdentitas,
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, e, s) => Container(
+                      color: dividerGray.withOpacity(0.2),
+                      child: Icon(Icons.person_rounded, size: 48, color: textSecondary),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text('NIK: ${w.nik}', style: const TextStyle(fontSize: 12, color: Colors.black87)),
-                const SizedBox(height: 4),
-                Text(w.email, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                const SizedBox(height: 6),
-                Row(
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      w.jenisKelamin,
-                      style: const TextStyle(fontSize: 12, color: Colors.black54),
+                      w.nama,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: textPrimary,
+                        letterSpacing: -0.3,
+                        height: 1.3,
+                      ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(height: 8),
+                    _buildInfoRow(Icons.badge_outlined, 'NIK: ${w.nik}'),
+                    const SizedBox(height: 6),
+                    _buildInfoRow(Icons.email_outlined, w.email),
+                    const SizedBox(height: 6),
+                    _buildInfoRow(
+                      w.jenisKelamin == 'Laki-laki' ? Icons.male_rounded : Icons.female_rounded,
+                      w.jenisKelamin,
+                    ),
+                    const SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
-                        color: statusColor.withAlpha((0.12 * 255).round()),
-                        borderRadius: BorderRadius.circular(12),
+                        color: statusColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: statusColor.withOpacity(0.2), width: 1),
                       ),
                       child: Text(
                         w.statusRegistrasi,
@@ -190,25 +234,84 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: statusColor,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.edit, size: 20, color: Colors.grey),
-            tooltip: 'Edit',
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.visibility, size: 20, color: Colors.grey),
-            tooltip: 'Lihat Detail',
+          const SizedBox(height: 16),
+          const Divider(height: 1, thickness: 1, color: dividerGray),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(child: _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue)),
+              const SizedBox(width: 10),
+              Expanded(child: _buildActionButton('Terima', Icons.check_circle_outline, softGreen)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildActionButton('Tolak', Icons.cancel_outlined, const Color(0xFFE53935)),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: textSecondary),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 13, color: textSecondary, fontWeight: FontWeight.w500),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(String label, IconData icon, Color color) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          // Handle action
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withOpacity(0.2), width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

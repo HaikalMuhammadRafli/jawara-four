@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-
-// layout and appbar are provided by ShellRoute (LayoutMain); remove local scaffold/nav
+import 'package:go_router/go_router.dart';
 
 import './mocks/kegiatan_mocks.dart';
 import './models/kegiatan_model.dart';
+
+// ==================== DEFINISI WARNA ====================
+const Color primaryBlue = Color(0xFF1E88E5);
+const Color softPurple = Color(0xFF7E57C2);
+const Color softOrange = Color(0xFFFF7043);
+const Color backgroundWhite = Color(0xFFFFFFFF);
+const Color textPrimary = Color(0xFF212121);
+const Color textSecondary = Color(0xFF757575);
+const Color dividerGray = Color(0xFFE0E0E0);
 
 class KegiatanMenuPage extends StatefulWidget {
   const KegiatanMenuPage({super.key});
@@ -13,233 +21,436 @@ class KegiatanMenuPage extends StatefulWidget {
 }
 
 class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
-  // FAB and add-form were centralized in LayoutMain/LayoutPush; page no longer needs controllers or add dialog
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
-            child: Icon(Icons.event_available_outlined, size: 64, color: Colors.grey[400]),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Belum Ada Kegiatan',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey[700]),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Tap tombol + untuk menambah kegiatan baru',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final List<Kegiatan> kegiatanList = kegiatanMock;
-    final bottomInset = MediaQuery.of(context).padding.bottom;
-    // Reserve space at bottom so a centrally-provided FAB doesn't overlap the last item
-    final listPadding = EdgeInsets.fromLTRB(20, 20, 20, 80 + bottomInset);
-
-    if (kegiatanList.isEmpty) {
-      return SafeArea(child: _buildEmptyState());
-    }
-
-    return ListView.separated(
-      padding: listPadding,
-      itemCount: kegiatanList.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 16),
-      itemBuilder: (context, index) {
-        final item = kegiatanList[index];
-        return _buildKegiatanCard(item);
-      },
+    return Container(
+      color: backgroundWhite,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            _buildWelcomeCard(),
+            const SizedBox(height: 24),
+            _buildQuickStats(),
+            const SizedBox(height: 24),
+            _buildMenuGrid(context),
+            const SizedBox(height: 24),
+            _buildRecentActivities(),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildKegiatanCard(Kegiatan item) {
+  Widget _buildWelcomeCard() {
     return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.05 * 255).round()),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+        color: backgroundWhite,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [primaryBlue.withOpacity(0.15), primaryBlue.withOpacity(0.05)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: primaryBlue.withOpacity(0.3), width: 2),
+                ),
+                child: const Icon(Icons.event_rounded, color: primaryBlue, size: 32),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Manajemen Kegiatan',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: textPrimary,
+                        letterSpacing: -0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Dashboard',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: textSecondary,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Kelola seluruh kegiatan dan broadcast informasi RT/RW dengan sistem yang terintegrasi dan efisien',
+            style: TextStyle(
+              fontSize: 15,
+              color: textSecondary,
+              fontWeight: FontWeight.w400,
+              height: 1.5,
+              letterSpacing: 0.1,
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuickStats() {
+    final List<Kegiatan> kegiatanList = kegiatanMock;
+    final totalKegiatan = kegiatanList.length;
+    final activeKegiatan = kegiatanList.where((k) => k.kategori != 'Selesai').length;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            'Total Kegiatan',
+            totalKegiatan.toString(),
+            Icons.event_note_rounded,
+            primaryBlue,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _buildStatCard(
+            'Aktif',
+            activeKegiatan.toString(),
+            Icons.pending_actions_rounded,
+            softOrange,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(child: _buildStatCard('Broadcast', '12', Icons.campaign_rounded, softPurple)),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+      decoration: BoxDecoration(
+        color: backgroundWhite,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+      ),
       child: Column(
         children: [
-          // Header with icon and title
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: item.color.withAlpha((0.1 * 255).round()),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+              gradient: LinearGradient(colors: [color.withOpacity(0.2), color.withOpacity(0.1)]),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: color.withOpacity(0.25), width: 1.5),
             ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: item.color,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(item.icon, color: Colors.white, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    item.nama,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha((0.8 * 255).round()),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    item.kategori,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: item.color),
-                  ),
-                ),
-              ],
+            child: Icon(icon, color: color, size: 26),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              color: color,
+              letterSpacing: -0.8,
             ),
           ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: textSecondary,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
 
-          // Content
-          Padding(
-            padding: const EdgeInsets.all(16),
+  Widget _buildMenuGrid(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 5,
+              height: 28,
+              decoration: BoxDecoration(color: primaryBlue, borderRadius: BorderRadius.circular(3)),
+            ),
+            const SizedBox(width: 14),
+            const Text(
+              'Menu Kegiatan',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: textPrimary,
+                letterSpacing: -0.8,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        _buildMenuCard(
+          context,
+          'Kegiatan',
+          'Kelola dan pantau seluruh kegiatan RT/RW',
+          Icons.event_note_rounded,
+          primaryBlue,
+          'kegiatan',
+        ),
+        const SizedBox(height: 14),
+        _buildMenuCard(
+          context,
+          'Broadcast',
+          'Kirim informasi dan pengumuman ke warga',
+          Icons.campaign_rounded,
+          softPurple,
+          'broadcast',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    String routeName,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.pushNamed(routeName),
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: backgroundWhite,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: color.withOpacity(0.25), width: 1.5),
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: textPrimary,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: textSecondary,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: color),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentActivities() {
+    final List<Kegiatan> kegiatanList = kegiatanMock;
+    final recentItems = kegiatanList.take(4).toList();
+
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: backgroundWhite,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 5,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: primaryBlue,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(width: 14),
+              const Expanded(
+                child: Text(
+                  'Kegiatan Terbaru',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: textPrimary,
+                    letterSpacing: -0.8,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: primaryBlue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1),
+                ),
+                child: Text(
+                  '${recentItems.length} Item',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: primaryBlue,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          ...recentItems.map((item) => _buildActivityItem(item)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivityItem(Kegiatan item) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: backgroundWhite,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: item.color.withOpacity(0.2), width: 1.5),
+            ),
+            child: Icon(item.icon, color: item.color, size: 22),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: item.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
+                  ),
+                  child: Text(
+                    item.kategori,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: item.color,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  item.nama,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: textPrimary,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'PJ: ${item.penanggungJawab}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        item.penanggungJawab,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: textSecondary.withOpacity(0.8),
                     ),
-                    Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 6),
                     Text(
                       item.tanggal,
                       style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
+                        fontSize: 12,
+                        color: textSecondary.withOpacity(0.8),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-
-                // Action buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showEditDialog(item);
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.blue[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(Icons.edit_outlined, size: 16),
-                          label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showDeleteDialog(item);
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w600)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showEditDialog(Kegiatan item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Edit Kegiatan'),
-        content: Text('Edit kegiatan: ${item.nama}'),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-      ),
-    );
-  }
-
-  void _showDeleteDialog(Kegiatan item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Hapus Kegiatan'),
-        content: Text('Yakin ingin menghapus kegiatan "${item.nama}"?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${item.nama} telah dihapus')));
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

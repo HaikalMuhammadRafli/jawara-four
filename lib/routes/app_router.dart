@@ -19,6 +19,7 @@ import 'package:jawara_four/pages/keuangan/screens/laporan_keuangan_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/pemasukan_lain_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/log_aktifitas_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/pengguna_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/login_page.dart';
 import 'package:jawara_four/pages/register_page.dart';
 import 'package:jawara_four/widgets/custom_bottom_navigationbar.dart';
@@ -27,10 +28,11 @@ import 'package:jawara_four/widgets/custom_push_appbar.dart';
 import 'package:jawara_four/widgets/custom_scaffold.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/login',
   routes: [
     GoRoute(path: '/login', name: 'login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/register', name: 'register', builder: (context, state) => const RegisterPage()),
+    GoRoute(path: '/logout', name: 'logout', builder: (context, state) => const LoginPage()),
     ShellRoute(
       builder: (context, state, child) {
         return CustomScaffold(
@@ -72,8 +74,8 @@ final GoRouter appRouter = GoRouter(
         // Kegiatan dan Broadcast Routes
         // ===========================================================
         GoRoute(
-          path: '/kegiatan',
-          name: 'kegiatan',
+          path: '/kegiatan-broadcast',
+          name: 'kegiatan-broadcast',
           builder: (context, state) => const KegiatanMenuPage(),
         ),
       ],
@@ -206,6 +208,15 @@ final GoRouter appRouter = GoRouter(
     // ===========================================================
     // Additional Kegiatan Routes outside BottomNavbar
     // ===========================================================
+    GoRoute(
+      path: '/kegiatan',
+      name: 'kegiatan',
+      builder: (context, state) => CustomScaffold(
+        state: state,
+        appBar: CustomPushAppbar(title: 'Kegiatan'),
+        child: KegiatanPage(),
+      ),
+    ),
     GoRoute(
       path: '/broadcast',
       name: 'broadcast',

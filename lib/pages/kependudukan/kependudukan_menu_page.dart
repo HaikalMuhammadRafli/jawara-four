@@ -3,17 +3,29 @@ import 'package:go_router/go_router.dart';
 
 // ==================== DEFINISI WARNA ====================
 // UBAH DI SINI: Palet warna soft & elegant untuk tampilan yang tidak mencolok
-const Color primaryBlue = Color(0xFF1E88E5);     // UBAH DI SINI: Biru soft untuk warga dan tema utama
-const Color softGreen = Color(0xFF43A047);       // UBAH DI SINI: Hijau soft untuk keluarga dan statistik positif
-const Color softOrange = Color(0xFFFF7043);      // UBAH DI SINI: Orange soft untuk rumah dan aksen hangat
-const Color darkBlue = Color(0xFF1565C0);        // UBAH DI SINI: Biru gelap untuk gradient dan depth
-const Color lightBlue = Color(0xFFE3F2FD);       // UBAH DI SINI: Biru sangat muda untuk background card
-const Color backgroundWhite = Color(0xFFFFFFFF); // UBAH DI SINI: Putih untuk card dan background utama
-const Color backgroundGray = Color(0xFFF8F9FA);  // UBAH DI SINI: Abu-abu lembut untuk background halaman
-const Color textPrimary = Color(0xFF212121);     // UBAH DI SINI: Hitam untuk teks utama dan judul
-const Color textSecondary = Color(0xFF757575);   // UBAH DI SINI: Abu-abu untuk teks sekunder dan deskripsi
-const Color textTertiary = Color(0xFF9E9E9E);    // UBAH DI SINI: Abu-abu muda untuk teks tersier dan info
-const Color dividerGray = Color(0xFFE0E0E0);     // UBAH DI SINI: Abu-abu untuk border dan garis pemisah
+const Color primaryBlue = Color(0xFF1E88E5); // UBAH DI SINI: Biru soft untuk warga dan tema utama
+const Color softGreen = Color(
+  0xFF43A047,
+); // UBAH DI SINI: Hijau soft untuk keluarga dan statistik positif
+const Color softOrange = Color(
+  0xFFFF7043,
+); // UBAH DI SINI: Orange soft untuk rumah dan aksen hangat
+const Color darkBlue = Color(0xFF1565C0); // UBAH DI SINI: Biru gelap untuk gradient dan depth
+const Color lightBlue = Color(0xFFE3F2FD); // UBAH DI SINI: Biru sangat muda untuk background card
+const Color backgroundWhite = Color(
+  0xFFFFFFFF,
+); // UBAH DI SINI: Putih untuk card dan background utama
+const Color backgroundGray = Color(
+  0xFFF8F9FA,
+); // UBAH DI SINI: Abu-abu lembut untuk background halaman
+const Color textPrimary = Color(0xFF212121); // UBAH DI SINI: Hitam untuk teks utama dan judul
+const Color textSecondary = Color(
+  0xFF757575,
+); // UBAH DI SINI: Abu-abu untuk teks sekunder dan deskripsi
+const Color textTertiary = Color(
+  0xFF9E9E9E,
+); // UBAH DI SINI: Abu-abu muda untuk teks tersier dan info
+const Color dividerGray = Color(0xFFE0E0E0); // UBAH DI SINI: Abu-abu untuk border dan garis pemisah
 
 class KependudukanMenuPage extends StatelessWidget {
   const KependudukanMenuPage({super.key});
@@ -28,13 +40,13 @@ class KependudukanMenuPage extends StatelessWidget {
         padding: const EdgeInsets.all(24), // UBAH DI SINI: Padding luar halaman
         child: Column(
           children: [
-            _buildWelcomeCard(),     // UBAH DI SINI: Card selamat datang dengan gradient biru
+            _buildWelcomeCard(), // UBAH DI SINI: Card selamat datang dengan gradient biru
             const SizedBox(height: 24), // UBAH DI SINI: Jarak antar section
-            _buildQuickStats(),      // UBAH DI SINI: Statistik cepat dengan 3 card
+            _buildQuickStats(), // UBAH DI SINI: Statistik cepat dengan 3 card
             const SizedBox(height: 24),
             _buildMenuGrid(context), // UBAH DI SINI: Menu utama dengan 3 opsi navigasi
             const SizedBox(height: 24),
-            _buildRecentData(),      // UBAH DI SINI: Data aktivitas terbaru
+            _buildRecentData(), // UBAH DI SINI: Data aktivitas terbaru
           ],
         ),
       ),
@@ -51,10 +63,7 @@ class KependudukanMenuPage extends StatelessWidget {
         // UBAH DI SINI: Background putih
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(24), // UBAH DI SINI: Sudut melengkung card
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,10 +76,7 @@ class KependudukanMenuPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: primaryBlue.withOpacity(0.1), // Background biru muda
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: primaryBlue.withOpacity(0.2),
-                    width: 2,
-                  ),
+                  border: Border.all(color: primaryBlue.withOpacity(0.2), width: 2),
                 ),
                 child: const Icon(
                   Icons.groups_2_rounded, // Icon grup orang untuk kependudukan
@@ -136,7 +142,9 @@ class KependudukanMenuPage extends StatelessWidget {
         Expanded(child: _buildStatCard('Warga', '1,250', Icons.person_rounded, primaryBlue)),
         const SizedBox(width: 16), // UBAH DI SINI: Jarak antar card
         // UBAH DI SINI: Card statistik keluarga (hijau)
-        Expanded(child: _buildStatCard('Keluarga', '312', Icons.family_restroom_rounded, softGreen)),
+        Expanded(
+          child: _buildStatCard('Keluarga', '312', Icons.family_restroom_rounded, softGreen),
+        ),
         const SizedBox(width: 16),
         // UBAH DI SINI: Card statistik rumah (orange)
         Expanded(child: _buildStatCard('Rumah', '298', Icons.home_rounded, softOrange)),
@@ -147,7 +155,10 @@ class KependudukanMenuPage extends StatelessWidget {
   // UBAH DI SINI: Widget untuk membuat card statistik individual
   Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18), // UBAH DI SINI: Padding card
+      padding: const EdgeInsets.symmetric(
+        vertical: 24,
+        horizontal: 18,
+      ), // UBAH DI SINI: Padding card
       decoration: BoxDecoration(
         color: backgroundWhite, // UBAH DI SINI: Background putih
         borderRadius: BorderRadius.circular(20), // UBAH DI SINI: Sudut melengkung
@@ -163,18 +174,12 @@ class KependudukanMenuPage extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color.withOpacity(0.2),
-                  color.withOpacity(0.1),
-                ],
+                colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: color.withOpacity(0.25),
-                width: 1.5,
-              ),
+              border: Border.all(color: color.withOpacity(0.25), width: 1.5),
             ),
             child: Icon(icon, color: color, size: 26),
           ),
@@ -273,7 +278,7 @@ class KependudukanMenuPage extends StatelessWidget {
               'kependudukan-rumah',
             ),
             const SizedBox(height: 14),
-            // UBAH DI SINI: Menu mutasi warga 
+            // UBAH DI SINI: Menu mutasi warga
             _buildMenuCard(
               context,
               'Mutasi Warga',
@@ -281,6 +286,26 @@ class KependudukanMenuPage extends StatelessWidget {
               Icons.swap_horiz_rounded,
               const Color(0xFF7E57C2), // Warna ungu
               'mutasi-keluarga',
+            ),
+            const SizedBox(height: 14),
+            // Menu penerimaan warga baru
+            _buildMenuCard(
+              context,
+              'Penerimaan Warga',
+              'Verifikasi dan kelola pendaftaran warga baru',
+              Icons.person_add_alt_1_rounded,
+              const Color(0xFF26A69A), // Warna teal
+              'penerimaan-warga',
+            ),
+            const SizedBox(height: 14),
+            // Menu informasi aspirasi
+            _buildMenuCard(
+              context,
+              'Informasi & Aspirasi',
+              'Kelola pesan dan aspirasi dari warga',
+              Icons.mail_outline_rounded,
+              const Color(0xFF7E57C2), // Warna purple
+              'informasi-aspirasi',
             ),
           ],
         ),
@@ -292,11 +317,11 @@ class KependudukanMenuPage extends StatelessWidget {
   // UBAH DI SINI: Widget untuk membuat card menu individual yang bisa diklik
   Widget _buildMenuCard(
     BuildContext context,
-    String title,      // UBAH DI SINI: Judul menu (Data Warga, dll)
-    String subtitle,   // UBAH DI SINI: Deskripsi menu
-    IconData icon,     // UBAH DI SINI: Icon menu
-    Color color,       // UBAH DI SINI: Warna tema menu
-    String routeName,  // UBAH DI SINI: Nama route untuk navigasi
+    String title, // UBAH DI SINI: Judul menu (Data Warga, dll)
+    String subtitle, // UBAH DI SINI: Deskripsi menu
+    IconData icon, // UBAH DI SINI: Icon menu
+    Color color, // UBAH DI SINI: Warna tema menu
+    String routeName, // UBAH DI SINI: Nama route untuk navigasi
   ) {
     return Material(
       color: Colors.transparent,
@@ -321,18 +346,12 @@ class KependudukanMenuPage extends StatelessWidget {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      color.withOpacity(0.2),
-                      color.withOpacity(0.1),
-                    ],
+                    colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: color.withOpacity(0.25),
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: color.withOpacity(0.25), width: 1.5),
                 ),
                 child: Icon(icon, color: color, size: 28),
               ),
@@ -373,11 +392,7 @@ class KependudukanMenuPage extends StatelessWidget {
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                  color: color,
-                ),
+                child: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: color),
               ),
             ],
           ),
@@ -437,10 +452,7 @@ class KependudukanMenuPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: lightBlue.withOpacity(0.3), // Background biru muda
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: primaryBlue.withOpacity(0.2),
-                    width: 1,
-                  ),
+                  border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1),
                 ),
                 child: Text(
                   '4 Item',
@@ -493,7 +505,14 @@ class KependudukanMenuPage extends StatelessWidget {
   }
 
   // UBAH DI SINI: Widget untuk membuat item aktivitas individual
-  Widget _buildRecentItem(String title, String description, String datetime, IconData icon, Color color, String category) {
+  Widget _buildRecentItem(
+    String title,
+    String description,
+    String datetime,
+    IconData icon,
+    Color color,
+    String category,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16), // UBAH DI SINI: Jarak antar item
       padding: const EdgeInsets.all(18), // UBAH DI SINI: Padding dalam card
@@ -533,10 +552,7 @@ class KependudukanMenuPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.1), // Background transparan sesuai warna
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: color.withOpacity(0.2),
-                      width: 1,
-                    ),
+                    border: Border.all(color: color.withOpacity(0.2), width: 1),
                   ),
                   child: Text(
                     category, // UBAH DI SINI: Text kategori (Warga Baru, dll)
