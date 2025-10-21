@@ -273,7 +273,7 @@ class KependudukanMenuPage extends StatelessWidget {
               'kependudukan-rumah',
             ),
             const SizedBox(height: 14),
-            // UBAH DI SINI: Menu mutasi warga (ungu)
+            // UBAH DI SINI: Menu mutasi warga 
             _buildMenuCard(
               context,
               'Mutasi Warga',
