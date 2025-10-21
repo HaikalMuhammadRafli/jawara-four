@@ -81,7 +81,6 @@ class DashboardMenuPage extends StatelessWidget {
           mainAxisSpacing: 12,
           childAspectRatio: 1.1,
           children: [
-            // Card Keuangan
             _buildSummaryCard(
               'Keuangan',
               'Rp 15.000.000',
@@ -89,7 +88,6 @@ class DashboardMenuPage extends StatelessWidget {
               Icons.account_balance_wallet,
               AppColors.success,
             ),
-            // Card Warga
             _buildSummaryCard(
               'Warga',
               '1,250',
@@ -97,7 +95,6 @@ class DashboardMenuPage extends StatelessWidget {
               Icons.people,
               AppColors.primaryBlue,
             ),
-            // Card Kegiatan
             _buildSummaryCard(
               'Kegiatan',
               '8',
@@ -105,7 +102,6 @@ class DashboardMenuPage extends StatelessWidget {
               Icons.event,
               AppColors.prompt,
             ),
-            // Card Statistik
             _buildSummaryCard(
               'Statistik',
               '+12%',
@@ -223,7 +219,6 @@ class DashboardMenuPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          // Professional FL Chart Bar Chart
           SizedBox(
             height: 280,
             child: BarChart(
@@ -440,7 +435,6 @@ class DashboardMenuPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Chart Legend/Stats
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
