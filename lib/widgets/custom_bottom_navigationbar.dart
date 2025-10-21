@@ -80,7 +80,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
     if (location == '/dashboard') return 0;
     if (location == '/kependudukan') return 1;
     if (location == '/keuangan') return 2;
-    if (location == '/kegiatan' || location == '/broadcast') return 3;
+    if (location == '/kegiatan-broadcast') return 3;
     if (location == '/informasi-aspirasi' ||
         location == '/penerimaan-warga' ||
         location == '/mutasi-keluarga' ||
@@ -104,7 +104,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
         context.goNamed('keuangan');
         break;
       case 3:
-        context.goNamed('kegiatan');
+        context.goNamed('kegiatan-broadcast');
         break;
       case 4:
         _showAllMenus(context);
@@ -122,9 +122,6 @@ class CustomBottomNavigationbar extends StatelessWidget {
           children: [
             const Text('Semua Menu', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildMenuTile(context, Icons.message, 'Pesan Warga', 'informasi-aspirasi'),
-            _buildMenuTile(context, Icons.person_add, 'Penerimaan Warga', 'penerimaan-warga'),
-            _buildMenuTile(context, Icons.swap_horiz, 'Mutasi Keluarga', 'mutasi-keluarga'),
             _buildMenuTile(context, Icons.history, 'Log Aktifitas', 'log-aktifitas'),
             _buildMenuTile(
               context,
@@ -132,7 +129,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
               'Daftar Pengguna',
               'daftar-pengguna',
             ),
-            _buildMenuTile(context, Icons.broadcast_on_personal, 'Broadcast', 'broadcast'),
+            _buildMenuTile(context, Icons.logout, 'Log Out', 'logout'),
           ],
         ),
       ),
