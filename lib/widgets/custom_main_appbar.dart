@@ -119,7 +119,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       // ignore: deprecated_member_use
-                      colors: [AppColors.success, AppColors.success.withOpacity(0.9)],
+                      colors: [AppColors.primaryBlue, AppColors.primaryBlue.withOpacity(0.9)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
