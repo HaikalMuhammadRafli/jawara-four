@@ -29,8 +29,8 @@ class CustomBottomNavigationbar extends StatelessWidget {
         elevation: 0,
         selectedItemColor: const Color(0xFF1A1A1A),
         unselectedItemColor: const Color(0xFF666666),
-        selectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: [
           _buildNavItem(Icons.dashboard_outlined, Icons.dashboard, 0, context),
           _buildNavItem(Icons.people_outline, Icons.people, 1, context),
@@ -69,26 +69,10 @@ class CustomBottomNavigationbar extends StatelessWidget {
           size: 24,
         ),
       ),
-      label: _getLabel(index),
+      label: '',
     );
   }
 
-  String _getLabel(int index) {
-    switch (index) {
-      case 0:
-        return 'Dashboard';
-      case 1:
-        return 'Kependudukan';
-      case 2:
-        return 'Keuangan';
-      case 3:
-        return 'Kegiatan';
-      case 4:
-        return 'Lainnya';
-      default:
-        return '';
-    }
-  }
 
   int _getCurrentIndex(BuildContext context) {
     final location = GoRouterState.of(context).fullPath;
