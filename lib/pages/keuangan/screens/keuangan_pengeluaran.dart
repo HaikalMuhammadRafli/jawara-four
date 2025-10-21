@@ -21,7 +21,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: backgroundGray, // Background abu-abu lembut untuk keseluruhan halaman
+      color: const Color(0xFFFFFFFF), // Background putih untuk keseluruhan halaman
       child: Stack(
         children: [
           Column(
@@ -37,14 +37,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.35),
-                    spreadRadius: 0,
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
               ),
               child: FloatingActionButton.extended(
                 onPressed: () {
@@ -80,14 +72,10 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
       decoration: BoxDecoration(
         color: backgroundWhite,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            spreadRadius: 0,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(
+          color: dividerGray.withOpacity(0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
@@ -102,14 +90,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: primaryBlue.withOpacity(0.25),
-                  spreadRadius: 0,
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
             ),
             child: Column(
               children: [
@@ -230,17 +210,9 @@ class KeuanganPengeluaranPage extends StatelessWidget {
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: dividerGray.withOpacity(0.3),
-          width: 1,
+          color: dividerGray.withOpacity(0.6),
+          width: 1.5,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            spreadRadius: 0,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         children: [

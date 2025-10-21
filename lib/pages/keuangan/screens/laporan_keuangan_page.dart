@@ -41,8 +41,8 @@ class LaporanKeuanganPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Background abu-abu lembut untuk seluruh halaman
-      color: backgroundGray,
+      // Background putih untuk seluruh halaman
+      color: const Color(0xFFFFFFFF),
       child: SingleChildScrollView(
         // Padding 20px di semua sisi
         padding: const EdgeInsets.all(20),
@@ -78,6 +78,7 @@ class LaporanKeuanganPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite, // UBAH BACKGROUND CARD: Ganti backgroundWhite
         borderRadius: BorderRadius.circular(20), // UBAH SUDUT CARD: Ubah angka 20
+        border: Border.all(color: dividerGray, width: 1), // UBAH BORDER: Warna & ketebalan
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03), // UBAH SHADOW: Ubah opacity
@@ -318,6 +319,7 @@ class LaporanKeuanganPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: backgroundWhite,
             borderRadius: BorderRadius.circular(20), // UBAH BORDER RADIUS: Ubah angka 20
+            border: Border.all(color: dividerGray, width: 1), // UBAH BORDER: Warna & ketebalan
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.03),
@@ -503,6 +505,7 @@ class LaporanKeuanganPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite, // UBAH BACKGROUND CARD: Ganti backgroundWhite
         borderRadius: BorderRadius.circular(20), // UBAH SUDUT CARD: Ubah angka 20
+        border: Border.all(color: dividerGray, width: 1), // UBAH BORDER: Warna & ketebalan
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.03), // UBAH SHADOW: Ubah opacity

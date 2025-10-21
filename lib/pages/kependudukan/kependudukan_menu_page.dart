@@ -23,7 +23,7 @@ class KependudukanMenuPage extends StatelessWidget {
     // ==================== STRUKTUR UTAMA HALAMAN ====================
     // UBAH DI SINI: Layout utama halaman dengan scroll dan padding
     return Container(
-      color: backgroundGray, // Background halaman abu-abu lembut
+      color: const Color(0xFFFFFFFF), // UBAH DI SINI: Background halaman putih
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24), // UBAH DI SINI: Padding luar halaman
         child: Column(
@@ -48,56 +48,33 @@ class KependudukanMenuPage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32), // UBAH DI SINI: Padding dalam card
       decoration: BoxDecoration(
-        // UBAH DI SINI: Gradient background dari biru ke biru gelap
-        gradient: const LinearGradient(
-          colors: [primaryBlue, darkBlue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        // UBAH DI SINI: Background putih
+        color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(24), // UBAH DI SINI: Sudut melengkung card
-        boxShadow: [
-          // UBAH DI SINI: Shadow untuk efek kedalaman
-          BoxShadow(
-            color: primaryBlue.withOpacity(0.3),
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 0,
-            blurRadius: 40,
-            offset: const Offset(0, 16),
-          ),
-        ],
+        border: Border.all(
+          color: dividerGray.withOpacity(0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              // UBAH DI SINI: Icon kependudukan dengan background transparan
+              // UBAH DI SINI: Icon kependudukan dengan background biru
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15), // Background semi-transparan
+                  color: primaryBlue.withOpacity(0.1), // Background biru muda
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.25),
+                    color: primaryBlue.withOpacity(0.2),
                     width: 2,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.1),
-                      spreadRadius: 0,
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: const Icon(
                   Icons.groups_2_rounded, // Icon grup orang untuk kependudukan
-                  color: Colors.white,
+                  color: primaryBlue,
                   size: 32,
                 ),
               ),
@@ -112,18 +89,18 @@ class KependudukanMenuPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
+                        color: textPrimary, // UBAH DI SINI: Warna teks hitam
                         letterSpacing: -0.8,
                         height: 1.1,
                       ),
                     ),
                     const SizedBox(height: 4),
                     // UBAH DI SINI: Subtitle/badge dashboard
-                    Text(
+                    const Text(
                       'Dashboard Manajemen',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.8),
+                        color: textSecondary,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.5,
                       ),
@@ -135,11 +112,11 @@ class KependudukanMenuPage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           // UBAH DI SINI: Deskripsi panjang tentang fungsi halaman
-          Text(
+          const Text(
             'Kelola data warga, keluarga, dan rumah secara terintegrasi dengan sistem yang modern dan efisien',
             style: TextStyle(
               fontSize: 15,
-              color: Colors.white.withOpacity(0.9),
+              color: textSecondary,
               fontWeight: FontWeight.w400,
               height: 1.5,
               letterSpacing: 0.1,
@@ -175,24 +152,9 @@ class KependudukanMenuPage extends StatelessWidget {
         color: backgroundWhite, // UBAH DI SINI: Background putih
         borderRadius: BorderRadius.circular(20), // UBAH DI SINI: Sudut melengkung
         border: Border.all(
-          color: dividerGray.withOpacity(0.2), // UBAH DI SINI: Border abu-abu tipis
-          width: 1,
+          color: dividerGray.withOpacity(0.6), // UBAH DI SINI: Border abu-abu tipis
+          width: 1.5,
         ),
-        boxShadow: [
-          // UBAH DI SINI: Shadow untuk kedalaman
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            spreadRadius: 0,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: color.withOpacity(0.1), // Shadow berwarna sesuai tema
-            spreadRadius: 0,
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Column(
         children: [
@@ -213,14 +175,6 @@ class KependudukanMenuPage extends StatelessWidget {
                 color: color.withOpacity(0.25),
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(0.15),
-                  spreadRadius: 0,
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Icon(icon, color: color, size: 26),
           ),
@@ -346,23 +300,9 @@ class KependudukanMenuPage extends StatelessWidget {
             color: backgroundWhite, // UBAH DI SINI: Background putih
             borderRadius: BorderRadius.circular(20), // UBAH DI SINI: Sudut melengkung
             border: Border.all(
-              color: dividerGray.withOpacity(0.2), // UBAH DI SINI: Border tipis
-              width: 1,
+              color: dividerGray.withOpacity(0.6), // UBAH DI SINI: Border tipis
+              width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.03),
-                spreadRadius: 0,
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-              BoxShadow(
-                color: color.withOpacity(0.08),
-                spreadRadius: 0,
-                blurRadius: 15,
-                offset: const Offset(0, 6),
-              ),
-            ],
           ),
           child: Row(
             children: [
@@ -383,14 +323,6 @@ class KependudukanMenuPage extends StatelessWidget {
                     color: color.withOpacity(0.25),
                     width: 1.5,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withOpacity(0.15),
-                      spreadRadius: 0,
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
                 ),
                 child: Icon(icon, color: color, size: 28),
               ),
@@ -453,24 +385,9 @@ class KependudukanMenuPage extends StatelessWidget {
         color: backgroundWhite, // UBAH DI SINI: Background putih
         borderRadius: BorderRadius.circular(24), // UBAH DI SINI: Sudut melengkung
         border: Border.all(
-          color: dividerGray.withOpacity(0.2), // UBAH DI SINI: Border tipis
-          width: 1,
+          color: dividerGray.withOpacity(0.6), // UBAH DI SINI: Border tebal
+          width: 1.5,
         ),
-        boxShadow: [
-          // UBAH DI SINI: Double shadow untuk efek premium
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            spreadRadius: 0,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 0,
-            blurRadius: 40,
-            offset: const Offset(0, 16),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -574,18 +491,9 @@ class KependudukanMenuPage extends StatelessWidget {
         color: backgroundGray, // UBAH DI SINI: Background abu-abu lembut
         borderRadius: BorderRadius.circular(18), // UBAH DI SINI: Sudut melengkung
         border: Border.all(
-          color: dividerGray.withOpacity(0.15), // UBAH DI SINI: Border tipis
-          width: 1,
+          color: dividerGray.withOpacity(0.6), // UBAH DI SINI: Border tipis
+          width: 1.5,
         ),
-        boxShadow: [
-          // UBAH DI SINI: Shadow halus untuk depth
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            spreadRadius: 0,
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -600,14 +508,6 @@ class KependudukanMenuPage extends StatelessWidget {
                 color: color.withOpacity(0.2), // UBAH DI SINI: Border sesuai warna tema
                 width: 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(0.15),
-                  spreadRadius: 0,
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Icon(icon, color: color, size: 22), // UBAH DI SINI: Icon aktivitas
           ),
