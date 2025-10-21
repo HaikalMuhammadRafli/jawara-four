@@ -272,6 +272,16 @@ class KependudukanMenuPage extends StatelessWidget {
               softOrange,
               'kependudukan-rumah',
             ),
+            const SizedBox(height: 14),
+            // UBAH DI SINI: Menu mutasi warga 
+            _buildMenuCard(
+              context,
+              'Mutasi Warga',
+              'Kelola perpindahan dan mutasi data warga',
+              Icons.swap_horiz_rounded,
+              const Color(0xFF7E57C2), // Warna ungu
+              'mutasi-keluarga',
+            ),
           ],
         ),
       ],
