@@ -184,7 +184,7 @@ class LaporanKeuanganPage extends StatelessWidget {
                 // CARD PEMASUKAN (Kiri)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(20), // UBAH PADDING CARD PEMASUKAN
+                    padding: const EdgeInsets.all(16), // UBAH PADDING CARD PEMASUKAN
                     // Dekorasi card pemasukan (biru lembut)
                     decoration: BoxDecoration(
                       color: primaryBlue.withOpacity(0.08), // UBAH BACKGROUND PEMASUKAN
@@ -244,7 +244,7 @@ class LaporanKeuanganPage extends StatelessWidget {
                 // CARD PENGELUARAN (Kanan)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(20), // UBAH PADDING CARD PENGELUARAN
+                    padding: const EdgeInsets.all(16), // UBAH PADDING CARD PENGELUARAN
                     // Dekorasi card pengeluaran (abu-abu)
                     decoration: BoxDecoration(
                       color: backgroundGray, // UBAH BACKGROUND PENGELUARAN
