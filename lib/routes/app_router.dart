@@ -1,15 +1,25 @@
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/pages/dashboard_menu_page.dart';
 import 'package:jawara_four/pages/kegiatan/kegiatan_menu_page.dart';
+import 'package:jawara_four/pages/kegiatan/models/broadcast_model.dart';
+import 'package:jawara_four/pages/kegiatan/models/kegiatan_model.dart';
+import 'package:jawara_four/pages/kegiatan/screens/broadcast_detail_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_detail_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_form_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/kependudukan/kependudukan_menu_page.dart';
+import 'package:jawara_four/pages/kependudukan/models/informasi_aspirasi_model.dart';
+import 'package:jawara_four/pages/kependudukan/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/rumah_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/tambah_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/warga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_tambah_page.dart';
+import 'package:jawara_four/pages/kependudukan/screens/penerimaan_warga/penerimaan_warga_detail_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/penerimaan_warga/penerimaan_warga_page.dart';
+import 'package:jawara_four/pages/kependudukan/screens/pesan_warga/informasi_aspirasi_detail_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/pesan_warga/informasi_aspirasi_page.dart';
 import 'package:jawara_four/pages/keuangan/keuangan_menu_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/iuran_tagihan_page.dart';
@@ -19,10 +29,10 @@ import 'package:jawara_four/pages/keuangan/screens/laporan_keuangan_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/pemasukan_lain_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/log_aktifitas_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/pengguna_page.dart';
-import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/login_page.dart';
 import 'package:jawara_four/pages/register_page.dart';
 import 'package:jawara_four/widgets/custom_bottom_navigationbar.dart';
+import 'package:jawara_four/widgets/custom_fab.dart';
 import 'package:jawara_four/widgets/custom_main_appbar.dart';
 import 'package:jawara_four/widgets/custom_push_appbar.dart';
 import 'package:jawara_four/widgets/custom_scaffold.dart';
@@ -204,6 +214,22 @@ final GoRouter appRouter = GoRouter(
         child: MutasiKeluargaTambahPage(),
       ),
     ),
+    GoRoute(
+      path: '/penerimaan-warga/detail',
+      name: 'penerimaan-warga-detail',
+      builder: (context, state) {
+        final warga = state.extra as PenerimaanWarga;
+        return PenerimaanWargaDetailPage(warga: warga);
+      },
+    ),
+    GoRoute(
+      path: '/informasi-aspirasi/detail',
+      name: 'informasi-aspirasi-detail',
+      builder: (context, state) {
+        final aspirasi = state.extra as InformasiAspirasi;
+        return InformasiAspirasiDetailPage(aspirasi: aspirasi);
+      },
+    ),
 
     // ===========================================================
     // Additional Kegiatan Routes outside BottomNavbar
@@ -214,6 +240,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Kegiatan'),
+        floatingActionButton: CustomFab(),
         child: KegiatanPage(),
       ),
     ),
@@ -225,6 +252,27 @@ final GoRouter appRouter = GoRouter(
         appBar: CustomPushAppbar(title: 'Broadcast'),
         child: BroadcastPage(),
       ),
+    ),
+    GoRoute(
+      path: '/kegiatan/detail',
+      name: 'kegiatan-detail',
+      builder: (context, state) {
+        final kegiatan = state.extra as Kegiatan;
+        return KegiatanDetailPage(kegiatan: kegiatan);
+      },
+    ),
+    GoRoute(
+      path: '/kegiatan/form',
+      name: 'kegiatan-form',
+      builder: (context, state) => const KegiatanFormPage(),
+    ),
+    GoRoute(
+      path: '/broadcast/detail',
+      name: 'broadcast-detail',
+      builder: (context, state) {
+        final broadcast = state.extra as BroadcastItem;
+        return BroadcastDetailPage(broadcast: broadcast);
+      },
     ),
 
     // ===========================================================

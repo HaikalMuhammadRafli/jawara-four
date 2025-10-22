@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../mocks/informasi_aspirasi_mocks.dart';
 import '../../models/informasi_aspirasi_model.dart';
@@ -262,9 +263,9 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue),
+              _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue, item),
               const SizedBox(width: 8),
-              _buildActionButton('Proses', Icons.edit_outlined, const Color(0xFFFB8C00)),
+              _buildActionButton('Proses', Icons.edit_outlined, const Color(0xFFFB8C00), item),
             ],
           ),
         ],
@@ -272,12 +273,15 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color) {
+  Widget _buildActionButton(String label, IconData icon, Color color, InformasiAspirasi item) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          // Handle action
+          if (label == 'Detail') {
+            context.pushNamed('informasi-aspirasi-detail', extra: item);
+          }
+          // Handle other actions
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(
