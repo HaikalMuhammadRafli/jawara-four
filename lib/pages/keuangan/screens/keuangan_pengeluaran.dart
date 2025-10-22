@@ -41,27 +41,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  _showTambahPengeluaranDialog(context);
-                },
-                backgroundColor: primaryBlue,
-                elevation: 0,
-                icon: const Icon(
-                  Icons.add_rounded,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                label: const Text(
-                  'Tambah',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
             ),
           ),
         ],
@@ -444,71 +423,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  // ==================== DIALOG TAMBAH PENGELUARAN ====================
-  void _showTambahPengeluaranDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.add_circle_outline,
-                  color: primaryBlue,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Tambah Pengeluaran',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: textPrimary,
-                ),
-              ),
-            ],
-          ),
-          content: const Text(
-            'Fitur tambah pengeluaran akan segera tersedia',
-            style: TextStyle(fontSize: 14, color: textSecondary),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                backgroundColor: primaryBlue,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'OK',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
