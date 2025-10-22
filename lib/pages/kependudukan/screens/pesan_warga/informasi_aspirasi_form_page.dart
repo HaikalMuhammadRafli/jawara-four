@@ -10,141 +10,51 @@ const Color dividerGray = Color(0xFFE0E0E0);
 const Color successGreen = Color(0xFF43A047);
 const Color errorRed = Color(0xFFE53935);
 
-class KegiatanFormPage extends StatefulWidget {
-  const KegiatanFormPage({super.key});
+class InformasiAspirasiFormPage extends StatefulWidget {
+  const InformasiAspirasiFormPage({super.key});
 
   @override
-  State<KegiatanFormPage> createState() => _KegiatanFormPageState();
+  State<InformasiAspirasiFormPage> createState() => _InformasiAspirasiFormPageState();
 }
 
-class _KegiatanFormPageState extends State<KegiatanFormPage> {
+class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final _namaController = TextEditingController();
-  final _penanggungJawabController = TextEditingController();
-  final _deskripsiController = TextEditingController();
+  final _judulController = TextEditingController();
+  final _isiController = TextEditingController();
+  final _pengirimController = TextEditingController();
+  final _kontakController = TextEditingController();
 
   String? _selectedKategori;
-  DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
-  String? _selectedPrioritas = 'Sedang';
+  bool _isAnonim = false;
 
   final List<String> _kategoriList = [
-    'Keamanan',
-    'Kebersihan',
-    'Sosial',
-    'Kesehatan',
-    'Olahraga',
-    'Keagamaan',
-    'Pendidikan',
+    'Aspirasi',
+    'Keluhan',
+    'Saran',
+    'Pengaduan',
+    'Pertanyaan',
     'Lainnya',
   ];
 
-  final List<String> _prioritasList = ['Rendah', 'Sedang', 'Tinggi', 'Urgent'];
-
   @override
   void dispose() {
-    _namaController.dispose();
-    _penanggungJawabController.dispose();
-    _deskripsiController.dispose();
+    _judulController.dispose();
+    _isiController.dispose();
+    _pengirimController.dispose();
+    _kontakController.dispose();
     super.dispose();
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2026),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: primaryBlue,
-              onPrimary: Colors.white,
-              surface: backgroundWhite,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: primaryBlue,
-              onPrimary: Colors.white,
-              surface: backgroundWhite,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-      });
-    }
   }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      if (_selectedDate == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Silakan pilih tanggal kegiatan'),
-              ],
-            ),
-            backgroundColor: errorRed,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
-        return;
-      }
-
-      if (_selectedTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Silakan pilih waktu kegiatan'),
-              ],
-            ),
-            backgroundColor: errorRed,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
-        return;
-      }
-
-      // TODO: Simpan data kegiatan
+      // TODO: Simpan data informasi aspirasi
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Row(
             children: [
               Icon(Icons.check_circle_outline, color: Colors.white),
               SizedBox(width: 12),
-              Text('Kegiatan berhasil ditambahkan!'),
+              Text('Aspirasi berhasil dikirim!'),
             ],
           ),
           backgroundColor: successGreen,
@@ -169,7 +79,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Tambah Kegiatan',
+          'Kirim Aspirasi',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -180,9 +90,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         actions: [
           TextButton.icon(
             onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             label: const Text(
-              'Simpan',
+              'Kirim',
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
             ),
           ),
@@ -220,7 +130,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.event_note_rounded, color: Colors.white, size: 32),
+                    child: const Icon(Icons.feedback_rounded, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -228,7 +138,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Buat Kegiatan Baru',
+                          'Informasi & Aspirasi',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -238,7 +148,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Lengkapi informasi kegiatan di bawah ini',
+                          'Sampaikan aspirasi Anda kepada pengurus RT',
                           style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
@@ -249,32 +159,86 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Informasi Dasar Section
-            _buildSectionTitle('Informasi Dasar', Icons.info_outline_rounded),
+            // Data Pengirim Section
+            _buildSectionTitle('Data Pengirim', Icons.person_outline_rounded),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
                 children: [
-                  _buildTextField(
-                    controller: _namaController,
-                    label: 'Nama Kegiatan',
-                    hint: 'Contoh: Gotong Royong RT 01',
-                    icon: Icons.title_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama kegiatan harus diisi';
-                      }
-                      if (value.length < 5) {
-                        return 'Nama kegiatan minimal 5 karakter';
-                      }
-                      return null;
+                  CheckboxListTile(
+                    value: _isAnonim,
+                    onChanged: (value) {
+                      setState(() {
+                        _isAnonim = value ?? false;
+                        if (_isAnonim) {
+                          _pengirimController.text = 'Anonim';
+                          _kontakController.text = '-';
+                        } else {
+                          _pengirimController.clear();
+                          _kontakController.clear();
+                        }
+                      });
                     },
+                    title: const Text(
+                      'Kirim Anonim',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: textPrimary,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      'Identitas pengirim tidak akan ditampilkan',
+                      style: TextStyle(fontSize: 12, color: textSecondary),
+                    ),
+                    activeColor: primaryBlue,
+                    checkColor: Colors.white,
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
                   ),
-                  const SizedBox(height: 16),
+                  if (!_isAnonim) ...[
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _pengirimController,
+                      label: 'Nama Pengirim',
+                      hint: 'Masukkan nama Anda',
+                      icon: Icons.person_outline,
+                      validator: (value) {
+                        if (!_isAnonim && (value == null || value.isEmpty)) {
+                          return 'Nama pengirim harus diisi';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _kontakController,
+                      label: 'No. Telepon / Email',
+                      hint: 'Masukkan kontak Anda',
+                      icon: Icons.contact_phone_outlined,
+                      validator: (value) {
+                        if (!_isAnonim && (value == null || value.isEmpty)) {
+                          return 'Kontak harus diisi';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Informasi Aspirasi Section
+            _buildSectionTitle('Informasi Aspirasi', Icons.info_outline_rounded),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: Column(
+                children: [
                   _buildDropdown(
                     value: _selectedKategori,
                     label: 'Kategori',
-                    hint: 'Pilih kategori kegiatan',
+                    hint: 'Pilih kategori aspirasi',
                     icon: Icons.category_rounded,
                     items: _kategoriList,
                     onChanged: (value) {
@@ -285,14 +249,33 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    controller: _deskripsiController,
-                    label: 'Deskripsi',
-                    hint: 'Jelaskan detail kegiatan...',
-                    icon: Icons.description_outlined,
-                    maxLines: 4,
+                    controller: _judulController,
+                    label: 'Judul',
+                    hint: 'Contoh: Usulan Perbaikan Jalan RT 01',
+                    icon: Icons.title_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Deskripsi harus diisi';
+                        return 'Judul harus diisi';
+                      }
+                      if (value.length < 10) {
+                        return 'Judul minimal 10 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _isiController,
+                    label: 'Isi Aspirasi',
+                    hint: 'Jelaskan aspirasi Anda secara detail...',
+                    icon: Icons.description_outlined,
+                    maxLines: 8,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Isi aspirasi harus diisi';
+                      }
+                      if (value.length < 30) {
+                        return 'Isi aspirasi minimal 30 karakter';
                       }
                       return null;
                     },
@@ -302,117 +285,43 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Penanggung Jawab Section
-            _buildSectionTitle('Penanggung Jawab', Icons.person_outline_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: _buildTextField(
-                controller: _penanggungJawabController,
-                label: 'Nama Penanggung Jawab',
-                hint: 'Contoh: Bapak Ahmad',
-                icon: Icons.person_rounded,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Penanggung jawab harus diisi';
-                  }
-                  return null;
-                },
+            // Info Box
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: primaryBlue.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1.5),
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // Jadwal Section
-            _buildSectionTitle('Jadwal Kegiatan', Icons.schedule_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildDateTimePicker(
-                    label: 'Tanggal',
-                    icon: Icons.calendar_today_rounded,
-                    value: _selectedDate != null
-                        ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                        : null,
-                    hint: 'Pilih tanggal kegiatan',
-                    onTap: () => _selectDate(context),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDateTimePicker(
-                    label: 'Waktu',
-                    icon: Icons.access_time_rounded,
-                    value: _selectedTime != null
-                        ? '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}'
-                        : null,
-                    hint: 'Pilih waktu kegiatan',
-                    onTap: () => _selectTime(context),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Prioritas Section
-            _buildSectionTitle('Prioritas', Icons.flag_outlined),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Tingkat Prioritas',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: textPrimary,
-                      letterSpacing: 0.2,
+                  Icon(Icons.info_outline_rounded, color: primaryBlue, size: 22),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Informasi Penting',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: primaryBlue,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Aspirasi Anda akan ditinjau oleh pengurus RT dan akan mendapat respon dalam waktu 1x24 jam.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: primaryBlue.withOpacity(0.8),
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _prioritasList.map((prioritas) {
-                      final isSelected = _selectedPrioritas == prioritas;
-                      Color chipColor;
-                      switch (prioritas) {
-                        case 'Rendah':
-                          chipColor = const Color(0xFF4CAF50);
-                          break;
-                        case 'Sedang':
-                          chipColor = const Color(0xFFFFA726);
-                          break;
-                        case 'Tinggi':
-                          chipColor = const Color(0xFFFF7043);
-                          break;
-                        case 'Urgent':
-                          chipColor = errorRed;
-                          break;
-                        default:
-                          chipColor = textSecondary;
-                      }
-                      return FilterChip(
-                        label: Text(prioritas),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedPrioritas = prioritas;
-                          });
-                        },
-                        backgroundColor: chipColor.withOpacity(0.08),
-                        selectedColor: chipColor.withOpacity(0.15),
-                        checkmarkColor: chipColor,
-                        labelStyle: TextStyle(
-                          color: isSelected ? chipColor : textSecondary,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          fontSize: 13,
-                        ),
-                        side: BorderSide(
-                          color: isSelected ? chipColor : dividerGray,
-                          width: isSelected ? 2 : 1,
-                        ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      );
-                    }).toList(),
                   ),
                 ],
               ),
@@ -446,10 +355,10 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
+                        Icon(Icons.send_rounded, color: Colors.white, size: 22),
                         SizedBox(width: 12),
                         Text(
-                          'Simpan Kegiatan',
+                          'Kirim Aspirasi',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -634,72 +543,12 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           onChanged: onChanged,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Silakan pilih kategori';
+              return 'Silakan pilih $label';
             }
             return null;
           },
           icon: const Icon(Icons.arrow_drop_down_rounded, color: primaryBlue),
           dropdownColor: backgroundWhite,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDateTimePicker({
-    required String label,
-    required IconData icon,
-    required String? value,
-    required String hint,
-    required VoidCallback onTap,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: textPrimary,
-            letterSpacing: 0.2,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Material(
-          color: dividerGray.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: dividerGray.withOpacity(0.6)),
-              ),
-              child: Row(
-                children: [
-                  Icon(icon, size: 20, color: primaryBlue),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      value ?? hint,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: value != null ? textPrimary : textSecondary.withOpacity(0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                    color: textSecondary.withOpacity(0.6),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
       ],
     );

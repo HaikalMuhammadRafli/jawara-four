@@ -77,7 +77,10 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(color: Colors.green, width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -136,26 +139,46 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: Icon(keluarga.icon, color: Colors.white, size: 20),
             ),
             const SizedBox(width: 12),
-            Expanded(child: Text(keluarga.keluarga, style: const TextStyle(fontWeight: FontWeight.w600))),
+            Expanded(
+              child: Text(
+                keluarga.keluarga,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Keluarga: ${keluarga.keluarga}', style: const TextStyle(fontSize: 14)),
+            Text(
+              'Keluarga: ${keluarga.keluarga}',
+              style: const TextStyle(fontSize: 14),
+            ),
             const SizedBox(height: 8),
-            Text('Tanggal: ${keluarga.tanggal}', style: const TextStyle(fontSize: 14)),
+            Text(
+              'Tanggal: ${keluarga.tanggal}',
+              style: const TextStyle(fontSize: 14),
+            ),
             const SizedBox(height: 8),
-            Text('Jenis Mutasi: ${keluarga.jenisMutasi}', style: const TextStyle(fontSize: 14)),
+            Text(
+              'Jenis Mutasi: ${keluarga.jenisMutasi}',
+              style: const TextStyle(fontSize: 14),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
+          ),
         ],
       ),
     );
@@ -232,7 +255,11 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
               ),
               IconButton(
                 onPressed: () => _showDetailDialog(context, keluarga),
-                icon: const Icon(Icons.visibility, size: 18, color: Colors.grey),
+                icon: const Icon(
+                  Icons.visibility,
+                  size: 18,
+                  color: Colors.grey,
+                ),
                 tooltip: 'Lihat Detail',
               ),
             ],

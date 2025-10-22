@@ -60,7 +60,10 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
       backgroundColor: statusColor,
       leading: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          shape: BoxShape.circle,
+        ),
         child: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
@@ -96,7 +99,10 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 3),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 3,
+                        ),
                       ),
                       child: const Icon(
                         Icons.person_add_alt_1_rounded,
@@ -106,7 +112,10 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -150,7 +159,11 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Foto Identitas',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 16),
           Center(
@@ -171,11 +184,18 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.person_rounded, size: 80, color: Colors.grey[400]),
+                        Icon(
+                          Icons.person_rounded,
+                          size: 80,
+                          color: Colors.grey[400],
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           'Foto tidak tersedia',
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ],
                     ),
@@ -208,17 +228,33 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Informasi Pendaftar',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 20),
-          _buildInfoItem(Icons.person_outline, 'Nama Lengkap', warga.nama, Colors.blue),
+          _buildInfoItem(
+            Icons.person_outline,
+            'Nama Lengkap',
+            warga.nama,
+            Colors.blue,
+          ),
           const SizedBox(height: 16),
           _buildInfoItem(Icons.badge_outlined, 'NIK', warga.nik, Colors.purple),
           const SizedBox(height: 16),
-          _buildInfoItem(Icons.email_outlined, 'Email', warga.email, Colors.orange),
+          _buildInfoItem(
+            Icons.email_outlined,
+            'Email',
+            warga.email,
+            Colors.orange,
+          ),
           const SizedBox(height: 16),
           _buildInfoItem(
-            warga.jenisKelamin == 'Laki-laki' ? Icons.male_rounded : Icons.female_rounded,
+            warga.jenisKelamin == 'Laki-laki'
+                ? Icons.male_rounded
+                : Icons.female_rounded,
             'Jenis Kelamin',
             warga.jenisKelamin,
             warga.jenisKelamin == 'Laki-laki' ? Colors.blue : Colors.pink,
@@ -228,7 +264,12 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String label, String value, Color color) {
+  Widget _buildInfoItem(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -317,7 +358,11 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   warga.statusRegistrasi,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: statusColor),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: statusColor,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -404,13 +449,23 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
         ],
       );
     } else {
-      return _buildActionButton('Ubah Status', Icons.edit_outlined, Colors.blue, () {
-        // TODO: Navigate to edit status page
-      });
+      return _buildActionButton(
+        'Ubah Status',
+        Icons.edit_outlined,
+        Colors.blue,
+        () {
+          // TODO: Navigate to edit status page
+        },
+      );
     }
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -427,7 +482,11 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               label,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
             ),
           ],
         ),
@@ -435,12 +494,19 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
     );
   }
 
-  void _showConfirmDialog(BuildContext context, String title, String message, Color color) {
+  void _showConfirmDialog(
+    BuildContext context,
+    String title,
+    String message,
+    Color color,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: Row(
             children: [
               Container(
@@ -452,7 +518,9 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
                 child: Icon(Icons.help_outline, color: color, size: 24),
               ),
               const SizedBox(width: 12),
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 18))),
+              Expanded(
+                child: Text(title, style: const TextStyle(fontSize: 18)),
+              ),
             ],
           ),
           content: Text(message),
@@ -461,7 +529,10 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Batal',
-                style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             ElevatedButton(
@@ -472,12 +543,20 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: color,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
               ),
               child: const Text(
                 'Ya, Lanjutkan',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

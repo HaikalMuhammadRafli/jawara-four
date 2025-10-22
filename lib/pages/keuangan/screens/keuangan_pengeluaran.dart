@@ -4,15 +4,17 @@ import '../models/pengeluaran_model.dart';
 
 // ==================== DEFINISI WARNA ====================
 // Palet warna monokromatik biru untuk konsistensi desain
-const Color primaryBlue = Color(0xFF1E88E5);     // Biru utama #1E88E5
-const Color darkBlue = Color(0xFF1565C0);        // Biru gelap untuk emphasis
-const Color lightBlue = Color(0xFFE3F2FD);       // Biru sangat muda untuk background
+const Color primaryBlue = Color(0xFF1E88E5); // Biru utama #1E88E5
+const Color darkBlue = Color(0xFF1565C0); // Biru gelap untuk emphasis
+const Color lightBlue = Color(0xFFE3F2FD); // Biru sangat muda untuk background
 const Color backgroundWhite = Color(0xFFFFFFFF); // Putih untuk card
-const Color backgroundGray = Color(0xFFF8F9FA);  // Abu-abu lembut untuk background
-const Color textPrimary = Color(0xFF212121);     // Hitam untuk teks utama
-const Color textSecondary = Color(0xFF757575);   // Abu-abu untuk teks sekunder
-const Color textTertiary = Color(0xFF9E9E9E);    // Abu-abu muda untuk teks tersier
-const Color dividerGray = Color(0xFFE0E0E0);     // Abu-abu untuk border/divider
+const Color backgroundGray = Color(
+  0xFFF8F9FA,
+); // Abu-abu lembut untuk background
+const Color textPrimary = Color(0xFF212121); // Hitam untuk teks utama
+const Color textSecondary = Color(0xFF757575); // Abu-abu untuk teks sekunder
+const Color textTertiary = Color(0xFF9E9E9E); // Abu-abu muda untuk teks tersier
+const Color dividerGray = Color(0xFFE0E0E0); // Abu-abu untuk border/divider
 
 class KeuanganPengeluaranPage extends StatelessWidget {
   const KeuanganPengeluaranPage({super.key});
@@ -20,7 +22,9 @@ class KeuanganPengeluaranPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFFFFFFF), // Background putih untuk keseluruhan halaman
+      color: const Color(
+        0xFFFFFFFF,
+      ), // Background putih untuk keseluruhan halaman
       child: Stack(
         children: [
           Column(
@@ -71,10 +75,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
       decoration: BoxDecoration(
         color: backgroundWhite,
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -208,10 +209,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -431,11 +429,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 17,
-                color: color,
-              ),
+              Icon(icon, size: 17, color: color),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -489,17 +483,17 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           ),
           content: const Text(
             'Fitur tambah pengeluaran akan segera tersedia',
-            style: TextStyle(
-              fontSize: 14,
-              color: textSecondary,
-            ),
+            style: TextStyle(fontSize: 14, color: textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
                 backgroundColor: primaryBlue,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

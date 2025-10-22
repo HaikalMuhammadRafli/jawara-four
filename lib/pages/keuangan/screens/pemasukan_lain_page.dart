@@ -20,8 +20,7 @@ class PemasukanLainPage extends StatelessWidget {
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               backgroundColor: Colors.blue,
               child: const Icon(Icons.add, color: Colors.white),
             ),
@@ -31,14 +30,13 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildPemasukanList() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: pemasukanMock.length,
-      itemBuilder: (context, index) => _buildPemasukanCard(pemasukanMock[index]),
+      itemBuilder: (context, index) =>
+          _buildPemasukanCard(pemasukanMock[index]),
     );
   }
 
@@ -85,10 +83,7 @@ class PemasukanLainPage extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 pemasukan.kategori,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
               ),
             ],
           ),
@@ -125,16 +120,42 @@ class PemasukanLainPage extends StatelessWidget {
   Widget _buildPemasukanActions(Pemasukan pemasukan) {
     return Row(
       children: [
-        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', Colors.grey, pemasukan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.visibility_outlined,
+            'Lihat',
+            Colors.grey,
+            pemasukan,
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue, pemasukan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.edit_outlined,
+            'Edit',
+            Colors.blue,
+            pemasukan,
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red, pemasukan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.delete_outline,
+            'Hapus',
+            Colors.red,
+            pemasukan,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Pemasukan pemasukan) {
+  Widget _buildSimpleActionButton(
+    IconData icon,
+    String label,
+    Color color,
+    Pemasukan pemasukan,
+  ) {
     return Builder(
       builder: (context) => GestureDetector(
         onTap: () {
@@ -142,7 +163,8 @@ class PemasukanLainPage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PemasukanLainDetailPage(pemasukan: pemasukan),
+                builder: (context) =>
+                    PemasukanLainDetailPage(pemasukan: pemasukan),
               ),
             );
           }

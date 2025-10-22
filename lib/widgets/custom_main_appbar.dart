@@ -13,9 +13,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
       margin: const EdgeInsets.only(top: 30),
       height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-      ),
+      decoration: const BoxDecoration(color: AppColors.background),
       child: Row(
         children: [
           Row(
@@ -25,7 +23,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primaryBlue, AppColors.hoverBlue],
+                    colors: [AppColors.primary, AppColors.primaryDark],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -47,14 +45,14 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primaryText,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
                     'RW Management',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.descriptionText,
+                      color: AppColors.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -62,9 +60,9 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ],
           ),
-          
+
           const Spacer(),
-          
+
           // Notification dan Profile
           Row(
             children: [
@@ -73,7 +71,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.lightGray,
+                  color: AppColors.backgroundGray,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Stack(
@@ -81,7 +79,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                     Center(
                       child: Icon(
                         Icons.notifications_outlined,
-                        color: AppColors.primaryText,
+                        color: AppColors.textPrimary,
                         size: 20,
                       ),
                     ),
@@ -101,7 +99,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(width: 12),
 
               GestureDetector(
@@ -119,7 +117,10 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       // ignore: deprecated_member_use
-                      colors: [AppColors.primaryBlue, AppColors.primaryBlue.withOpacity(0.9)],
+                      colors: [
+                        AppColors.primary,
+                        AppColors.primary.withOpacity(0.9),
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),

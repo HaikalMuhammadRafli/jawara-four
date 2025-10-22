@@ -41,7 +41,9 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: backgroundWhite,
-        border: Border(bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5)),
+        border: Border(
+          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
+        ),
       ),
       child: Column(
         children: [
@@ -50,7 +52,11 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             decoration: InputDecoration(
               hintText: 'Cari pengirim atau judul...',
               hintStyle: TextStyle(color: textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: textSecondary, size: 22),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: dividerGray.withOpacity(0.15),
               border: OutlineInputBorder(
@@ -61,7 +67,10 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: primaryBlue, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -117,7 +126,8 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           _searchQuery.isEmpty ||
           i.pengirim.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           i.judul.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesStatus = _selectedStatus == 'Semua' || i.status == _selectedStatus;
+      final matchesStatus =
+          _selectedStatus == 'Semua' || i.status == _selectedStatus;
       return matchesQuery && matchesStatus;
     }).toList();
 
@@ -126,11 +136,19 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox_rounded, size: 80, color: textSecondary.withOpacity(0.3)),
+            Icon(
+              Icons.inbox_rounded,
+              size: 80,
+              color: textSecondary.withOpacity(0.3),
+            ),
             const SizedBox(height: 16),
             Text(
               'Tidak ada data aspirasi',
-              style: TextStyle(fontSize: 16, color: textSecondary, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 16,
+                color: textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -178,14 +196,24 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [softPurple.withOpacity(0.2), softPurple.withOpacity(0.1)],
+                    colors: [
+                      softPurple.withOpacity(0.2),
+                      softPurple.withOpacity(0.1),
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: softPurple.withOpacity(0.25), width: 1.5),
+                  border: Border.all(
+                    color: softPurple.withOpacity(0.25),
+                    width: 1.5,
+                  ),
                 ),
-                child: Icon(Icons.mail_outline_rounded, color: softPurple, size: 24),
+                child: Icon(
+                  Icons.mail_outline_rounded,
+                  color: softPurple,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -205,7 +233,11 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        Icon(Icons.person_outline_rounded, size: 16, color: textSecondary),
+                        Icon(
+                          Icons.person_outline_rounded,
+                          size: 16,
+                          color: textSecondary,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -223,11 +255,17 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: statusColor.withOpacity(0.2), width: 1),
+                  border: Border.all(
+                    color: statusColor.withOpacity(0.2),
+                    width: 1,
+                  ),
                 ),
                 child: Text(
                   item.status,
@@ -250,11 +288,19 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             ),
             child: Row(
               children: [
-                Icon(Icons.calendar_today_rounded, size: 14, color: textSecondary),
+                Icon(
+                  Icons.calendar_today_rounded,
+                  size: 14,
+                  color: textSecondary,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   item.tanggalDibuat,
-                  style: TextStyle(fontSize: 12, color: textSecondary, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -263,9 +309,19 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue, item),
+              _buildActionButton(
+                'Detail',
+                Icons.visibility_outlined,
+                primaryBlue,
+                item,
+              ),
               const SizedBox(width: 8),
-              _buildActionButton('Proses', Icons.edit_outlined, const Color(0xFFFB8C00), item),
+              _buildActionButton(
+                'Proses',
+                Icons.edit_outlined,
+                const Color(0xFFFB8C00),
+                item,
+              ),
             ],
           ),
         ],
@@ -273,7 +329,12 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, InformasiAspirasi item) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    InformasiAspirasi item,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
