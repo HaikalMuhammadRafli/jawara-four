@@ -28,14 +28,16 @@ class IuranTagihanPage extends StatelessWidget {
   }
 
   Widget _buildTagihanCard(Tagihan tagihan) {
-    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : AppColors.prompt;
+    final statusColor = tagihan.status == 'Lunas'
+        ? AppColors.success
+        : AppColors.warning;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.cardBorder, width: 1),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -66,7 +68,7 @@ class IuranTagihanPage extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primaryText,
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -74,7 +76,7 @@ class IuranTagihanPage extends StatelessWidget {
                 tagihan.kategori,
                 style: const TextStyle(
                   fontSize: 13,
-                  color: AppColors.descriptionText,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -112,11 +114,32 @@ class IuranTagihanPage extends StatelessWidget {
   Widget _buildActionButtons(Tagihan tagihan) {
     return Row(
       children: [
-        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', AppColors.descriptionText, tagihan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.visibility_outlined,
+            'Lihat',
+            AppColors.textSecondary,
+            tagihan,
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', AppColors.primaryBlue, tagihan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.edit_outlined,
+            'Edit',
+            AppColors.primary,
+            tagihan,
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', AppColors.error, tagihan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.delete_outline,
+            'Hapus',
+            AppColors.error,
+            tagihan,
+          ),
+        ),
       ],
     );
   }
@@ -129,7 +152,7 @@ class IuranTagihanPage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontSize: 11,
-            color: AppColors.descriptionText,
+            color: AppColors.textSecondary,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -139,14 +162,19 @@ class IuranTagihanPage extends StatelessWidget {
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: AppColors.primaryText,
+            color: AppColors.textPrimary,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Tagihan tagihan) {
+  Widget _buildSimpleActionButton(
+    IconData icon,
+    String label,
+    Color color,
+    Tagihan tagihan,
+  ) {
     return Builder(
       builder: (context) => GestureDetector(
         onTap: () {

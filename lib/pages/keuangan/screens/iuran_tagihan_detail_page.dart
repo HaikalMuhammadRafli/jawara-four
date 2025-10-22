@@ -5,10 +5,7 @@ import '../models/tagihan_model.dart';
 class IuranTagihanDetailPage extends StatelessWidget {
   final Tagihan tagihan;
 
-  const IuranTagihanDetailPage({
-    super.key,
-    required this.tagihan,
-  });
+  const IuranTagihanDetailPage({super.key, required this.tagihan});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +23,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: AppColors.primaryText,
+            color: AppColors.textPrimary,
           ),
         ),
         centerTitle: true,
@@ -50,14 +47,16 @@ class IuranTagihanDetailPage extends StatelessWidget {
   }
 
   Widget _buildHeaderCard() {
-    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : AppColors.prompt;
-    
+    final statusColor = tagihan.status == 'Lunas'
+        ? AppColors.success
+        : AppColors.warning;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder, width: 1),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,11 +69,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   color: statusColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  Icons.receipt_long,
-                  color: statusColor,
-                  size: 24,
-                ),
+                child: Icon(Icons.receipt_long, color: statusColor, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -92,16 +87,16 @@ class IuranTagihanDetailPage extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       tagihan.kategori,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
@@ -128,7 +123,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder, width: 1),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +133,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 16),
@@ -160,19 +155,28 @@ class IuranTagihanDetailPage extends StatelessWidget {
           const SizedBox(height: 12),
           _buildInfoRow('Metode Pembayaran', tagihan.metodePembayaran),
           const SizedBox(height: 12),
-          _buildInfoRow('Bukti', tagihan.bukti.isEmpty ? 'Tidak ada' : tagihan.bukti),
+          _buildInfoRow(
+            'Bukti',
+            tagihan.bukti.isEmpty ? 'Tidak ada' : tagihan.bukti,
+          ),
         ],
       ),
     );
   }
 
   Widget _buildStatusCard() {
-    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : 
-                      tagihan.status == 'Belum Dibayar' ? Colors.orange : AppColors.prompt;
-    final statusIcon = tagihan.status == 'Lunas' ? Icons.check_circle : 
-                      tagihan.status == 'Belum Dibayar' ? Icons.schedule : Icons.schedule;
-    final statusMessage = tagihan.status == 'Lunas' 
-        ? 'Tagihan ini telah dibayar lunas' 
+    final statusColor = tagihan.status == 'Lunas'
+        ? AppColors.success
+        : tagihan.status == 'Belum Dibayar'
+        ? Colors.orange
+        : AppColors.warning;
+    final statusIcon = tagihan.status == 'Lunas'
+        ? Icons.check_circle
+        : tagihan.status == 'Belum Dibayar'
+        ? Icons.schedule
+        : Icons.schedule;
+    final statusMessage = tagihan.status == 'Lunas'
+        ? 'Tagihan ini telah dibayar lunas'
         : tagihan.status == 'Belum Dibayar'
         ? 'Tagihan ini belum dibayar'
         : 'Tagihan ini belum dibayar';
@@ -186,11 +190,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            statusIcon,
-            color: statusColor,
-            size: 24,
-          ),
+          Icon(statusIcon, color: statusColor, size: 24),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -201,7 +201,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primaryText,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -209,7 +209,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   statusMessage,
                   style: TextStyle(
                     fontSize: 12,
-                    color: AppColors.descriptionText,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -228,17 +228,14 @@ class IuranTagihanDetailPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFFFFFFF),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.cardBorder, width: 1),
+            border: Border.all(color: AppColors.divider, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Tulis alasan penolakan...',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.descriptionText,
-                ),
+                style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 8),
               Container(
@@ -253,10 +250,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   expands: true,
                   decoration: InputDecoration(
                     hintText: 'Tulis alasan penolakan...',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 14,
-                    ),
+                    hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(12),
                   ),
@@ -362,7 +356,9 @@ class IuranTagihanDetailPage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Setujui Tagihan'),
-          content: const Text('Apakah Anda yakin ingin menyetujui tagihan ini?'),
+          content: const Text(
+            'Apakah Anda yakin ingin menyetujui tagihan ini?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -407,15 +403,11 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   const SnackBar(content: Text('Tagihan berhasil ditolak')),
                 );
               },
-              child: const Text(
-                'Tolak',
-                style: TextStyle(color: Colors.pink),
-              ),
+              child: const Text('Tolak', style: TextStyle(color: Colors.pink)),
             ),
           ],
         );
       },
     );
   }
-
 }

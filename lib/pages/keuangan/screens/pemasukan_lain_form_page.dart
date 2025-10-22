@@ -462,6 +462,7 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           initialValue: value,
+          isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
@@ -492,6 +493,7 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
                   color: textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             );
           }).toList(),

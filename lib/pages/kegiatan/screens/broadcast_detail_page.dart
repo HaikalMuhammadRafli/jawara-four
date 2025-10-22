@@ -47,7 +47,10 @@ class BroadcastDetailPage extends StatelessWidget {
       backgroundColor: broadcast.color,
       leading: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          shape: BoxShape.circle,
+        ),
         child: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
@@ -57,7 +60,10 @@ class BroadcastDetailPage extends StatelessWidget {
       actions: [
         Container(
           margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            shape: BoxShape.circle,
+          ),
           child: IconButton(
             onPressed: () {
               // TODO: Implement bookmark functionality
@@ -81,7 +87,11 @@ class BroadcastDetailPage extends StatelessWidget {
               Positioned(
                 right: -50,
                 top: -50,
-                child: Icon(broadcast.icon, size: 200, color: Colors.white.withOpacity(0.1)),
+                child: Icon(
+                  broadcast.icon,
+                  size: 200,
+                  color: Colors.white.withOpacity(0.1),
+                ),
               ),
               Center(
                 child: Column(
@@ -92,13 +102,23 @@ class BroadcastDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 3),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 3,
+                        ),
                       ),
-                      child: Icon(broadcast.icon, size: 52, color: Colors.white),
+                      child: Icon(
+                        broadcast.icon,
+                        size: 52,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -244,7 +264,11 @@ class BroadcastDetailPage extends StatelessWidget {
               children: [
                 const Text(
                   'Pengirim',
-                  style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -264,7 +288,11 @@ class BroadcastDetailPage extends StatelessWidget {
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.verified_user, color: Colors.blue, size: 20),
+            child: const Icon(
+              Icons.verified_user,
+              color: Colors.blue,
+              size: 20,
+            ),
           ),
         ],
       ),
@@ -294,7 +322,11 @@ class BroadcastDetailPage extends StatelessWidget {
               const SizedBox(width: 8),
               const Text(
                 'Isi Pesan',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
             ],
           ),
@@ -308,7 +340,11 @@ class BroadcastDetailPage extends StatelessWidget {
             ),
             child: Text(
               broadcast.nama,
-              style: TextStyle(fontSize: 15, color: Colors.grey[800], height: 1.6),
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey[800],
+                height: 1.6,
+              ),
             ),
           ),
         ],
@@ -335,7 +371,11 @@ class BroadcastDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Informasi Broadcast',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 20),
           _buildMetadataItem(
@@ -352,13 +392,23 @@ class BroadcastDetailPage extends StatelessWidget {
             Colors.green,
           ),
           const SizedBox(height: 16),
-          _buildMetadataItem(Icons.people_outline, 'Penerima', 'Semua anggota RT', Colors.blue),
+          _buildMetadataItem(
+            Icons.people_outline,
+            'Penerima',
+            'Semua anggota RT',
+            Colors.blue,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMetadataItem(IconData icon, String label, String value, Color color) {
+  Widget _buildMetadataItem(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -412,15 +462,25 @@ class BroadcastDetailPage extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _buildActionButton('Balas', Icons.reply_outlined, Colors.blue, () {
-                // TODO: Navigate to reply page
-              }),
+              child: _buildActionButton(
+                'Balas',
+                Icons.reply_outlined,
+                Colors.blue,
+                () {
+                  // TODO: Navigate to reply page
+                },
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildActionButton('Teruskan', Icons.forward_outlined, Colors.green, () {
-                // TODO: Implement forward functionality
-              }),
+              child: _buildActionButton(
+                'Teruskan',
+                Icons.forward_outlined,
+                Colors.green,
+                () {
+                  // TODO: Implement forward functionality
+                },
+              ),
             ),
           ],
         ),
@@ -428,15 +488,25 @@ class BroadcastDetailPage extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _buildActionButton('Edit', Icons.edit_outlined, Colors.orange, () {
-                // TODO: Navigate to edit page
-              }),
+              child: _buildActionButton(
+                'Edit',
+                Icons.edit_outlined,
+                Colors.orange,
+                () {
+                  // TODO: Navigate to edit page
+                },
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildActionButton('Hapus', Icons.delete_outline, Colors.red, () {
-                _showDeleteDialog(context);
-              }),
+              child: _buildActionButton(
+                'Hapus',
+                Icons.delete_outline,
+                Colors.red,
+                () {
+                  _showDeleteDialog(context);
+                },
+              ),
             ),
           ],
         ),
@@ -444,7 +514,12 @@ class BroadcastDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -461,7 +536,11 @@ class BroadcastDetailPage extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               label,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
             ),
           ],
         ),
@@ -474,7 +553,9 @@ class BroadcastDetailPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: Row(
             children: [
               Container(
@@ -483,7 +564,11 @@ class BroadcastDetailPage extends StatelessWidget {
                   color: Colors.red.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.warning_outlined, color: Colors.red, size: 24),
+                child: const Icon(
+                  Icons.warning_outlined,
+                  color: Colors.red,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 12),
               const Text('Hapus Broadcast', style: TextStyle(fontSize: 18)),
@@ -497,7 +582,10 @@ class BroadcastDetailPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Batal',
-                style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             ElevatedButton(
@@ -508,12 +596,20 @@ class BroadcastDetailPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
               ),
               child: const Text(
                 'Hapus',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

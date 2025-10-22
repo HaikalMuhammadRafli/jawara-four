@@ -4,10 +4,7 @@ import '../models/pemasukan_model.dart';
 class PemasukanLainDetailPage extends StatelessWidget {
   final Pemasukan pemasukan;
 
-  const PemasukanLainDetailPage({
-    super.key,
-    required this.pemasukan,
-  });
+  const PemasukanLainDetailPage({super.key, required this.pemasukan});
 
   @override
   Widget build(BuildContext context) {
@@ -89,16 +86,16 @@ class PemasukanLainDetailPage extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       pemasukan.kategori,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.green.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
@@ -165,11 +162,7 @@ class PemasukanLainDetailPage extends StatelessWidget {
       ),
       child: const Row(
         children: [
-          Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 24,
-          ),
+          Icon(Icons.check_circle, color: Colors.green, size: 24),
           SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -186,10 +179,7 @@ class PemasukanLainDetailPage extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(
                   'Pemasukan telah tercatat',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
@@ -297,7 +287,9 @@ class PemasukanLainDetailPage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Hapus Pemasukan'),
-          content: const Text('Apakah Anda yakin ingin menghapus pemasukan ini?'),
+          content: const Text(
+            'Apakah Anda yakin ingin menghapus pemasukan ini?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -308,10 +300,7 @@ class PemasukanLainDetailPage extends StatelessWidget {
                 Navigator.of(context).pop();
                 // TODO: Implement delete functionality
               },
-              child: const Text(
-                'Hapus',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Hapus', style: TextStyle(color: Colors.red)),
             ),
           ],
         );

@@ -62,7 +62,10 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
       backgroundColor: statusColor,
       leading: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          shape: BoxShape.circle,
+        ),
         child: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
@@ -72,7 +75,10 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
       actions: [
         Container(
           margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            shape: BoxShape.circle,
+          ),
           child: IconButton(
             onPressed: () {
               // TODO: Implement bookmark functionality
@@ -96,7 +102,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
               Positioned(
                 right: -50,
                 top: -50,
-                child: Icon(Icons.message_rounded, size: 200, color: Colors.white.withOpacity(0.1)),
+                child: Icon(
+                  Icons.message_rounded,
+                  size: 200,
+                  color: Colors.white.withOpacity(0.1),
+                ),
               ),
               Center(
                 child: Column(
@@ -107,13 +117,23 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 3),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 3,
+                        ),
                       ),
-                      child: const Icon(Icons.message_rounded, size: 52, color: Colors.white),
+                      child: const Icon(
+                        Icons.message_rounded,
+                        size: 52,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -159,7 +179,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
             children: [
               const Text(
                 'Judul',
-                style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -200,7 +224,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
               color: const Color(0xFF7E57C2).withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(Icons.person_outline, color: Color(0xFF7E57C2), size: 28),
+            child: const Icon(
+              Icons.person_outline,
+              color: Color(0xFF7E57C2),
+              size: 28,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -209,7 +237,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
               children: [
                 const Text(
                   'Pengirim',
-                  style: TextStyle(fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -229,7 +261,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
               color: Colors.blue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.verified_user, color: Colors.blue, size: 20),
+            child: const Icon(
+              Icons.verified_user,
+              color: Colors.blue,
+              size: 20,
+            ),
           ),
         ],
       ),
@@ -255,11 +291,19 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.description_outlined, color: const Color(0xFF7E57C2), size: 22),
+              Icon(
+                Icons.description_outlined,
+                color: const Color(0xFF7E57C2),
+                size: 22,
+              ),
               const SizedBox(width: 8),
               const Text(
                 'Isi Pesan',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
             ],
           ),
@@ -273,7 +317,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
             ),
             child: const Text(
               'Isi pesan atau aspirasi dari warga akan ditampilkan di sini. Saat ini data hanya berisi judul, pengirim, tanggal, dan status. Anda dapat menambahkan field "isi" atau "deskripsi" pada model untuk menampilkan konten lengkap aspirasi.',
-              style: TextStyle(fontSize: 15, color: Colors.black87, height: 1.6),
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.black87,
+                height: 1.6,
+              ),
             ),
           ),
         ],
@@ -300,7 +348,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Informasi Status',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 20),
           _buildMetadataItem(
@@ -310,7 +362,12 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
             Colors.orange,
           ),
           const SizedBox(height: 16),
-          _buildMetadataItem(_getStatusIcon(), 'Status', aspirasi.status, statusColor),
+          _buildMetadataItem(
+            _getStatusIcon(),
+            'Status',
+            aspirasi.status,
+            statusColor,
+          ),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(16),
@@ -337,7 +394,12 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMetadataItem(IconData icon, String label, String value, Color color) {
+  Widget _buildMetadataItem(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -451,27 +513,47 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildActionButton('Balas Pesan', Icons.reply_outlined, Colors.blue, () {
-            // TODO: Navigate to reply page
-          }),
+          _buildActionButton(
+            'Balas Pesan',
+            Icons.reply_outlined,
+            Colors.blue,
+            () {
+              // TODO: Navigate to reply page
+            },
+          ),
         ],
       );
     } else {
       return Column(
         children: [
-          _buildActionButton('Balas Pesan', Icons.reply_outlined, Colors.blue, () {
-            // TODO: Navigate to reply page
-          }),
+          _buildActionButton(
+            'Balas Pesan',
+            Icons.reply_outlined,
+            Colors.blue,
+            () {
+              // TODO: Navigate to reply page
+            },
+          ),
           const SizedBox(height: 12),
-          _buildActionButton('Ubah Status', Icons.edit_outlined, Colors.orange, () {
-            // TODO: Navigate to edit status page
-          }),
+          _buildActionButton(
+            'Ubah Status',
+            Icons.edit_outlined,
+            Colors.orange,
+            () {
+              // TODO: Navigate to edit status page
+            },
+          ),
         ],
       );
     }
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -488,7 +570,11 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               label,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
             ),
           ],
         ),
@@ -496,12 +582,19 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
     );
   }
 
-  void _showConfirmDialog(BuildContext context, String title, String message, Color color) {
+  void _showConfirmDialog(
+    BuildContext context,
+    String title,
+    String message,
+    Color color,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: Row(
             children: [
               Container(
@@ -513,7 +606,9 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
                 child: Icon(Icons.help_outline, color: color, size: 24),
               ),
               const SizedBox(width: 12),
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 18))),
+              Expanded(
+                child: Text(title, style: const TextStyle(fontSize: 18)),
+              ),
             ],
           ),
           content: Text(message),
@@ -522,7 +617,10 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Batal',
-                style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             ElevatedButton(
@@ -533,12 +631,20 @@ class InformasiAspirasiDetailPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: color,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
               ),
               child: const Text(
                 'Ya, Lanjutkan',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

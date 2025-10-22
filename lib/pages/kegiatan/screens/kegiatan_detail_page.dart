@@ -45,7 +45,10 @@ class KegiatanDetailPage extends StatelessWidget {
       backgroundColor: kegiatan.color,
       leading: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          shape: BoxShape.circle,
+        ),
         child: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
@@ -66,7 +69,11 @@ class KegiatanDetailPage extends StatelessWidget {
               Positioned(
                 right: -50,
                 top: -50,
-                child: Icon(kegiatan.icon, size: 200, color: Colors.white.withOpacity(0.1)),
+                child: Icon(
+                  kegiatan.icon,
+                  size: 200,
+                  color: Colors.white.withOpacity(0.1),
+                ),
               ),
               Center(
                 child: Column(
@@ -77,13 +84,19 @@ class KegiatanDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 2,
+                        ),
                       ),
                       child: Icon(kegiatan.icon, size: 48, color: Colors.white),
                     ),
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -192,7 +205,11 @@ class KegiatanDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Informasi Kegiatan',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 20),
           _buildInfoItem(
@@ -209,13 +226,23 @@ class KegiatanDetailPage extends StatelessWidget {
             Colors.orange,
           ),
           const SizedBox(height: 16),
-          _buildInfoItem(Icons.category_outlined, 'Kategori', kegiatan.kategori, Colors.purple),
+          _buildInfoItem(
+            Icons.category_outlined,
+            'Kategori',
+            kegiatan.kategori,
+            Colors.purple,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String label, String value, Color color) {
+  Widget _buildInfoItem(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -282,7 +309,11 @@ class KegiatanDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Status Kegiatan',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 20),
           _buildTimelineItem(
@@ -329,7 +360,11 @@ class KegiatanDetailPage extends StatelessWidget {
               color: isCompleted ? color.withOpacity(0.1) : Colors.grey[100],
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: isCompleted ? color : Colors.grey, size: 20),
+            child: Icon(
+              icon,
+              color: isCompleted ? color : Colors.grey,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -366,22 +401,38 @@ class KegiatanDetailPage extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _buildActionButton('Edit Kegiatan', Icons.edit_outlined, Colors.blue, () {
-                // TODO: Navigate to edit page
-              }),
+              child: _buildActionButton(
+                'Edit Kegiatan',
+                Icons.edit_outlined,
+                Colors.blue,
+                () {
+                  // TODO: Navigate to edit page
+                },
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildActionButton('Bagikan', Icons.share_outlined, Colors.green, () {
-                // TODO: Implement share functionality
-              }),
+              child: _buildActionButton(
+                'Bagikan',
+                Icons.share_outlined,
+                Colors.green,
+                () {
+                  // TODO: Implement share functionality
+                },
+              ),
             ),
           ],
         ),
         const SizedBox(height: 12),
-        _buildActionButton('Hapus Kegiatan', Icons.delete_outline, Colors.red, () {
-          _showDeleteDialog(context);
-        }, fullWidth: true),
+        _buildActionButton(
+          'Hapus Kegiatan',
+          Icons.delete_outline,
+          Colors.red,
+          () {
+            _showDeleteDialog(context);
+          },
+          fullWidth: true,
+        ),
       ],
     );
   }
@@ -409,7 +460,11 @@ class KegiatanDetailPage extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               label,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
             ),
           ],
         ),
@@ -422,7 +477,9 @@ class KegiatanDetailPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: Row(
             children: [
               Container(
@@ -431,7 +488,11 @@ class KegiatanDetailPage extends StatelessWidget {
                   color: Colors.red.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.warning_outlined, color: Colors.red, size: 24),
+                child: const Icon(
+                  Icons.warning_outlined,
+                  color: Colors.red,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 12),
               const Text('Hapus Kegiatan', style: TextStyle(fontSize: 18)),
@@ -445,7 +506,10 @@ class KegiatanDetailPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Batal',
-                style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             ElevatedButton(
@@ -456,12 +520,20 @@ class KegiatanDetailPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
               ),
               child: const Text(
                 'Hapus',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

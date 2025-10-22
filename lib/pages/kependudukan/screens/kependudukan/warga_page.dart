@@ -32,10 +32,7 @@ class WargaPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         border: Border(
-          bottom: BorderSide(
-            color: dividerGray.withOpacity(0.6),
-            width: 1.5,
-          ),
+          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
         ),
       ),
       child: Column(
@@ -45,7 +42,11 @@ class WargaPage extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Cari warga...',
               hintStyle: TextStyle(color: textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: textSecondary, size: 22),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: dividerGray.withOpacity(0.15),
               border: OutlineInputBorder(
@@ -56,7 +57,10 @@ class WargaPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: primaryBlue, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -123,10 +127,7 @@ class WargaPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,8 +140,14 @@ class WargaPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: warga.jenisKelamin == 'Laki-laki'
-                        ? [primaryBlue.withOpacity(0.15), primaryBlue.withOpacity(0.05)]
-                        : [const Color(0xFFEC407A).withOpacity(0.15), const Color(0xFFEC407A).withOpacity(0.05)],
+                        ? [
+                            primaryBlue.withOpacity(0.15),
+                            primaryBlue.withOpacity(0.05),
+                          ]
+                        : [
+                            const Color(0xFFEC407A).withOpacity(0.15),
+                            const Color(0xFFEC407A).withOpacity(0.05),
+                          ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -153,11 +160,11 @@ class WargaPage extends StatelessWidget {
                   ),
                 ),
                 child: Icon(
-                  warga.jenisKelamin == 'Laki-laki' 
-                      ? Icons.person_rounded 
+                  warga.jenisKelamin == 'Laki-laki'
+                      ? Icons.person_rounded
                       : Icons.person_outline_rounded,
-                  color: warga.jenisKelamin == 'Laki-laki' 
-                      ? primaryBlue 
+                  color: warga.jenisKelamin == 'Laki-laki'
+                      ? primaryBlue
                       : const Color(0xFFEC407A),
                   size: 24,
                 ),
@@ -190,7 +197,10 @@ class WargaPage extends StatelessWidget {
               ),
               // Badge status
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF43A047).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -237,7 +247,11 @@ class WargaPage extends StatelessWidget {
                   onPressed: () {
                     _showEditDialog(context, warga);
                   },
-                  icon: Icon(Icons.edit_rounded, size: 18, color: textSecondary),
+                  icon: Icon(
+                    Icons.edit_rounded,
+                    size: 18,
+                    color: textSecondary,
+                  ),
                   tooltip: 'Edit',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
@@ -253,7 +267,11 @@ class WargaPage extends StatelessWidget {
                   onPressed: () {
                     _showDetailDialog(context, warga);
                   },
-                  icon: Icon(Icons.visibility_rounded, size: 18, color: primaryBlue),
+                  icon: Icon(
+                    Icons.visibility_rounded,
+                    size: 18,
+                    color: primaryBlue,
+                  ),
                   tooltip: 'Lihat Detail',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
@@ -321,8 +339,9 @@ class WargaPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, 
-                    color: primaryBlue, 
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: primaryBlue,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -346,10 +365,7 @@ class WargaPage extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Tutup',
-              style: TextStyle(
-                color: primaryBlue,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: primaryBlue, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -401,8 +417,9 @@ class WargaPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, 
-                    color: primaryBlue, 
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: primaryBlue,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -426,10 +443,7 @@ class WargaPage extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Tutup',
-              style: TextStyle(
-                color: primaryBlue,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: primaryBlue, fontWeight: FontWeight.w600),
             ),
           ),
         ],

@@ -553,6 +553,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
+          isExpanded: true,
           items: items.map((String item) {
             return DropdownMenuItem<String>(
               value: item,
@@ -563,6 +564,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                   color: textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             );
           }).toList(),

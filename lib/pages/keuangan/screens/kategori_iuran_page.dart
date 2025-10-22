@@ -16,7 +16,6 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-
   Widget _buildKategoriList() {
     return ListView.builder(
       shrinkWrap: true,
@@ -27,7 +26,9 @@ class KategoriIuranPage extends StatelessWidget {
   }
 
   Widget _buildKategoriCard(KategoriIuran kategori) {
-    final statusColor = kategori.status == 'Aktif' ? Colors.green : Colors.orange;
+    final statusColor = kategori.status == 'Aktif'
+        ? Colors.green
+        : Colors.orange;
     final categoryColor = _getCategoryColor(kategori.warna);
 
     return Container(
@@ -41,8 +42,7 @@ class KategoriIuranPage extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
-          onTap: () {
-          },
+          onTap: () {},
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -61,7 +61,11 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-  Widget _buildKategoriHeader(KategoriIuran kategori, Color statusColor, Color categoryColor) {
+  Widget _buildKategoriHeader(
+    KategoriIuran kategori,
+    Color statusColor,
+    Color categoryColor,
+  ) {
     return Row(
       children: [
         Container(
@@ -89,10 +93,7 @@ class KategoriIuranPage extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 kategori.deskripsi,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
@@ -168,9 +169,12 @@ class KategoriIuranPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-          onPressed: () {
-          },
-          icon: const Icon(Icons.visibility_outlined, size: 18, color: Colors.blue),
+          onPressed: () {},
+          icon: const Icon(
+            Icons.visibility_outlined,
+            size: 18,
+            color: Colors.blue,
+          ),
           tooltip: 'Lihat Detail',
         ),
         IconButton(
@@ -186,7 +190,6 @@ class KategoriIuranPage extends StatelessWidget {
       ],
     );
   }
-
 
   Color _getCategoryColor(String colorName) {
     switch (colorName) {
