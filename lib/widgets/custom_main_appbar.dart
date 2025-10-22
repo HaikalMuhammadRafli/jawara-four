@@ -13,9 +13,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
       margin: const EdgeInsets.only(top: 30),
       height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.background,
-      ),
+      decoration: const BoxDecoration(color: AppColors.background),
       child: Row(
         children: [
           Row(
@@ -62,9 +60,9 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ],
           ),
-          
+
           const Spacer(),
-          
+
           // Notification dan Profile
           Row(
             children: [
@@ -101,7 +99,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(width: 12),
 
               GestureDetector(
@@ -119,7 +117,10 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       // ignore: deprecated_member_use
-                      colors: [AppColors.primaryBlue, AppColors.primaryBlue.withOpacity(0.9)],
+                      colors: [
+                        AppColors.primaryBlue,
+                        AppColors.primaryBlue.withOpacity(0.9),
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
