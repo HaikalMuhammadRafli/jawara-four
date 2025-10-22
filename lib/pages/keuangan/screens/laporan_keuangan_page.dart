@@ -89,7 +89,7 @@ class LaporanKeuanganPage extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(28), // UBAH PADDING DALAM CARD: Ubah angka 28
+        padding: const EdgeInsets.all(20), // UBAH PADDING DALAM CARD: Ubah angka 28
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -123,7 +123,7 @@ class LaporanKeuanganPage extends StatelessWidget {
             // --- SALDO AKHIR: Display utama ---
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               // Dekorasi box saldo akhir
               decoration: BoxDecoration(
                 color: backgroundGray, // UBAH BACKGROUND SALDO: Ganti backgroundGray
@@ -184,7 +184,7 @@ class LaporanKeuanganPage extends StatelessWidget {
                 // CARD PEMASUKAN (Kiri)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(16), // UBAH PADDING CARD PEMASUKAN
+                    padding: const EdgeInsets.all(12), // UBAH PADDING CARD PEMASUKAN
                     // Dekorasi card pemasukan (biru lembut)
                     decoration: BoxDecoration(
                       color: primaryBlue.withOpacity(0.08), // UBAH BACKGROUND PEMASUKAN
@@ -244,7 +244,7 @@ class LaporanKeuanganPage extends StatelessWidget {
                 // CARD PENGELUARAN (Kanan)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(16), // UBAH PADDING CARD PENGELUARAN
+                    padding: const EdgeInsets.all(12), // UBAH PADDING CARD PENGELUARAN
                     // Dekorasi card pengeluaran (abu-abu)
                     decoration: BoxDecoration(
                       color: backgroundGray, // UBAH BACKGROUND PENGELUARAN
