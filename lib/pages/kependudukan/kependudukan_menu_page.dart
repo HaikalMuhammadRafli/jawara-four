@@ -37,7 +37,7 @@ class KependudukanMenuPage extends StatelessWidget {
     return Container(
       color: const Color(0xFFFFFFFF), // UBAH DI SINI: Background halaman putih
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24), // UBAH DI SINI: Padding luar halaman
+        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40), // UBAH DI SINI: Padding luar halaman
         child: Column(
           children: [
             _buildWelcomeCard(), // UBAH DI SINI: Card selamat datang dengan gradient biru
@@ -93,7 +93,7 @@ class KependudukanMenuPage extends StatelessWidget {
                     const Text(
                       'Kependudukan RW',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 24,
                         fontWeight: FontWeight.w900,
                         color: textPrimary, // UBAH DI SINI: Warna teks hitam
                         letterSpacing: -0.8,

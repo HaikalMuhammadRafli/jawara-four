@@ -1,170 +1,64 @@
 import 'package:flutter/material.dart';
-
 import '../mocks/pengguna_mocks.dart';
 import '../models/pengguna_model.dart';
 
-class PenggunaPage extends StatefulWidget {
+class PenggunaPage extends StatelessWidget {
   const PenggunaPage({super.key});
 
-  @override
-  State<PenggunaPage> createState() => _PenggunaPageState();
-}
-
-class _PenggunaPageState extends State<PenggunaPage> {
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _roleController = TextEditingController();
-
-  late List<Pengguna> penggunaList;
-
-  @override
-  void initState() {
-    super.initState();
-    penggunaList = List<Pengguna>.from(penggunaMock);
-  }
-
-  @override
-  void dispose() {
-    _namaController.dispose();
-    _emailController.dispose();
-    _roleController.dispose();
-    super.dispose();
-  }
-
-  void _showAddForm() {
-    _namaController.clear();
-    _emailController.clear();
-    _roleController.clear();
-
+  void _showAddForm(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Tambah Pengguna', style: TextStyle(fontWeight: FontWeight.w600)),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _namaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nama Pengguna',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: TextField(
-                  controller: _roleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Role',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                    prefixIcon: Icon(Icons.security),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        content: const Text(
+          'Form tambah pengguna (dummy)\nFungsionalitas belum diaktifkan.',
+          style: TextStyle(fontSize: 14),
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              _namaController.clear();
-              _emailController.clear();
-              _roleController.clear();
-              Navigator.pop(context);
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.grey[600],
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-            child: const Text('Batal'),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
           ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withAlpha((0.8 * 255).round()),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: TextButton(
-              onPressed: () {
-                if (_namaController.text.isNotEmpty &&
-                    _emailController.text.isNotEmpty &&
-                    _roleController.text.isNotEmpty) {
-                  setState(() {
-                    penggunaList.add(
-                      Pengguna(
-                        no: penggunaList.length + 1,
-                        nama: _namaController.text.trim(),
-                        email: _emailController.text.trim(),
-                        role: _roleController.text.trim(),
-                        icon: Icons.person,
-                        color: Colors.blue,
-                      ),
-                    );
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pengguna berhasil ditambahkan'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  _namaController.clear();
-                  _emailController.clear();
-                  _roleController.clear();
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Mohon lengkapi semua field'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: const Text('Simpan'),
-            ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, Pengguna item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Edit Pengguna'),
+        content: Text(
+          'Edit data untuk "${item.nama}" (dummy)\nFungsionalitas belum diaktifkan.',
+          style: const TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, Pengguna item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Hapus Pengguna'),
+        content: Text(
+          'Konfirmasi hapus "${item.nama}" (dummy)\nFungsionalitas belum diaktifkan.',
+          style: const TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
           ),
         ],
       ),
@@ -173,42 +67,81 @@ class _PenggunaPageState extends State<PenggunaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        penggunaList.isEmpty
-            ? _buildEmptyState()
-            : ListView.separated(
-                padding: const EdgeInsets.all(20),
-                itemCount: penggunaList.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
-                itemBuilder: (context, index) {
-                  final item = penggunaList[index];
-                  return _buildPenggunaCard(item);
-                },
-              ),
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: FloatingActionButton(
-              onPressed: _showAddForm,
-              backgroundColor: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
+    final penggunaList = penggunaMock; // hanya data dummy
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Color(0xFF1E88E5),
+            size: 20,
           ),
         ),
-      ],
+        title: const Text(
+          'Manajemen Pengguna',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF212121),
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          penggunaList.isEmpty
+              ? _buildEmptyState()
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: penggunaList.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) {
+                          final item = penggunaList[index];
+                          return _buildPenggunaCard(context, item);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF1E88E5).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: FloatingActionButton(
+                onPressed: () => _showAddForm(context),
+                backgroundColor: const Color(0xFF1E88E5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -237,27 +170,22 @@ class _PenggunaPageState extends State<PenggunaPage> {
     );
   }
 
-  Widget _buildPenggunaCard(Pengguna item) {
+  Widget _buildPenggunaCard(BuildContext context, Pengguna item) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.05 * 255).round()),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
       ),
       child: Column(
         children: [
-          // Header with icon and name
+          // Header
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: item.color.withAlpha((0.1 * 255).round()),
-              borderRadius: const BorderRadius.only(
+            decoration: const BoxDecoration(
+              // No background color for the header; keep rounded corners only
+              color: Colors.transparent,
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
               ),
@@ -269,6 +197,7 @@ class _PenggunaPageState extends State<PenggunaPage> {
                   decoration: BoxDecoration(
                     color: item.color,
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
                   ),
                   child: Icon(item.icon, color: Colors.white, size: 20),
                 ),
@@ -279,25 +208,30 @@ class _PenggunaPageState extends State<PenggunaPage> {
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: Color(0xFF212121),
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: item.color.withAlpha((0.2 * 255).round()),
+                    color: item.color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
                   ),
                   child: Text(
                     item.role,
-                    style: TextStyle(fontWeight: FontWeight.w600, color: item.color, fontSize: 12),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600, 
+                      color: item.color, 
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          // Content
+          // Body
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -305,60 +239,43 @@ class _PenggunaPageState extends State<PenggunaPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.email_outlined, size: 16, color: Colors.grey[600]),
+                    Icon(Icons.email_outlined, size: 16, color: const Color(0xFF757575)),
                     const SizedBox(width: 4),
                     Text(
                       item.email,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: Color(0xFF757575),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Action buttons
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showEditDialog(item);
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.blue[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(Icons.edit_outlined, size: 16),
-                          label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
+                      child: OutlinedButton.icon(
+                        onPressed: () => _showEditDialog(context, item),
+                        icon: const Icon(Icons.edit_outlined, size: 16),
+                        label: const Text('Edit'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF1E88E5),
+                          side: const BorderSide(color: Color(0xFF1E88E5)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showDeleteDialog(item);
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w600)),
+                      child: OutlinedButton.icon(
+                        onPressed: () => _showDeleteDialog(context, item),
+                        icon: const Icon(Icons.delete_outline, size: 16),
+                        label: const Text('Hapus'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFFE53E3E),
+                          side: const BorderSide(color: Color(0xFFE53E3E)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
                     ),
@@ -366,94 +283,6 @@ class _PenggunaPageState extends State<PenggunaPage> {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showEditDialog(Pengguna item) {
-    final namaCtrl = TextEditingController(text: item.nama);
-    final emailCtrl = TextEditingController(text: item.email);
-    final roleCtrl = TextEditingController(text: item.role);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Edit Pengguna'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: namaCtrl,
-              decoration: const InputDecoration(labelText: 'Nama'),
-            ),
-            TextField(
-              controller: emailCtrl,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: roleCtrl,
-              decoration: const InputDecoration(labelText: 'Role'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
-          ElevatedButton(
-            onPressed: () {
-              final nama = namaCtrl.text.trim();
-              final email = emailCtrl.text.trim();
-              final role = roleCtrl.text.trim();
-              if (nama.isNotEmpty && email.isNotEmpty && role.isNotEmpty) {
-                setState(() {
-                  final idx = penggunaList.indexWhere((p) => p.no == item.no);
-                  if (idx != -1) {
-                    penggunaList[idx] = Pengguna(
-                      no: item.no,
-                      nama: nama,
-                      email: email,
-                      role: role,
-                      icon: item.icon,
-                      color: item.color,
-                    );
-                  }
-                });
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Mohon lengkapi semua field')));
-              }
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteDialog(Pengguna item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Hapus Pengguna'),
-        content: Text('Yakin ingin menghapus pengguna "${item.nama}"?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                penggunaList.removeWhere((p) => p.no == item.no);
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${item.nama} telah dihapus')));
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

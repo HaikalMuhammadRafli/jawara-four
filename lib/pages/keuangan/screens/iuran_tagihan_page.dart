@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../colors/app_colors.dart';
 import '../mocks/tagihan_mocks.dart';
 import '../models/tagihan_model.dart';
+import 'iuran_tagihan_detail_page.dart';
 
 class IuranTagihanPage extends StatelessWidget {
   const IuranTagihanPage({super.key});
@@ -36,24 +37,17 @@ class IuranTagihanPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.cardBorder, width: 1),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(tagihan, statusColor),
-                const SizedBox(height: 12),
-                _buildInfoRow(tagihan),
-                const SizedBox(height: 12),
-                _buildActionButtons(),
-              ],
-            ),
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(tagihan, statusColor),
+            const SizedBox(height: 12),
+            _buildInfoRow(tagihan),
+            const SizedBox(height: 12),
+            _buildActionButtons(tagihan),
+          ],
         ),
       ),
     );
@@ -115,14 +109,14 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(Tagihan tagihan) {
     return Row(
       children: [
-        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', AppColors.descriptionText)),
+        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', AppColors.descriptionText, tagihan)),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', AppColors.primaryBlue)),
+        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', AppColors.primaryBlue, tagihan)),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', AppColors.error)),
+        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', AppColors.error, tagihan)),
       ],
     );
   }
@@ -152,29 +146,40 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: color,
+  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Tagihan tagihan) {
+    return Builder(
+      builder: (context) => GestureDetector(
+        onTap: () {
+          if (label == 'Lihat') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => IuranTagihanDetailPage(tagihan: tagihan),
               ),
-            ),
-          ],
+            );
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 18),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
