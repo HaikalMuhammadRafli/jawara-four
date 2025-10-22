@@ -1,7 +1,12 @@
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/pages/dashboard_menu_page.dart';
 import 'package:jawara_four/pages/kegiatan/kegiatan_menu_page.dart';
+import 'package:jawara_four/pages/kegiatan/models/broadcast_model.dart';
+import 'package:jawara_four/pages/kegiatan/models/kegiatan_model.dart';
+import 'package:jawara_four/pages/kegiatan/screens/broadcast_detail_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_detail_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/kependudukan/kependudukan_menu_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/rumah_page.dart';
@@ -19,7 +24,6 @@ import 'package:jawara_four/pages/keuangan/screens/laporan_keuangan_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/pemasukan_lain_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/log_aktifitas_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/pengguna_page.dart';
-import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/login_page.dart';
 import 'package:jawara_four/pages/register_page.dart';
 import 'package:jawara_four/widgets/custom_bottom_navigationbar.dart';
@@ -225,6 +229,22 @@ final GoRouter appRouter = GoRouter(
         appBar: CustomPushAppbar(title: 'Broadcast'),
         child: BroadcastPage(),
       ),
+    ),
+    GoRoute(
+      path: '/kegiatan/detail',
+      name: 'kegiatan-detail',
+      builder: (context, state) {
+        final kegiatan = state.extra as Kegiatan;
+        return KegiatanDetailPage(kegiatan: kegiatan);
+      },
+    ),
+    GoRoute(
+      path: '/broadcast/detail',
+      name: 'broadcast-detail',
+      builder: (context, state) {
+        final broadcast = state.extra as BroadcastItem;
+        return BroadcastDetailPage(broadcast: broadcast);
+      },
     ),
 
     // ===========================================================

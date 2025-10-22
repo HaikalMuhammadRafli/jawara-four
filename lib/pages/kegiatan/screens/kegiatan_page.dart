@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../mocks/kegiatan_mocks.dart';
 import '../models/kegiatan_model.dart';
@@ -250,49 +251,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
   }
 
   void _showDetailDialog(Kegiatan item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.event_rounded, color: primaryBlue, size: 24),
-            const SizedBox(width: 12),
-            const Text(
-              'Detail Kegiatan',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow('Nama', item.nama),
-            const SizedBox(height: 12),
-            _buildDetailRow('Kategori', item.kategori),
-            const SizedBox(height: 12),
-            _buildDetailRow('Penanggung Jawab', item.penanggungJawab),
-            const SizedBox(height: 12),
-            _buildDetailRow('Tanggal', item.tanggal),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(
-              backgroundColor: primaryBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: const Text(
-              'Tutup',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
+    context.pushNamed('kegiatan-detail', extra: item);
   }
 
   void _showEditDialog(Kegiatan item) {
@@ -444,23 +403,6 @@ class _KegiatanPageState extends State<KegiatanPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 12, color: textSecondary, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 15, color: textPrimary, fontWeight: FontWeight.w600),
-        ),
-      ],
     );
   }
 }
