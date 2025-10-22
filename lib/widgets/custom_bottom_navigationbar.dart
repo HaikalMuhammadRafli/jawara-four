@@ -133,15 +133,29 @@ class CustomBottomNavigationbar extends StatelessWidget {
               context,
               Icons.history,
               'Log Aktifitas',
-              'log-aktifitas',
+              () {
+                Navigator.pop(context);
+                context.pushNamed('log-aktifitas');
+              },
             ),
             _buildMenuTile(
               context,
               Icons.supervised_user_circle,
               'Daftar Pengguna',
-              'daftar-pengguna',
+              () {
+                Navigator.pop(context);
+                context.pushNamed('daftar-pengguna');
+              },
             ),
-            _buildMenuTile(context, Icons.logout, 'Log Out', 'logout'),
+            _buildMenuTile(
+              context,
+              Icons.logout,
+              'Log Out',
+              () {
+                Navigator.pop(context);
+                context.goNamed('logout');
+              },
+            ),
           ],
         ),
       ),
@@ -152,15 +166,12 @@ class CustomBottomNavigationbar extends StatelessWidget {
     BuildContext context,
     IconData icon,
     String title,
-    String routeName,
+    VoidCallback onTap,
   ) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
-      onTap: () {
-        Navigator.pop(context);
-        context.goNamed(routeName);
-      },
+      onTap: onTap,
     );
   }
 }
