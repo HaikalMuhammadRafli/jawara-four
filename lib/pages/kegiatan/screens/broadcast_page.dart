@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../mocks/broadcast_mocks.dart';
 import '../models/broadcast_model.dart';
@@ -249,49 +250,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
   }
 
   void _showDetailDialog(BroadcastItem item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.campaign_rounded, color: primaryBlue, size: 24),
-            const SizedBox(width: 12),
-            const Text(
-              'Detail Broadcast',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow('Nama', item.nama),
-            const SizedBox(height: 12),
-            _buildDetailRow('Pengirim', item.pengirim),
-            const SizedBox(height: 12),
-            _buildDetailRow('Tanggal', item.tanggal),
-            const SizedBox(height: 12),
-            _buildDetailRow('Pesan', item.judul),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(
-              backgroundColor: primaryBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: const Text(
-              'Tutup',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
+    context.pushNamed('broadcast-detail', extra: item);
   }
 
   void _showEditDialog(BroadcastItem item) {
@@ -443,23 +402,6 @@ class _BroadcastPageState extends State<BroadcastPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 12, color: textSecondary, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 15, color: textPrimary, fontWeight: FontWeight.w600),
-        ),
-      ],
     );
   }
 }

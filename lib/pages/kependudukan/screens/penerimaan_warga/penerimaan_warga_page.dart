@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../mocks/penerimaan_warga_mocks.dart';
 import '../../models/penerimaan_warga_model.dart';
@@ -248,12 +249,21 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(child: _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue)),
-              const SizedBox(width: 10),
-              Expanded(child: _buildActionButton('Terima', Icons.check_circle_outline, softGreen)),
+              Expanded(
+                child: _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue, w),
+              ),
               const SizedBox(width: 10),
               Expanded(
-                child: _buildActionButton('Tolak', Icons.cancel_outlined, const Color(0xFFE53935)),
+                child: _buildActionButton('Terima', Icons.check_circle_outline, softGreen, w),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildActionButton(
+                  'Tolak',
+                  Icons.cancel_outlined,
+                  const Color(0xFFE53935),
+                  w,
+                ),
               ),
             ],
           ),
@@ -279,12 +289,15 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color) {
+  Widget _buildActionButton(String label, IconData icon, Color color, PenerimaanWarga warga) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          // Handle action
+          if (label == 'Detail') {
+            context.pushNamed('penerimaan-warga-detail', extra: warga);
+          }
+          // Handle other actions
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(
