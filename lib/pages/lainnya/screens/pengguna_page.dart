@@ -70,32 +70,6 @@ class PenggunaPage extends StatelessWidget {
     final penggunaList = penggunaMock; // hanya data dummy
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Color(0xFF1E88E5),
-            size: 20,
-          ),
-        ),
-        title: const Text(
-          'Manajemen Pengguna',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF212121),
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: Stack(
         children: [
           penggunaList.isEmpty
