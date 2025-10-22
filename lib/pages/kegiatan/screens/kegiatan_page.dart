@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 import '../mocks/kegiatan_mocks.dart';
 import '../models/kegiatan_model.dart';
 
+// ==================== DEFINISI WARNA ====================
+const Color primaryBlue = Color(0xFF1E88E5);
+const Color backgroundWhite = Color(0xFFFFFFFF);
+const Color textPrimary = Color(0xFF212121);
+const Color textSecondary = Color(0xFF757575);
+const Color dividerGray = Color(0xFFE0E0E0);
+
 class KegiatanPage extends StatefulWidget {
   const KegiatanPage({super.key});
 
@@ -11,38 +18,6 @@ class KegiatanPage extends StatefulWidget {
 }
 
 class _KegiatanPageState extends State<KegiatanPage> {
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _kategoriController = TextEditingController();
-  final TextEditingController _penanggungJawabController = TextEditingController();
-  final TextEditingController _tanggalController = TextEditingController();
-
-  @override
-  void dispose() {
-    _namaController.dispose();
-    _kategoriController.dispose();
-    _penanggungJawabController.dispose();
-    _tanggalController.dispose();
-    super.dispose();
-  }
-
-  void _showAddForm(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Tambah Kegiatan', style: TextStyle(fontWeight: FontWeight.w600)),
-        content: const Text('Form tambah kegiatan hanya tampilan (belum dinamis).'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(foregroundColor: Colors.grey[600]),
-            child: const Text('Tutup'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -50,18 +25,33 @@ class _KegiatanPageState extends State<KegiatanPage> {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
-            child: Icon(Icons.event_available_outlined, size: 64, color: Colors.grey[400]),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue.withOpacity(0.1), primaryBlue.withOpacity(0.05)],
+              ),
+              shape: BoxShape.circle,
+              border: Border.all(color: primaryBlue.withOpacity(0.2), width: 2),
+            ),
+            child: Icon(
+              Icons.event_available_rounded,
+              size: 64,
+              color: primaryBlue.withOpacity(0.6),
+            ),
           ),
           const SizedBox(height: 24),
-          Text(
+          const Text(
             'Belum Ada Kegiatan',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: textPrimary,
+              letterSpacing: -0.3,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Tap tombol + untuk menambah kegiatan baru',
-            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+            'Belum ada kegiatan yang tersedia',
+            style: TextStyle(fontSize: 14, color: textSecondary, letterSpacing: 0.2),
           ),
         ],
       ),
@@ -72,133 +62,113 @@ class _KegiatanPageState extends State<KegiatanPage> {
   Widget build(BuildContext context) {
     final List<Kegiatan> kegiatanList = kegiatanMock;
 
-    return Stack(
-      children: [
-        kegiatanList.isEmpty
-            ? _buildEmptyState()
-            : ListView.separated(
-                padding: const EdgeInsets.all(20),
-                itemCount: kegiatanList.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
-                itemBuilder: (context, index) {
-                  final item = kegiatanList[index];
-                  return _buildKegiatanCard(item);
-                },
-              ),
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+    return Container(
+      color: backgroundWhite,
+      child: kegiatanList.isEmpty
+          ? _buildEmptyState()
+          : ListView.separated(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              itemCount: kegiatanList.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 14),
+              itemBuilder: (context, index) {
+                final item = kegiatanList[index];
+                return _buildKegiatanCard(item);
+              },
             ),
-            child: FloatingActionButton(
-              onPressed: () => _showAddForm(context),
-              backgroundColor: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
   Widget _buildKegiatanCard(Kegiatan item) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.05 * 255).round()),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
       child: Column(
         children: [
-          // Header with icon and title
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: item.color.withAlpha((0.1 * 255).round()),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-            ),
+          // Header section dengan gradient modern
+          Padding(
+            padding: const EdgeInsets.all(18),
             child: Row(
               children: [
+                // Icon dengan gradient background
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: item.color,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(item.icon, color: Colors.white, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    item.nama,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: Colors.black87,
+                    gradient: LinearGradient(
+                      colors: [item.color.withOpacity(0.15), item.color.withOpacity(0.05)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: item.color.withOpacity(0.3), width: 1.5),
                   ),
+                  child: Icon(item.icon, color: item.color, size: 24),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha((0.8 * 255).round()),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    item.kategori,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: item.color),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.nama,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: textPrimary,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        item.kategori,
+                        style: TextStyle(fontSize: 12, color: textSecondary, letterSpacing: 0.2),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
 
-          // Content
+          // Divider
+          Container(
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 18),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.transparent, dividerGray.withOpacity(0.5), Colors.transparent],
+              ),
+            ),
+          ),
+
+          // Content section
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
+                    Icon(Icons.person_outline_rounded, size: 16, color: textSecondary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         item.penanggungJawab,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: textPrimary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
-                    const SizedBox(width: 4),
+                    Icon(Icons.calendar_today_rounded, size: 14, color: textSecondary),
+                    const SizedBox(width: 6),
                     Text(
                       item.tanggal,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: textPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -206,53 +176,118 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Action buttons
+                // Action buttons dengan desain modern
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showEditDialog(item);
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.blue[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(Icons.edit_outlined, size: 16),
-                          label: const Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
-                        ),
+                      child: _buildActionButton(
+                        icon: Icons.edit_outlined,
+                        label: 'Edit',
+                        color: primaryBlue,
+                        onPressed: () => _showEditDialog(item),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.red[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: TextButton.icon(
-                          onPressed: () {
-                            _showDeleteDialog(item);
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red[600],
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(Icons.delete_outline, size: 16),
-                          label: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.w600)),
-                        ),
+                      child: _buildActionButton(
+                        icon: Icons.visibility_outlined,
+                        label: 'Detail',
+                        color: textSecondary,
+                        onPressed: () => _showDetailDialog(item),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildActionButton(
+                        icon: Icons.delete_outline_rounded,
+                        label: 'Hapus',
+                        color: const Color(0xFFE53935),
+                        onPressed: () => _showDeleteDialog(item),
                       ),
                     ),
                   ],
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Material(
+      color: color.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              Icon(icon, size: 18, color: color),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDetailDialog(Kegiatan item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.event_rounded, color: primaryBlue, size: 24),
+            const SizedBox(width: 12),
+            const Text(
+              'Detail Kegiatan',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDetailRow('Nama', item.nama),
+            const SizedBox(height: 12),
+            _buildDetailRow('Kategori', item.kategori),
+            const SizedBox(height: 12),
+            _buildDetailRow('Penanggung Jawab', item.penanggungJawab),
+            const SizedBox(height: 12),
+            _buildDetailRow('Tanggal', item.tanggal),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              backgroundColor: primaryBlue,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text(
+              'Tutup',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -265,9 +300,67 @@ class _KegiatanPageState extends State<KegiatanPage> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Edit Kegiatan'),
-        content: Text('Edit kegiatan: ${item.nama}'),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+        title: Row(
+          children: [
+            Icon(Icons.edit_rounded, color: primaryBlue, size: 24),
+            const SizedBox(width: 12),
+            const Text(
+              'Edit Kegiatan',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Fitur edit untuk:', style: TextStyle(color: textSecondary, fontSize: 14)),
+            const SizedBox(height: 8),
+            Text(
+              item.nama,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textPrimary),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: primaryBlue.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, color: primaryBlue, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Fitur ini akan segera tersedia',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: primaryBlue,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              backgroundColor: primaryBlue,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text(
+              'Tutup',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -277,21 +370,97 @@ class _KegiatanPageState extends State<KegiatanPage> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Hapus Kegiatan'),
-        content: Text('Yakin ingin menghapus kegiatan "${item.nama}"?'),
+        title: Row(
+          children: [
+            Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
+            const SizedBox(width: 12),
+            const Text(
+              'Hapus Kegiatan',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Yakin ingin menghapus kegiatan "${item.nama}"?',
+              style: const TextStyle(fontSize: 14, color: textSecondary),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE53935).withOpacity(0.05),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFE53935).withOpacity(0.2), width: 1),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, color: const Color(0xFFE53935), size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Tindakan ini tidak dapat dibatalkan',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: const Color(0xFFE53935),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Batal',
+              style: TextStyle(color: textSecondary, fontWeight: FontWeight.w600),
+            ),
+          ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${item.nama} telah dihapus')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${item.nama} telah dihapus'),
+                  backgroundColor: const Color(0xFF43A047),
+                ),
+              );
             },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFFE53935),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text(
+              'Hapus',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 12, color: textSecondary, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 15, color: textPrimary, fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 }
