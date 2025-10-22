@@ -6,6 +6,7 @@ import 'package:jawara_four/pages/kegiatan/models/kegiatan_model.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_detail_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/kegiatan_detail_page.dart';
+import 'package:jawara_four/pages/kegiatan/screens/kegiatan_form_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/kependudukan/kependudukan_menu_page.dart';
 import 'package:jawara_four/pages/kependudukan/models/informasi_aspirasi_model.dart';
@@ -31,6 +32,7 @@ import 'package:jawara_four/pages/lainnya/screens/pengguna_page.dart';
 import 'package:jawara_four/pages/login_page.dart';
 import 'package:jawara_four/pages/register_page.dart';
 import 'package:jawara_four/widgets/custom_bottom_navigationbar.dart';
+import 'package:jawara_four/widgets/custom_fab.dart';
 import 'package:jawara_four/widgets/custom_main_appbar.dart';
 import 'package:jawara_four/widgets/custom_push_appbar.dart';
 import 'package:jawara_four/widgets/custom_scaffold.dart';
@@ -238,6 +240,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Kegiatan'),
+        floatingActionButton: CustomFab(),
         child: KegiatanPage(),
       ),
     ),
@@ -257,6 +260,11 @@ final GoRouter appRouter = GoRouter(
         final kegiatan = state.extra as Kegiatan;
         return KegiatanDetailPage(kegiatan: kegiatan);
       },
+    ),
+    GoRoute(
+      path: '/kegiatan/form',
+      name: 'kegiatan-form',
+      builder: (context, state) => const KegiatanFormPage(),
     ),
     GoRoute(
       path: '/broadcast/detail',
