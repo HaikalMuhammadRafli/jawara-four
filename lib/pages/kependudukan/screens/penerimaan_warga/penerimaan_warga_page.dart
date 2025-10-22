@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../mocks/penerimaan_warga_mocks.dart';
 import '../../models/penerimaan_warga_model.dart';
@@ -40,7 +41,9 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: backgroundWhite,
-        border: Border(bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5)),
+        border: Border(
+          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
+        ),
       ),
       child: Column(
         children: [
@@ -49,7 +52,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             decoration: InputDecoration(
               hintText: 'Cari nama atau NIK...',
               hintStyle: TextStyle(color: textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: textSecondary, size: 22),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: dividerGray.withOpacity(0.15),
               border: OutlineInputBorder(
@@ -60,7 +67,10 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: primaryBlue, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -116,7 +126,8 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           _searchQuery.isEmpty ||
           p.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           p.nik.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesStatus = _selectedStatus == 'Semua' || p.statusRegistrasi == _selectedStatus;
+      final matchesStatus =
+          _selectedStatus == 'Semua' || p.statusRegistrasi == _selectedStatus;
       return matchesQuery && matchesStatus;
     }).toList();
 
@@ -133,7 +144,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             const SizedBox(height: 16),
             Text(
               'Tidak ada data pendaftar',
-              style: TextStyle(fontSize: 16, color: textSecondary, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 16,
+                color: textSecondary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -182,7 +197,10 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 height: 110,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+                  border: Border.all(
+                    color: dividerGray.withOpacity(0.6),
+                    width: 1.5,
+                  ),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
@@ -191,7 +209,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                     fit: BoxFit.cover,
                     errorBuilder: (c, e, s) => Container(
                       color: dividerGray.withOpacity(0.2),
-                      child: Icon(Icons.person_rounded, size: 48, color: textSecondary),
+                      child: Icon(
+                        Icons.person_rounded,
+                        size: 48,
+                        color: textSecondary,
+                      ),
                     ),
                   ),
                 ),
@@ -217,16 +239,24 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                     _buildInfoRow(Icons.email_outlined, w.email),
                     const SizedBox(height: 6),
                     _buildInfoRow(
-                      w.jenisKelamin == 'Laki-laki' ? Icons.male_rounded : Icons.female_rounded,
+                      w.jenisKelamin == 'Laki-laki'
+                          ? Icons.male_rounded
+                          : Icons.female_rounded,
                       w.jenisKelamin,
                     ),
                     const SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: statusColor.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: statusColor.withOpacity(0.2), width: 1),
+                        border: Border.all(
+                          color: statusColor.withOpacity(0.2),
+                          width: 1,
+                        ),
                       ),
                       child: Text(
                         w.statusRegistrasi,
@@ -248,12 +278,31 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(child: _buildActionButton('Detail', Icons.visibility_outlined, primaryBlue)),
-              const SizedBox(width: 10),
-              Expanded(child: _buildActionButton('Terima', Icons.check_circle_outline, softGreen)),
+              Expanded(
+                child: _buildActionButton(
+                  'Detail',
+                  Icons.visibility_outlined,
+                  primaryBlue,
+                  w,
+                ),
+              ),
               const SizedBox(width: 10),
               Expanded(
-                child: _buildActionButton('Tolak', Icons.cancel_outlined, const Color(0xFFE53935)),
+                child: _buildActionButton(
+                  'Terima',
+                  Icons.check_circle_outline,
+                  softGreen,
+                  w,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _buildActionButton(
+                  'Tolak',
+                  Icons.cancel_outlined,
+                  const Color(0xFFE53935),
+                  w,
+                ),
               ),
             ],
           ),
@@ -270,7 +319,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
         Expanded(
           child: Text(
             text,
-            style: TextStyle(fontSize: 13, color: textSecondary, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 13,
+              color: textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -279,12 +332,20 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    PenerimaanWarga warga,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          // Handle action
+          if (label == 'Detail') {
+            context.pushNamed('penerimaan-warga-detail', extra: warga);
+          }
+          // Handle other actions
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(

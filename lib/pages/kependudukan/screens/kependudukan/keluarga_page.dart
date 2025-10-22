@@ -32,10 +32,7 @@ class KeluargaPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         border: Border(
-          bottom: BorderSide(
-            color: dividerGray.withOpacity(0.6),
-            width: 1.5,
-          ),
+          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
         ),
       ),
       child: Column(
@@ -45,7 +42,11 @@ class KeluargaPage extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Cari keluarga...',
               hintStyle: TextStyle(color: textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: textSecondary, size: 22),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: dividerGray.withOpacity(0.15),
               border: OutlineInputBorder(
@@ -56,7 +57,10 @@ class KeluargaPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: primaryBlue, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -123,10 +127,7 @@ class KeluargaPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +186,10 @@ class KeluargaPage extends StatelessWidget {
               ),
               // Badge status
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: primaryBlue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -236,7 +240,11 @@ class KeluargaPage extends StatelessWidget {
                   onPressed: () {
                     _showEditDialog(context, keluarga);
                   },
-                  icon: Icon(Icons.edit_rounded, size: 18, color: textSecondary),
+                  icon: Icon(
+                    Icons.edit_rounded,
+                    size: 18,
+                    color: textSecondary,
+                  ),
                   tooltip: 'Edit',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
@@ -252,7 +260,11 @@ class KeluargaPage extends StatelessWidget {
                   onPressed: () {
                     _showDetailDialog(context, keluarga);
                   },
-                  icon: Icon(Icons.visibility_rounded, size: 18, color: primaryBlue),
+                  icon: Icon(
+                    Icons.visibility_rounded,
+                    size: 18,
+                    color: primaryBlue,
+                  ),
                   tooltip: 'Lihat Detail',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
@@ -320,8 +332,9 @@ class KeluargaPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, 
-                    color: primaryBlue, 
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: primaryBlue,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -345,10 +358,7 @@ class KeluargaPage extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Tutup',
-              style: TextStyle(
-                color: primaryBlue,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: primaryBlue, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -382,7 +392,10 @@ class KeluargaPage extends StatelessWidget {
           children: [
             _buildDetailRow('Kepala Keluarga', keluarga.kepalaKeluarga),
             const SizedBox(height: 12),
-            _buildDetailRow('Jumlah Anggota', '${keluarga.jumlahAnggota} Orang'),
+            _buildDetailRow(
+              'Jumlah Anggota',
+              '${keluarga.jumlahAnggota} Orang',
+            ),
             const SizedBox(height: 12),
             _buildDetailRow('Alamat', keluarga.alamat),
             const SizedBox(height: 12),
@@ -400,8 +413,9 @@ class KeluargaPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, 
-                    color: primaryBlue, 
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: primaryBlue,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -425,10 +439,7 @@ class KeluargaPage extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Tutup',
-              style: TextStyle(
-                color: primaryBlue,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: primaryBlue, fontWeight: FontWeight.w600),
             ),
           ),
         ],

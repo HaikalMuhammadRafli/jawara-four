@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../mocks/broadcast_mocks.dart';
 import '../models/broadcast_model.dart';
@@ -27,12 +28,19 @@ class _BroadcastPageState extends State<BroadcastPage> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [primaryBlue.withOpacity(0.1), primaryBlue.withOpacity(0.05)],
+                colors: [
+                  primaryBlue.withOpacity(0.1),
+                  primaryBlue.withOpacity(0.05),
+                ],
               ),
               shape: BoxShape.circle,
               border: Border.all(color: primaryBlue.withOpacity(0.2), width: 2),
             ),
-            child: Icon(Icons.campaign_rounded, size: 64, color: primaryBlue.withOpacity(0.6)),
+            child: Icon(
+              Icons.campaign_rounded,
+              size: 64,
+              color: primaryBlue.withOpacity(0.6),
+            ),
           ),
           const SizedBox(height: 24),
           const Text(
@@ -47,7 +55,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
           const SizedBox(height: 8),
           Text(
             'Belum ada broadcast yang tersedia',
-            style: TextStyle(fontSize: 14, color: textSecondary, letterSpacing: 0.2),
+            style: TextStyle(
+              fontSize: 14,
+              color: textSecondary,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ),
@@ -93,12 +105,18 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [item.color.withOpacity(0.15), item.color.withOpacity(0.05)],
+                      colors: [
+                        item.color.withOpacity(0.15),
+                        item.color.withOpacity(0.05),
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: item.color.withOpacity(0.3), width: 1.5),
+                    border: Border.all(
+                      color: item.color.withOpacity(0.3),
+                      width: 1.5,
+                    ),
                   ),
                   child: Icon(item.icon, color: item.color, size: 24),
                 ),
@@ -124,7 +142,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
             margin: const EdgeInsets.symmetric(horizontal: 18),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.transparent, dividerGray.withOpacity(0.5), Colors.transparent],
+                colors: [
+                  Colors.transparent,
+                  dividerGray.withOpacity(0.5),
+                  Colors.transparent,
+                ],
               ),
             ),
           ),
@@ -137,7 +159,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.person_outline_rounded, size: 16, color: textSecondary),
+                    Icon(
+                      Icons.person_outline_rounded,
+                      size: 16,
+                      color: textSecondary,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -149,7 +175,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
                         ),
                       ),
                     ),
-                    Icon(Icons.calendar_today_rounded, size: 14, color: textSecondary),
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: textSecondary,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       item.tanggal,
@@ -249,49 +279,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
   }
 
   void _showDetailDialog(BroadcastItem item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.campaign_rounded, color: primaryBlue, size: 24),
-            const SizedBox(width: 12),
-            const Text(
-              'Detail Broadcast',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow('Nama', item.nama),
-            const SizedBox(height: 12),
-            _buildDetailRow('Pengirim', item.pengirim),
-            const SizedBox(height: 12),
-            _buildDetailRow('Tanggal', item.tanggal),
-            const SizedBox(height: 12),
-            _buildDetailRow('Pesan', item.judul),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(
-              backgroundColor: primaryBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: const Text(
-              'Tutup',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
+    context.pushNamed('broadcast-detail', extra: item);
   }
 
   void _showEditDialog(BroadcastItem item) {
@@ -305,7 +293,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
             const SizedBox(width: 12),
             const Text(
               'Edit Broadcast',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: textPrimary,
+              ),
             ),
           ],
         ),
@@ -313,11 +305,18 @@ class _BroadcastPageState extends State<BroadcastPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Fitur edit untuk:', style: TextStyle(color: textSecondary, fontSize: 14)),
+            Text(
+              'Fitur edit untuk:',
+              style: TextStyle(color: textSecondary, fontSize: 14),
+            ),
             const SizedBox(height: 8),
             Text(
               item.nama,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textPrimary),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: textPrimary,
+              ),
             ),
             const SizedBox(height: 16),
             Container(
@@ -325,11 +324,18 @@ class _BroadcastPageState extends State<BroadcastPage> {
               decoration: BoxDecoration(
                 color: primaryBlue.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1),
+                border: Border.all(
+                  color: primaryBlue.withOpacity(0.2),
+                  width: 1,
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: primaryBlue, size: 18),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: primaryBlue,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -352,11 +358,16 @@ class _BroadcastPageState extends State<BroadcastPage> {
             style: TextButton.styleFrom(
               backgroundColor: primaryBlue,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text(
               'Tutup',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -371,11 +382,19 @@ class _BroadcastPageState extends State<BroadcastPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
+            Icon(
+              Icons.warning_rounded,
+              color: const Color(0xFFE53935),
+              size: 24,
+            ),
             const SizedBox(width: 12),
             const Text(
               'Hapus Broadcast',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: textPrimary,
+              ),
             ),
           ],
         ),
@@ -392,11 +411,18 @@ class _BroadcastPageState extends State<BroadcastPage> {
               decoration: BoxDecoration(
                 color: const Color(0xFFE53935).withOpacity(0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFE53935).withOpacity(0.2), width: 1),
+                border: Border.all(
+                  color: const Color(0xFFE53935).withOpacity(0.2),
+                  width: 1,
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: const Color(0xFFE53935), size: 18),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: const Color(0xFFE53935),
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -418,7 +444,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Batal',
-              style: TextStyle(color: textSecondary, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           TextButton(
@@ -434,32 +463,20 @@ class _BroadcastPageState extends State<BroadcastPage> {
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFFE53935),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text(
               'Hapus',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 12, color: textSecondary, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 15, color: textPrimary, fontWeight: FontWeight.w600),
-        ),
-      ],
     );
   }
 }
