@@ -8,13 +8,17 @@ import 'package:jawara_four/pages/kegiatan/screens/broadcast_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/kegiatan_detail_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/kependudukan/kependudukan_menu_page.dart';
+import 'package:jawara_four/pages/kependudukan/models/informasi_aspirasi_model.dart';
+import 'package:jawara_four/pages/kependudukan/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/rumah_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/tambah_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/warga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_tambah_page.dart';
+import 'package:jawara_four/pages/kependudukan/screens/penerimaan_warga/penerimaan_warga_detail_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/penerimaan_warga/penerimaan_warga_page.dart';
+import 'package:jawara_four/pages/kependudukan/screens/pesan_warga/informasi_aspirasi_detail_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/pesan_warga/informasi_aspirasi_page.dart';
 import 'package:jawara_four/pages/keuangan/keuangan_menu_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/iuran_tagihan_page.dart';
@@ -207,6 +211,22 @@ final GoRouter appRouter = GoRouter(
         appBar: CustomPushAppbar(title: 'Tambah Mutasi Keluarga'),
         child: MutasiKeluargaTambahPage(),
       ),
+    ),
+    GoRoute(
+      path: '/penerimaan-warga/detail',
+      name: 'penerimaan-warga-detail',
+      builder: (context, state) {
+        final warga = state.extra as PenerimaanWarga;
+        return PenerimaanWargaDetailPage(warga: warga);
+      },
+    ),
+    GoRoute(
+      path: '/informasi-aspirasi/detail',
+      name: 'informasi-aspirasi-detail',
+      builder: (context, state) {
+        final aspirasi = state.extra as InformasiAspirasi;
+        return InformasiAspirasiDetailPage(aspirasi: aspirasi);
+      },
     ),
 
     // ===========================================================
