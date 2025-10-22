@@ -10,33 +10,50 @@ class LogAktifitasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<LogEntry> logs = logMock;
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Detail Log Aktifitas',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Color(0xFF1E88E5),
+            size: 20,
           ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: ListView.separated(
+        ),
+        title: const Text(
+          'Detail Log Aktifitas',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF212121),
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: logs.length,
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final log = logs[index];
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withAlpha((0.1 * 255).round()),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -47,13 +64,18 @@ class LogAktifitasPage extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
+                            color: const Color(0xFF1E88E5).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFF1E88E5).withOpacity(0.2), width: 1),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             '${index + 1}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold, 
+                              color: Color(0xFF1E88E5),
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -64,26 +86,39 @@ class LogAktifitasPage extends StatelessWidget {
                             children: [
                               Text(
                                 log.deskripsi,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontSize: 16, 
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF212121),
+                                ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 8),
                               Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
+                                      color: const Color(0xFFF8F9FA),
                                       borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
                                     ),
                                     child: Text(
                                       log.aktor,
-                                      style: const TextStyle(fontSize: 12, color: Colors.black54),
+                                      style: const TextStyle(
+                                        fontSize: 12, 
+                                        color: Color(0xFF757575),
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     log.tanggal,
-                                    style: const TextStyle(fontSize: 12, color: Colors.black45),
+                                    style: const TextStyle(
+                                      fontSize: 12, 
+                                      color: Color(0xFF9E9E9E),
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -96,8 +131,8 @@ class LogAktifitasPage extends StatelessWidget {
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

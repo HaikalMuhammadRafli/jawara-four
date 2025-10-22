@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../mocks/pemasukan_mocks.dart';
 import '../models/pemasukan_model.dart';
+import 'pemasukan_lain_detail_page.dart';
 
 class PemasukanLainPage extends StatelessWidget {
   const PemasukanLainPage({super.key});
@@ -58,7 +59,7 @@ class PemasukanLainPage extends StatelessWidget {
             const SizedBox(height: 12),
             _buildPemasukanInfo(pemasukan),
             const SizedBox(height: 12),
-            _buildPemasukanActions(),
+            _buildPemasukanActions(pemasukan),
           ],
         ),
       ),
@@ -121,41 +122,52 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPemasukanActions() {
+  Widget _buildPemasukanActions(Pemasukan pemasukan) {
     return Row(
       children: [
-        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', Colors.grey)),
+        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', Colors.grey, pemasukan)),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue)),
+        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue, pemasukan)),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red)),
+        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red, pemasukan)),
       ],
     );
   }
 
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: color,
+  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Pemasukan pemasukan) {
+    return Builder(
+      builder: (context) => GestureDetector(
+        onTap: () {
+          if (label == 'Lihat') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PemasukanLainDetailPage(pemasukan: pemasukan),
               ),
-            ),
-          ],
+            );
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 18),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

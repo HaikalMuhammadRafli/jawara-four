@@ -26,7 +26,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
     return Container(
       color: backgroundWhite,
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
         child: Column(
           children: [
             _buildWelcomeCard(),

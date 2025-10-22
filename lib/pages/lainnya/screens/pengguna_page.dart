@@ -69,42 +69,79 @@ class PenggunaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final penggunaList = penggunaMock; // hanya data dummy
 
-    return Stack(
-      children: [
-        penggunaList.isEmpty
-            ? _buildEmptyState()
-            : ListView.separated(
-                padding: const EdgeInsets.all(20),
-                itemCount: penggunaList.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
-                itemBuilder: (context, index) {
-                  final item = penggunaList[index];
-                  return _buildPenggunaCard(context, item);
-                },
-              ),
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: FloatingActionButton(
-              onPressed: () => _showAddForm(context),
-              backgroundColor: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Color(0xFF1E88E5),
+            size: 20,
           ),
         ),
-      ],
+        title: const Text(
+          'Manajemen Pengguna',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF212121),
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          penggunaList.isEmpty
+              ? _buildEmptyState()
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: penggunaList.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) {
+                          final item = penggunaList[index];
+                          return _buildPenggunaCard(context, item);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF1E88E5).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: FloatingActionButton(
+                onPressed: () => _showAddForm(context),
+                backgroundColor: const Color(0xFF1E88E5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -136,15 +173,9 @@ class PenggunaPage extends StatelessWidget {
   Widget _buildPenggunaCard(BuildContext context, Pengguna item) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.05 * 255).round()),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
       ),
       child: Column(
         children: [
@@ -166,6 +197,7 @@ class PenggunaPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: item.color,
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
                   ),
                   child: Icon(item.icon, color: Colors.white, size: 20),
                 ),
@@ -176,20 +208,24 @@ class PenggunaPage extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: Color(0xFF212121),
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    // make role chip very subtle
-                    color: item.color.withAlpha((0.06 * 255).round()),
+                    color: item.color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
                   ),
                   child: Text(
                     item.role,
-                    style: TextStyle(fontWeight: FontWeight.w600, color: item.color, fontSize: 12),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600, 
+                      color: item.color, 
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -203,13 +239,13 @@ class PenggunaPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.email_outlined, size: 16, color: Colors.grey[600]),
+                    Icon(Icons.email_outlined, size: 16, color: const Color(0xFF757575)),
                     const SizedBox(width: 4),
                     Text(
                       item.email,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: Color(0xFF757575),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -223,6 +259,11 @@ class PenggunaPage extends StatelessWidget {
                         onPressed: () => _showEditDialog(context, item),
                         icon: const Icon(Icons.edit_outlined, size: 16),
                         label: const Text('Edit'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF1E88E5),
+                          side: const BorderSide(color: Color(0xFF1E88E5)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -232,8 +273,9 @@ class PenggunaPage extends StatelessWidget {
                         icon: const Icon(Icons.delete_outline, size: 16),
                         label: const Text('Hapus'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                          side: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)!),
+                          foregroundColor: const Color(0xFFE53E3E),
+                          side: const BorderSide(color: Color(0xFFE53E3E)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
                     ),
