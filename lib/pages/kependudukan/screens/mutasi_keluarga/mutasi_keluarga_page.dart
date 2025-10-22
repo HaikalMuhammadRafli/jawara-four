@@ -89,6 +89,40 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
     );
   }
 
+  void _showDetailDialog(BuildContext context, MutasiKeluarga keluarga) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
+              child: Icon(keluarga.icon, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: Text(keluarga.keluarga, style: const TextStyle(fontWeight: FontWeight.w600))),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Keluarga: ${keluarga.keluarga}', style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 8),
+            Text('Tanggal: ${keluarga.tanggal}', style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 8),
+            Text('Jenis Mutasi: ${keluarga.jenisMutasi}', style: const TextStyle(fontSize: 14)),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup')),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMutasiKeluargaCard(MutasiKeluarga keluarga) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -159,7 +193,7 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => _showDetailDialog(context, keluarga),
                 icon: const Icon(Icons.visibility, size: 18, color: Colors.grey),
                 tooltip: 'Lihat Detail',
               ),
