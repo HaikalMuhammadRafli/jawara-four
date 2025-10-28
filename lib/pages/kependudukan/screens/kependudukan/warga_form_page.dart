@@ -127,343 +127,312 @@ class _WargaFormPageState extends State<WargaFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        backgroundColor: primaryBlue,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text(
-          'Tambah Warga',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-            letterSpacing: -0.3,
-          ),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
-            label: const Text(
-              'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            // Header Card
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          // Header Card
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryBlue.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
                 ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.person_add_rounded, color: Colors.white, size: 32),
-                  ),
-                  const SizedBox(width: 16),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Data Warga',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: -0.3,
-                          ),
+                  child: const Icon(Icons.person_add_rounded, color: Colors.white, size: 32),
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Data Warga',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Lengkapi data warga baru',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Lengkapi data warga baru',
+                        style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
+          ),
+          const SizedBox(height: 24),
 
-            // Data Identitas Section
-            _buildSectionTitle('Data Identitas', Icons.badge_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: _nikController,
-                    label: 'NIK',
-                    hint: 'Nomor Induk Kependudukan (16 digit)',
-                    icon: Icons.credit_card_rounded,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'NIK harus diisi';
-                      }
-                      if (value.length != 16) {
-                        return 'NIK harus 16 digit';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _namaController,
-                    label: 'Nama Lengkap',
-                    hint: 'Sesuai KTP',
-                    icon: Icons.person_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDropdown(
-                    value: _selectedJenisKelamin,
-                    label: 'Jenis Kelamin',
-                    hint: 'Pilih jenis kelamin',
-                    icon: Icons.wc_rounded,
-                    items: _jenisKelaminList,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedJenisKelamin = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
+          // Data Identitas Section
+          _buildSectionTitle('Data Identitas', Icons.badge_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildTextField(
+                  controller: _nikController,
+                  label: 'NIK',
+                  hint: 'Nomor Induk Kependudukan (16 digit)',
+                  icon: Icons.credit_card_rounded,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'NIK harus diisi';
+                    }
+                    if (value.length != 16) {
+                      return 'NIK harus 16 digit';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _namaController,
+                  label: 'Nama Lengkap',
+                  hint: 'Sesuai KTP',
+                  icon: Icons.person_rounded,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama harus diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildDropdown(
+                  value: _selectedJenisKelamin,
+                  label: 'Jenis Kelamin',
+                  hint: 'Pilih jenis kelamin',
+                  icon: Icons.wc_rounded,
+                  items: _jenisKelaminList,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedJenisKelamin = value;
+                    });
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 20),
 
-            // Data Kelahiran Section
-            _buildSectionTitle('Data Kelahiran', Icons.cake_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: _tempatLahirController,
-                    label: 'Tempat Lahir',
-                    hint: 'Contoh: Jakarta',
-                    icon: Icons.location_city_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Tempat lahir harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDateTimePicker(
-                    label: 'Tanggal Lahir',
-                    icon: Icons.event_rounded,
-                    value: _selectedTanggalLahir != null
-                        ? '${_selectedTanggalLahir!.day}/${_selectedTanggalLahir!.month}/${_selectedTanggalLahir!.year}'
-                        : null,
-                    hint: 'Pilih tanggal lahir',
-                    onTap: () => _selectDate(context),
-                  ),
-                ],
-              ),
+          // Data Kelahiran Section
+          _buildSectionTitle('Data Kelahiran', Icons.cake_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildTextField(
+                  controller: _tempatLahirController,
+                  label: 'Tempat Lahir',
+                  hint: 'Contoh: Jakarta',
+                  icon: Icons.location_city_rounded,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Tempat lahir harus diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildDateTimePicker(
+                  label: 'Tanggal Lahir',
+                  icon: Icons.event_rounded,
+                  value: _selectedTanggalLahir != null
+                      ? '${_selectedTanggalLahir!.day}/${_selectedTanggalLahir!.month}/${_selectedTanggalLahir!.year}'
+                      : null,
+                  hint: 'Pilih tanggal lahir',
+                  onTap: () => _selectDate(context),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 20),
 
-            // Data Pribadi Section
-            _buildSectionTitle('Data Pribadi', Icons.info_outline_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildDropdown(
-                    value: _selectedAgama,
-                    label: 'Agama',
-                    hint: 'Pilih agama',
-                    icon: Icons.mosque_rounded,
-                    items: _agamaList,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedAgama = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDropdown(
-                    value: _selectedPendidikan,
-                    label: 'Pendidikan Terakhir',
-                    hint: 'Pilih pendidikan',
-                    icon: Icons.school_rounded,
-                    items: _pendidikanList,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedPendidikan = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDropdown(
-                    value: _selectedStatusPerkawinan,
-                    label: 'Status Perkawinan',
-                    hint: 'Pilih status',
-                    icon: Icons.people_rounded,
-                    items: _statusPerkawinanList,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedStatusPerkawinan = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _pekerjaanController,
-                    label: 'Pekerjaan',
-                    hint: 'Contoh: Wiraswasta',
-                    icon: Icons.work_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Pekerjaan harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
+          // Data Pribadi Section
+          _buildSectionTitle('Data Pribadi', Icons.info_outline_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildDropdown(
+                  value: _selectedAgama,
+                  label: 'Agama',
+                  hint: 'Pilih agama',
+                  icon: Icons.mosque_rounded,
+                  items: _agamaList,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedAgama = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildDropdown(
+                  value: _selectedPendidikan,
+                  label: 'Pendidikan Terakhir',
+                  hint: 'Pilih pendidikan',
+                  icon: Icons.school_rounded,
+                  items: _pendidikanList,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedPendidikan = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildDropdown(
+                  value: _selectedStatusPerkawinan,
+                  label: 'Status Perkawinan',
+                  hint: 'Pilih status',
+                  icon: Icons.people_rounded,
+                  items: _statusPerkawinanList,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedStatusPerkawinan = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _pekerjaanController,
+                  label: 'Pekerjaan',
+                  hint: 'Contoh: Wiraswasta',
+                  icon: Icons.work_rounded,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Pekerjaan harus diisi';
+                    }
+                    return null;
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 20),
 
-            // Kontak Section
-            _buildSectionTitle('Kontak', Icons.contact_phone_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: _noTeleponController,
-                    label: 'No. Telepon',
-                    hint: '08xxxxxxxxxx',
-                    icon: Icons.phone_rounded,
-                    keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'No. telepon harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _emailController,
-                    label: 'Email (Opsional)',
-                    hint: 'email@example.com',
-                    icon: Icons.email_rounded,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                ],
-              ),
+          // Kontak Section
+          _buildSectionTitle('Kontak', Icons.contact_phone_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildTextField(
+                  controller: _noTeleponController,
+                  label: 'No. Telepon',
+                  hint: '08xxxxxxxxxx',
+                  icon: Icons.phone_rounded,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'No. telepon harus diisi';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _emailController,
+                  label: 'Email (Opsional)',
+                  hint: 'email@example.com',
+                  icon: Icons.email_rounded,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 20),
 
-            // Alamat Section
-            _buildSectionTitle('Alamat', Icons.home_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: _buildTextField(
-                controller: _alamatController,
-                label: 'Alamat Lengkap',
-                hint: 'Masukkan alamat lengkap...',
-                icon: Icons.location_on_rounded,
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Alamat harus diisi';
-                  }
-                  return null;
-                },
-              ),
+          // Alamat Section
+          _buildSectionTitle('Alamat', Icons.home_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: _buildTextField(
+              controller: _alamatController,
+              label: 'Alamat Lengkap',
+              hint: 'Masukkan alamat lengkap...',
+              icon: Icons.location_on_rounded,
+              maxLines: 3,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Alamat harus diisi';
+                }
+                return null;
+              },
             ),
-            const SizedBox(height: 32),
+          ),
+          const SizedBox(height: 32),
 
-            // Submit Button
-            Container(
-              height: 52,
-              decoration: BoxDecoration(
+          // Submit Button
+          Container(
+            height: 52,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryBlue.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _submitForm,
                 borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: _submitForm,
-                  borderRadius: BorderRadius.circular(12),
-                  child: const Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
-                        SizedBox(width: 12),
-                        Text(
-                          'Tambah Warga',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.3,
-                          ),
+                child: const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
+                      SizedBox(width: 12),
+                      Text(
+                        'Tambah Warga',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.3,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }

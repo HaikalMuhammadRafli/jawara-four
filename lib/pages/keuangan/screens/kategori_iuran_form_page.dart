@@ -60,270 +60,239 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        backgroundColor: primaryBlue,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text(
-          'Tambah Kategori Iuran',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-            letterSpacing: -0.3,
-          ),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
-            label: const Text(
-              'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            // Header Card
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          // Header Card
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryBlue.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
                 ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.category_rounded, color: Colors.white, size: 32),
-                  ),
-                  const SizedBox(width: 16),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Kategori Iuran',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Buat kategori iuran baru untuk RT',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
-            const SizedBox(height: 24),
-
-            // Informasi Kategori Section
-            _buildSectionTitle('Informasi Kategori', Icons.info_outline_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: _namaKategoriController,
-                    label: 'Nama Kategori',
-                    hint: 'Contoh: Iuran Keamanan',
-                    icon: Icons.label_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama kategori harus diisi';
-                      }
-                      if (value.length < 3) {
-                        return 'Nama kategori minimal 3 karakter';
-                      }
-                      return null;
-                    },
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _nominalController,
-                    label: 'Nominal Default (Rp)',
-                    hint: 'Contoh: 50000',
-                    icon: Icons.attach_money_rounded,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nominal harus diisi';
-                      }
-                      if (int.tryParse(value) == null) {
-                        return 'Nominal harus berupa angka';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDropdown(
-                    value: _selectedPeriode,
-                    label: 'Periode',
-                    hint: 'Pilih periode iuran',
-                    icon: Icons.calendar_today_rounded,
-                    items: _periodeList,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedPeriode = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _keteranganController,
-                    label: 'Keterangan',
-                    hint: 'Jelaskan untuk apa iuran ini...',
-                    icon: Icons.description_outlined,
-                    maxLines: 4,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Keterangan harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Pengaturan Section
-            _buildSectionTitle('Pengaturan', Icons.settings_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  Row(
+                  child: const Icon(Icons.category_rounded, color: Colors.white, size: 32),
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: primaryBlue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.check_circle_outline_rounded,
-                          color: primaryBlue,
-                          size: 20,
+                      Text(
+                        'Kategori Iuran',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Iuran Wajib',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Iuran ini wajib dibayar oleh semua warga',
-                              style: TextStyle(fontSize: 12, color: textSecondary),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: _isMandatory,
-                        onChanged: (value) {
-                          setState(() {
-                            _isMandatory = value;
-                          });
-                        },
-                        activeThumbColor: primaryBlue,
+                      SizedBox(height: 4),
+                      Text(
+                        'Buat kategori iuran baru untuk RT',
+                        style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
+          ),
+          const SizedBox(height: 24),
 
-            // Submit Button
-            Container(
-              height: 52,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+          // Informasi Kategori Section
+          _buildSectionTitle('Informasi Kategori', Icons.info_outline_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildTextField(
+                  controller: _namaKategoriController,
+                  label: 'Nama Kategori',
+                  hint: 'Contoh: Iuran Keamanan',
+                  icon: Icons.label_rounded,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama kategori harus diisi';
+                    }
+                    if (value.length < 3) {
+                      return 'Nama kategori minimal 3 karakter';
+                    }
+                    return null;
+                  },
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: _submitForm,
-                  borderRadius: BorderRadius.circular(12),
-                  child: const Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
-                        SizedBox(width: 12),
-                        Text(
-                          'Tambah Kategori',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                      ],
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _nominalController,
+                  label: 'Nominal Default (Rp)',
+                  hint: 'Contoh: 50000',
+                  icon: Icons.attach_money_rounded,
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nominal harus diisi';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Nominal harus berupa angka';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildDropdown(
+                  value: _selectedPeriode,
+                  label: 'Periode',
+                  hint: 'Pilih periode iuran',
+                  icon: Icons.calendar_today_rounded,
+                  items: _periodeList,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedPeriode = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _keteranganController,
+                  label: 'Keterangan',
+                  hint: 'Jelaskan untuk apa iuran ini...',
+                  icon: Icons.description_outlined,
+                  maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Keterangan harus diisi';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Pengaturan Section
+          _buildSectionTitle('Pengaturan', Icons.settings_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: primaryBlue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.check_circle_outline_rounded,
+                        color: primaryBlue,
+                        size: 20,
+                      ),
                     ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Iuran Wajib',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Iuran ini wajib dibayar oleh semua warga',
+                            style: TextStyle(fontSize: 12, color: textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Switch(
+                      value: _isMandatory,
+                      onChanged: (value) {
+                        setState(() {
+                          _isMandatory = value;
+                        });
+                      },
+                      activeThumbColor: primaryBlue,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          // Submit Button
+          Container(
+            height: 52,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: primaryBlue.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _submitForm,
+                borderRadius: BorderRadius.circular(12),
+                child: const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
+                      SizedBox(width: 12),
+                      Text(
+                        'Tambah Kategori',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
