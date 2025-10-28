@@ -15,3 +15,4 @@ class Rumah {
     pemilik: m['pemilik'] ?? '-',
   );
 }
+

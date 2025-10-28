@@ -22,3 +22,4 @@ const List<Keluarga> keluargaMock = [
     jumlahAnggota: '5',
   ),
 ];
+

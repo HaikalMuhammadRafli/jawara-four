@@ -27,3 +27,4 @@ const List<Warga> wargaMock = [
     jenisKelamin: 'Perempuan',
   ),
 ];
+

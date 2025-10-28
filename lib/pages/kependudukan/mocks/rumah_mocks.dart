@@ -18,3 +18,4 @@ const List<Rumah> rumahMock = [
   ),
   Rumah(alamat: 'Jl. Veteran No. 5', status: 'Tersedia', pemilik: '-'),
 ];
+

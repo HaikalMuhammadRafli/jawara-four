@@ -15,3 +15,4 @@ class Keluarga {
     jumlahAnggota: m['jumlahAnggota'] ?? '0',
   );
 }
+

@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2563EB).withOpacity(0.08),
+                            color: const Color(0xFF2563EB).withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Icon(
@@ -130,8 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Email wajib diisi';
+                              }
                               if (!v.contains('@')) return 'Email tidak valid';
                               return null;
                             },
@@ -175,10 +176,12 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Password wajib diisi';
-                              if (v.length < 6)
+                              }
+                              if (v.length < 6) {
                                 return 'Password minimal 6 karakter';
+                              }
                               return null;
                             },
                           ),
@@ -190,21 +193,23 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed: _loading ? null : _login,
                               style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.resolveWith((states) {
+                                    WidgetStateProperty.resolveWith((states) {
                                       if (states.contains(
-                                        MaterialState.disabled,
-                                      ))
+                                        WidgetState.disabled,
+                                      )) {
                                         return Colors.grey;
+                                      }
                                       if (states.contains(
-                                            MaterialState.hovered,
+                                            WidgetState.hovered,
                                           ) ||
                                           states.contains(
-                                            MaterialState.pressed,
-                                          ))
+                                            WidgetState.pressed,
+                                          )) {
                                         return const Color(0xFF1E40AF);
+                                      }
                                       return const Color(0xFF2563EB);
                                     }),
-                                shape: MaterialStateProperty.all(
+                                shape: WidgetStateProperty.all(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -269,3 +274,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+

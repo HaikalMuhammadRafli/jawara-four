@@ -29,3 +29,4 @@ const List<Pemasukan> pemasukanMock = [
     jenisPemasukan: 'Pendapatan Lainnya',
   ),
 ];
+

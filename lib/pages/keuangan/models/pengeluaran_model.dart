@@ -18,3 +18,4 @@ class Pengeluaran {
     tanggal: m['tanggal'] ?? '',
   );
 }
+

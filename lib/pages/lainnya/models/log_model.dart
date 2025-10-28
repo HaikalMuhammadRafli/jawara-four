@@ -15,3 +15,4 @@ class LogEntry {
     tanggal: m['tanggal'] ?? '',
   );
 }
+

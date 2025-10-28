@@ -42,7 +42,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         border: Border(
-          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
+          bottom: BorderSide(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         ),
       ),
       child: Column(
@@ -58,7 +58,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 size: 22,
               ),
               filled: true,
-              fillColor: dividerGray.withOpacity(0.15),
+              fillColor: dividerGray.withValues(alpha: 0.15),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
@@ -101,7 +101,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
         color: isSelected ? primaryBlue : backgroundWhite,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isSelected ? primaryBlue : dividerGray.withOpacity(0.6),
+          color: isSelected ? primaryBlue : dividerGray.withValues(alpha: 0.6),
           width: 1.5,
         ),
       ),
@@ -139,7 +139,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             Icon(
               Icons.inbox_rounded,
               size: 80,
-              color: textSecondary.withOpacity(0.3),
+              color: textSecondary.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
@@ -184,7 +184,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,15 +197,15 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      softPurple.withOpacity(0.2),
-                      softPurple.withOpacity(0.1),
+                      softPurple.withValues(alpha: 0.2),
+                      softPurple.withValues(alpha: 0.1),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: softPurple.withOpacity(0.25),
+                    color: softPurple.withValues(alpha: 0.25),
                     width: 1.5,
                   ),
                 ),
@@ -260,10 +260,10 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.12),
+                  color: statusColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: statusColor.withOpacity(0.2),
+                    color: statusColor.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -283,7 +283,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: dividerGray.withOpacity(0.2),
+              color: dividerGray.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -348,9 +348,9 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color.withOpacity(0.2), width: 1),
+            border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -373,3 +373,4 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     );
   }
 }
+

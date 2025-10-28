@@ -66,3 +66,4 @@ const List<KategoriIuran> kategoriMock = [
     warna: 'pink',
   ),
 ];
+

@@ -42,7 +42,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         border: Border(
-          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
+          bottom: BorderSide(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         ),
       ),
       child: Column(
@@ -58,7 +58,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 size: 22,
               ),
               filled: true,
-              fillColor: dividerGray.withOpacity(0.15),
+              fillColor: dividerGray.withValues(alpha: 0.15),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
@@ -101,7 +101,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
         color: isSelected ? primaryBlue : backgroundWhite,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isSelected ? primaryBlue : dividerGray.withOpacity(0.6),
+          color: isSelected ? primaryBlue : dividerGray.withValues(alpha: 0.6),
           width: 1.5,
         ),
       ),
@@ -139,7 +139,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             Icon(
               Icons.person_add_disabled_rounded,
               size: 80,
-              color: textSecondary.withOpacity(0.3),
+              color: textSecondary.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
@@ -184,7 +184,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +198,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: dividerGray.withOpacity(0.6),
+                    color: dividerGray.withValues(alpha: 0.6),
                     width: 1.5,
                   ),
                 ),
@@ -208,7 +208,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                     w.fotoIdentitas,
                     fit: BoxFit.cover,
                     errorBuilder: (c, e, s) => Container(
-                      color: dividerGray.withOpacity(0.2),
+                      color: dividerGray.withValues(alpha: 0.2),
                       child: Icon(
                         Icons.person_rounded,
                         size: 48,
@@ -251,10 +251,10 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.12),
+                        color: statusColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: statusColor.withOpacity(0.2),
+                          color: statusColor.withValues(alpha: 0.2),
                           width: 1,
                         ),
                       ),
@@ -351,9 +351,9 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color.withOpacity(0.2), width: 1),
+            border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -377,3 +377,4 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 }
+

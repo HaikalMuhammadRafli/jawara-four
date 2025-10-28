@@ -15,3 +15,4 @@ class Warga {
     jenisKelamin: m['jenisKelamin'] ?? '',
   );
 }
+

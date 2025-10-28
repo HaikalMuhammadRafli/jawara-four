@@ -45,3 +45,4 @@ class Tagihan {
     bukti: m['bukti'] ?? '',
   );
 }
+

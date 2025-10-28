@@ -18,3 +18,4 @@ class InformasiAspirasi {
     status: m['status'] ?? '',
   );
 }
+

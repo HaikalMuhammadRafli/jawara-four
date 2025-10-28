@@ -20,3 +20,4 @@ const List<PenerimaanWarga> penerimaanWargaMock = [
     statusRegistrasi: 'Pending',
   ),
 ];
+

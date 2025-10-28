@@ -70,14 +70,14 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: primaryBlue.withOpacity(0.3),
+                  color: primaryBlue.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -88,7 +88,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.category_rounded, color: Colors.white, size: 32),
@@ -201,7 +201,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: primaryBlue.withOpacity(0.1),
+                        color: primaryBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -253,13 +253,13 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               gradient: LinearGradient(
-                colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: primaryBlue.withOpacity(0.3),
+                  color: primaryBlue.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -303,7 +303,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withOpacity(0.1),
+            color: primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: primaryBlue),
@@ -328,10 +328,10 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -371,17 +371,17 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
           style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withValues(alpha: 0.6)),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -428,17 +428,17 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withValues(alpha: 0.6)),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -474,3 +474,4 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
     );
   }
 }
+

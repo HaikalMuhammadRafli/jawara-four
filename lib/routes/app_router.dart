@@ -453,3 +453,4 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+

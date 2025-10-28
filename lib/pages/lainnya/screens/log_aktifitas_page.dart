@@ -45,10 +45,10 @@ class LogAktifitasPage extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1E88E5).withOpacity(0.1),
+                            color: const Color(0xFF1E88E5).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: const Color(0xFF1E88E5).withOpacity(0.2),
+                              color: const Color(0xFF1E88E5).withValues(alpha: 0.2),
                               width: 1,
                             ),
                           ),
@@ -127,3 +127,4 @@ class LogAktifitasPage extends StatelessWidget {
     );
   }
 }
+

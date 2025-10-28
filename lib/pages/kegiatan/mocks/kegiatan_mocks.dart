@@ -31,3 +31,4 @@ const List<Kegiatan> kegiatanMock = [
     color: Colors.orange,
   ),
 ];
+

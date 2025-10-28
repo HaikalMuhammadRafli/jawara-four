@@ -27,3 +27,4 @@ class Pemasukan {
     jenisPemasukan: m['jenisPemasukan'] ?? '',
   );
 }
+

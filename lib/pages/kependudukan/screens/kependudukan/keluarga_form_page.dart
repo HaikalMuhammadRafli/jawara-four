@@ -77,14 +77,14 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: Offset(0, 4),
                   ),
@@ -96,7 +96,7 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                   Container(
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(Icons.group_add_rounded, color: Colors.white, size: 32),
@@ -117,7 +117,7 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Masukkan data keluarga baru',
-                          style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14),
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 14),
                         ),
                       ],
                     ),
@@ -295,14 +295,14 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
               height: 52,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
+                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: Offset(0, 4),
                   ),
@@ -378,7 +378,7 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.divider),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: Offset(0, 2)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2)),
         ],
       ),
       child: child,
@@ -481,3 +481,4 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
     );
   }
 }
+

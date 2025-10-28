@@ -114,7 +114,7 @@ class PenggunaPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: item.color,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
+                    border: Border.all(color: item.color.withValues(alpha: 0.2), width: 1),
                   ),
                   child: Icon(item.icon, color: Colors.white, size: 20),
                 ),
@@ -132,9 +132,9 @@ class PenggunaPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: item.color.withOpacity(0.1),
+                    color: item.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
+                    border: Border.all(color: item.color.withValues(alpha: 0.2), width: 1),
                   ),
                   child: Text(
                     item.role,
@@ -202,3 +202,4 @@ class PenggunaPage extends StatelessWidget {
     );
   }
 }
+

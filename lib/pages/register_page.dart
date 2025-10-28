@@ -77,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF2563EB).withOpacity(0.08),
+                              color: const Color(0xFF2563EB).withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -135,8 +135,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           Icons.email_outlined,
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty)
+                          if (v == null || v.isEmpty) {
                             return 'Email wajib diisi';
+                          }
                           if (!v.contains('@')) return 'Email tidak valid';
                           return null;
                         },
@@ -163,8 +164,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           Icons.lock_outline,
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty)
+                          if (v == null || v.isEmpty) {
                             return 'Password wajib diisi';
+                          }
                           if (v.length < 6) return 'Minimal 6 karakter';
                           return null;
                         },
@@ -180,10 +182,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           Icons.lock_outline,
                         ),
                         validator: (v) {
-                          if (v == null || v.isEmpty)
+                          if (v == null || v.isEmpty) {
                             return 'Konfirmasi wajib diisi';
-                          if (v != _passwordController.text)
+                          }
+                          if (v != _passwordController.text) {
                             return 'Password tidak cocok';
+                          }
                           return null;
                         },
                       ),
@@ -191,7 +195,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       // Jenis Kelamin
                       DropdownButtonFormField<String>(
-                        value: _selectedGender,
+                        initialValue: _selectedGender,
                         decoration: _inputDecoration('Jenis Kelamin', Icons.wc),
                         items: ['Laki-laki', 'Perempuan']
                             .map(
@@ -210,18 +214,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: ElevatedButton(
                           onPressed: _loading ? null : _register,
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith((
+                            backgroundColor: WidgetStateProperty.resolveWith((
                               states,
                             ) {
-                              if (states.contains(MaterialState.disabled))
+                              if (states.contains(WidgetState.disabled)) {
                                 return Colors.grey;
-                              if (states.contains(MaterialState.hovered) ||
-                                  states.contains(MaterialState.pressed)) {
+                              }
+                              if (states.contains(WidgetState.hovered) ||
+                                  states.contains(WidgetState.pressed)) {
                                 return const Color(0xFF1E40AF);
                               }
                               return const Color(0xFF2563EB);
                             }),
-                            shape: MaterialStateProperty.all(
+                            shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -267,3 +272,4 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
+

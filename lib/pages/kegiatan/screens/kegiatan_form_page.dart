@@ -213,14 +213,14 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                  colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -231,7 +231,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -423,8 +423,8 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                             _selectedPrioritas = prioritas;
                           });
                         },
-                        backgroundColor: chipColor.withOpacity(0.08),
-                        selectedColor: chipColor.withOpacity(0.15),
+                        backgroundColor: chipColor.withValues(alpha: 0.08),
+                        selectedColor: chipColor.withValues(alpha: 0.15),
                         checkmarkColor: chipColor,
                         labelStyle: TextStyle(
                           color: isSelected ? chipColor : textSecondary,
@@ -460,7 +460,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -509,7 +509,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withOpacity(0.1),
+            color: primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: primaryBlue),
@@ -534,10 +534,10 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -581,18 +581,18 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withOpacity(0.6),
+              color: textSecondary.withValues(alpha: 0.6),
             ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -644,18 +644,18 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withOpacity(0.6),
+              color: textSecondary.withValues(alpha: 0.6),
             ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -715,7 +715,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         ),
         const SizedBox(height: 8),
         Material(
-          color: dividerGray.withOpacity(0.2),
+          color: dividerGray.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
             onTap: onTap,
@@ -724,7 +724,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: dividerGray.withOpacity(0.6)),
+                border: Border.all(color: dividerGray.withValues(alpha: 0.6)),
               ),
               child: Row(
                 children: [
@@ -737,7 +737,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                         fontSize: 14,
                         color: value != null
                             ? textPrimary
-                            : textSecondary.withOpacity(0.6),
+                            : textSecondary.withValues(alpha: 0.6),
                         fontWeight: value != null
                             ? FontWeight.w500
                             : FontWeight.w400,
@@ -747,7 +747,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: textSecondary.withOpacity(0.6),
+                    color: textSecondary.withValues(alpha: 0.6),
                   ),
                 ],
               ),
@@ -758,3 +758,4 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     );
   }
 }
+

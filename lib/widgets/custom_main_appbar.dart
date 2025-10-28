@@ -119,7 +119,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                       // ignore: deprecated_member_use
                       colors: [
                         AppColors.primary,
-                        AppColors.primary.withOpacity(0.9),
+                        AppColors.primary.withValues(alpha: 0.9),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -140,3 +140,4 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
+

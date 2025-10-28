@@ -27,3 +27,4 @@ const List<LogEntry> logMock = [
     tanggal: '14 Okt 2025',
   ),
 ];
+

@@ -134,7 +134,7 @@ class DashboardMenuPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: color, size: 20),
@@ -202,7 +202,7 @@ class DashboardMenuPage extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -320,7 +320,7 @@ class DashboardMenuPage extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.success,
-                            AppColors.success.withOpacity(0.7),
+                            AppColors.success.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -340,7 +340,7 @@ class DashboardMenuPage extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.success,
-                            AppColors.success.withOpacity(0.7),
+                            AppColors.success.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -360,7 +360,7 @@ class DashboardMenuPage extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.success,
-                            AppColors.success.withOpacity(0.7),
+                            AppColors.success.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -380,7 +380,7 @@ class DashboardMenuPage extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.success,
-                            AppColors.success.withOpacity(0.7),
+                            AppColors.success.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -400,7 +400,7 @@ class DashboardMenuPage extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.success,
-                            AppColors.success.withOpacity(0.7),
+                            AppColors.success.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -420,7 +420,7 @@ class DashboardMenuPage extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.success,
-                            AppColors.success.withOpacity(0.7),
+                            AppColors.success.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -560,7 +560,7 @@ class DashboardMenuPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -597,3 +597,4 @@ class DashboardMenuPage extends StatelessWidget {
     );
   }
 }
+

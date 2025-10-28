@@ -49,7 +49,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,13 +61,13 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      primaryBlue.withOpacity(0.15),
-                      primaryBlue.withOpacity(0.05),
+                      primaryBlue.withValues(alpha: 0.15),
+                      primaryBlue.withValues(alpha: 0.05),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     width: 2,
                   ),
                 ),
@@ -172,7 +172,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -180,10 +180,10 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
+                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
               ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withOpacity(0.25), width: 1.5),
+              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
             ),
             child: Icon(icon, color: color, size: 26),
           ),
@@ -279,7 +279,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
           decoration: BoxDecoration(
             color: backgroundWhite,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+            border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
           ),
           child: Row(
             children: [
@@ -287,11 +287,11 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
+                    colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: color.withOpacity(0.25),
+                    color: color.withValues(alpha: 0.25),
                     width: 1.5,
                   ),
                 ),
@@ -327,7 +327,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -352,7 +352,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,10 +385,10 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
+                  color: primaryBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: primaryBlue.withOpacity(0.2),
+                    color: primaryBlue.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -418,7 +418,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
       decoration: BoxDecoration(
         color: const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Row(
         children: [
@@ -428,7 +428,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
               color: backgroundWhite,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: item.color.withOpacity(0.2),
+                color: item.color.withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),
@@ -445,10 +445,10 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: item.color.withOpacity(0.1),
+                    color: item.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: item.color.withOpacity(0.2),
+                      color: item.color.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -487,14 +487,14 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     Icon(
                       Icons.calendar_today_rounded,
                       size: 14,
-                      color: textSecondary.withOpacity(0.8),
+                      color: textSecondary.withValues(alpha: 0.8),
                     ),
                     const SizedBox(width: 6),
                     Text(
                       item.tanggal,
                       style: TextStyle(
                         fontSize: 12,
-                        color: textSecondary.withOpacity(0.8),
+                        color: textSecondary.withValues(alpha: 0.8),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -508,3 +508,4 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
     );
   }
 }
+
