@@ -84,7 +84,9 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             ),
             backgroundColor: errorRed,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -102,7 +104,9 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
           ),
           backgroundColor: successGreen,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -133,10 +137,18 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
         actions: [
           TextButton.icon(
             onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            icon: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
             label: const Text(
               'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -196,7 +208,11 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Catat pemasukan di luar iuran rutin',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -207,7 +223,10 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             const SizedBox(height: 24),
 
             // Informasi Pemasukan Section
-            _buildSectionTitle('Informasi Pemasukan', Icons.info_outline_rounded),
+            _buildSectionTitle(
+              'Informasi Pemasukan',
+              Icons.info_outline_rounded,
+            ),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
@@ -310,7 +329,11 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.add_circle_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 12),
                         Text(
                           'Tambah Pemasukan',
@@ -405,10 +428,17 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
           validator: validator,
           maxLines: maxLines,
           keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withOpacity(0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: successGreen),
             filled: true,
             fillColor: dividerGray.withOpacity(0.2),
@@ -432,7 +462,10 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: errorRed, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -465,7 +498,10 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withOpacity(0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: successGreen),
             filled: true,
             fillColor: dividerGray.withOpacity(0.2),
@@ -481,7 +517,10 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: successGreen, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -552,8 +591,12 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
                       value ?? hint,
                       style: TextStyle(
                         fontSize: 14,
-                        color: value != null ? textPrimary : textSecondary.withOpacity(0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
+                        color: value != null
+                            ? textPrimary
+                            : textSecondary.withOpacity(0.6),
+                        fontWeight: value != null
+                            ? FontWeight.w500
+                            : FontWeight.w400,
                       ),
                     ),
                   ),

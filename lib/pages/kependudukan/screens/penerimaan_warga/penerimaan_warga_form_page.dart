@@ -14,7 +14,8 @@ class PenerimaanWargaFormPage extends StatefulWidget {
   const PenerimaanWargaFormPage({super.key});
 
   @override
-  State<PenerimaanWargaFormPage> createState() => _PenerimaanWargaFormPageState();
+  State<PenerimaanWargaFormPage> createState() =>
+      _PenerimaanWargaFormPageState();
 }
 
 class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
@@ -31,7 +32,14 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
   String? _selectedPekerjaan;
 
   final List<String> _jenisKelaminList = ['Laki-laki', 'Perempuan'];
-  final List<String> _agamaList = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'];
+  final List<String> _agamaList = [
+    'Islam',
+    'Kristen',
+    'Katolik',
+    'Hindu',
+    'Buddha',
+    'Konghucu',
+  ];
   final List<String> _pekerjaanList = [
     'PNS',
     'Karyawan Swasta',
@@ -96,7 +104,9 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
             ),
             backgroundColor: errorRed,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -114,7 +124,9 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
           ),
           backgroundColor: successGreen,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -145,10 +157,18 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
         actions: [
           TextButton.icon(
             onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            icon: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
             label: const Text(
               'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -185,7 +205,11 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.person_add_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.person_add_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -204,7 +228,11 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Lengkapi data calon warga baru',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -304,7 +332,10 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
             const SizedBox(height: 24),
 
             // Kontak Section
-            _buildSectionTitle('Informasi Kontak', Icons.contact_phone_outlined),
+            _buildSectionTitle(
+              'Informasi Kontak',
+              Icons.contact_phone_outlined,
+            ),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
@@ -391,7 +422,11 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.check_circle_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 12),
                         Text(
                           'Ajukan Pendaftaran',
@@ -486,10 +521,17 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
           validator: validator,
           maxLines: maxLines,
           keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withOpacity(0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
             fillColor: dividerGray.withOpacity(0.2),
@@ -513,7 +555,10 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: errorRed, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -546,7 +591,10 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withOpacity(0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
             fillColor: dividerGray.withOpacity(0.2),
@@ -562,7 +610,10 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: primaryBlue, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -633,8 +684,12 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
                       value ?? hint,
                       style: TextStyle(
                         fontSize: 14,
-                        color: value != null ? textPrimary : textSecondary.withOpacity(0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
+                        color: value != null
+                            ? textPrimary
+                            : textSecondary.withOpacity(0.6),
+                        fontWeight: value != null
+                            ? FontWeight.w500
+                            : FontWeight.w400,
                       ),
                     ),
                   ),

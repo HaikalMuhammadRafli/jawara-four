@@ -28,10 +28,16 @@ class LogAktifitasPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+                    border: Border.all(
+                      color: const Color(0xFFE0E0E0),
+                      width: 1,
+                    ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
                     child: Row(
                       children: [
                         // No
@@ -41,13 +47,16 @@ class LogAktifitasPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: const Color(0xFF1E88E5).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF1E88E5).withOpacity(0.2), width: 1),
+                            border: Border.all(
+                              color: const Color(0xFF1E88E5).withOpacity(0.2),
+                              width: 1,
+                            ),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             '${index + 1}',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               color: Color(0xFF1E88E5),
                               fontSize: 14,
                             ),
@@ -62,7 +71,7 @@ class LogAktifitasPage extends StatelessWidget {
                               Text(
                                 log.deskripsi,
                                 style: const TextStyle(
-                                  fontSize: 16, 
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xFF212121),
                                 ),
@@ -71,16 +80,22 @@ class LogAktifitasPage extends StatelessWidget {
                               Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF8F9FA),
                                       borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+                                      border: Border.all(
+                                        color: const Color(0xFFE0E0E0),
+                                        width: 1,
+                                      ),
                                     ),
                                     child: Text(
                                       log.aktor,
                                       style: const TextStyle(
-                                        fontSize: 12, 
+                                        fontSize: 12,
                                         color: Color(0xFF757575),
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -90,7 +105,7 @@ class LogAktifitasPage extends StatelessWidget {
                                   Text(
                                     log.tanggal,
                                     style: const TextStyle(
-                                      fontSize: 12, 
+                                      fontSize: 12,
                                       color: Color(0xFF9E9E9E),
                                       fontWeight: FontWeight.w500,
                                     ),

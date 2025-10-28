@@ -80,25 +80,40 @@ class _RegisterPageState extends State<RegisterPage> {
                               color: const Color(0xFF2563EB).withOpacity(0.08),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.apartment, color: Color(0xFF2563EB), size: 28),
+                            child: const Icon(
+                              Icons.apartment,
+                              color: Color(0xFF2563EB),
+                              size: 28,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           const Expanded(
-                            child: Text('Daftar Akun',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            child: Text(
+                              'Daftar Akun',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 18),
-                      const Text('Buat akun baru untuk melanjutkan',
-                          style: TextStyle(color: Colors.black54)),
+                      const Text(
+                        'Buat akun baru untuk melanjutkan',
+                        style: TextStyle(color: Colors.black54),
+                      ),
                       const SizedBox(height: 20),
 
                       // Nama Lengkap
                       TextFormField(
                         controller: _nameController,
-                        decoration: _inputDecoration('Nama Lengkap', Icons.person),
-                        validator: (v) => v == null || v.isEmpty ? 'Nama wajib diisi' : null,
+                        decoration: _inputDecoration(
+                          'Nama Lengkap',
+                          Icons.person,
+                        ),
+                        validator: (v) =>
+                            v == null || v.isEmpty ? 'Nama wajib diisi' : null,
                       ),
                       const SizedBox(height: 12),
 
@@ -115,9 +130,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: _inputDecoration('Email', Icons.email_outlined),
+                        decoration: _inputDecoration(
+                          'Email',
+                          Icons.email_outlined,
+                        ),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Email wajib diisi';
+                          if (v == null || v.isEmpty)
+                            return 'Email wajib diisi';
                           if (!v.contains('@')) return 'Email tidak valid';
                           return null;
                         },
@@ -129,8 +148,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: _inputDecoration('No Telepon', Icons.phone),
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'No Telepon wajib diisi' : null,
+                        validator: (v) => v == null || v.isEmpty
+                            ? 'No Telepon wajib diisi'
+                            : null,
                       ),
                       const SizedBox(height: 12),
 
@@ -138,9 +158,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
-                        decoration: _inputDecoration('Password', Icons.lock_outline),
+                        decoration: _inputDecoration(
+                          'Password',
+                          Icons.lock_outline,
+                        ),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Password wajib diisi';
+                          if (v == null || v.isEmpty)
+                            return 'Password wajib diisi';
                           if (v.length < 6) return 'Minimal 6 karakter';
                           return null;
                         },
@@ -151,10 +175,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: _confirmController,
                         obscureText: true,
-                        decoration: _inputDecoration('Konfirmasi Password', Icons.lock_outline),
+                        decoration: _inputDecoration(
+                          'Konfirmasi Password',
+                          Icons.lock_outline,
+                        ),
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Konfirmasi wajib diisi';
-                          if (v != _passwordController.text) return 'Password tidak cocok';
+                          if (v == null || v.isEmpty)
+                            return 'Konfirmasi wajib diisi';
+                          if (v != _passwordController.text)
+                            return 'Password tidak cocok';
                           return null;
                         },
                       ),
@@ -165,10 +194,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         value: _selectedGender,
                         decoration: _inputDecoration('Jenis Kelamin', Icons.wc),
                         items: ['Laki-laki', 'Perempuan']
-                            .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                            .map(
+                              (g) => DropdownMenuItem(value: g, child: Text(g)),
+                            )
                             .toList(),
                         onChanged: (v) => setState(() => _selectedGender = v),
-                        validator: (v) => v == null ? 'Pilih jenis kelamin' : null,
+                        validator: (v) =>
+                            v == null ? 'Pilih jenis kelamin' : null,
                       ),
 
                       const SizedBox(height: 24),
@@ -178,8 +210,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: ElevatedButton(
                           onPressed: _loading ? null : _register,
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith((states) {
-                              if (states.contains(MaterialState.disabled)) return Colors.grey;
+                            backgroundColor: MaterialStateProperty.resolveWith((
+                              states,
+                            ) {
+                              if (states.contains(MaterialState.disabled))
+                                return Colors.grey;
                               if (states.contains(MaterialState.hovered) ||
                                   states.contains(MaterialState.pressed)) {
                                 return const Color(0xFF1E40AF);
@@ -187,16 +222,27 @@ class _RegisterPageState extends State<RegisterPage> {
                               return const Color(0xFF2563EB);
                             }),
                             shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           ),
                           child: _loading
                               ? const SizedBox(
                                   width: 18,
                                   height: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
                                 )
-                              : const Text('Daftar',
-                                  style: TextStyle(color: Colors.white, fontSize: 16)),
+                              : const Text(
+                                  'Daftar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 12),

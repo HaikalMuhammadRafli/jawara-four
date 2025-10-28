@@ -65,7 +65,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           ),
           backgroundColor: successGreen,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -99,7 +101,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             label: const Text(
               'Kirim',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -136,7 +142,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.campaign_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.campaign_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -155,7 +165,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Kirim pesan ke seluruh warga RT',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -253,7 +267,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                 },
                 title: const Text(
                   'Tandai sebagai Penting',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textPrimary),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: textPrimary,
+                  ),
                 ),
                 subtitle: const Text(
                   'Pesan akan diprioritaskan dan ditampilkan di bagian atas',
@@ -387,10 +405,17 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           controller: controller,
           validator: validator,
           maxLines: maxLines,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withOpacity(0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
             fillColor: dividerGray.withOpacity(0.2),
@@ -414,7 +439,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: errorRed, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -447,7 +475,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withOpacity(0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
             fillColor: dividerGray.withOpacity(0.2),
@@ -463,7 +494,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: primaryBlue, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(

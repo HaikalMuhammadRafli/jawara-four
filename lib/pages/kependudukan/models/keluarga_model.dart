@@ -3,7 +3,11 @@ class Keluarga {
   final String alamat;
   final String jumlahAnggota;
 
-  const Keluarga({required this.kepalaKeluarga, required this.alamat, required this.jumlahAnggota});
+  const Keluarga({
+    required this.kepalaKeluarga,
+    required this.alamat,
+    required this.jumlahAnggota,
+  });
 
   factory Keluarga.fromMap(Map<String, String> m) => Keluarga(
     kepalaKeluarga: m['kepalaKeluarga'] ?? '',
