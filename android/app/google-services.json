@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "276529435482",
+    "project_id": "jawara4-eb4fe",
+    "storage_bucket": "jawara4-eb4fe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276529435482:android:121953a2e36e05b433d963",
+        "android_client_info": {
+          "package_name": "com.example.jawara_four"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNtnf40MKdUPGFJGr4j73lPg2ZaD_zmYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -41,27 +41,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  _showTambahPengeluaranDialog(context);
-                },
-                backgroundColor: primaryBlue,
-                elevation: 0,
-                icon: const Icon(
-                  Icons.add_rounded,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                label: const Text(
-                  'Tambah',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
             ),
           ),
         ],
