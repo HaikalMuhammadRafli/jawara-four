@@ -25,13 +25,13 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     await Future.delayed(const Duration(seconds: 1)); // simulate login
-  setState(() => _loading = false);
-  if (mounted) context.go('/dashboard');
+    setState(() => _loading = false);
+    if (mounted) context.go('/dashboard');
   }
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
@@ -42,7 +42,10 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                 color: Colors.grey[50], // light gray background
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade200, width: 3), // slightly thicker border
+                border: Border.all(
+                  color: Colors.grey.shade200,
+                  width: 3,
+                ), // slightly thicker border
               ),
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -56,23 +59,33 @@ class _LoginPageState extends State<LoginPage> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2563EB).withOpacity(0.08),
+                            color: const Color(0xFF2563EB).withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(Icons.apartment, color: Color(0xFF2563EB), size: 28),
+                          child: const Icon(
+                            Icons.apartment,
+                            color: Color(0xFF2563EB),
+                            size: 28,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         const Expanded(
                           child: Text(
                             'Jawara Four',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 18),
 
-                    const Text('Silakan masuk untuk melanjutkan', style: TextStyle(color: Colors.black54)),
+                    const Text(
+                      'Silakan masuk untuk melanjutkan',
+                      style: TextStyle(color: Colors.black54),
+                    ),
                     const SizedBox(height: 12),
 
                     Form(
@@ -82,27 +95,44 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.email_outlined),
-                                filled: true,
-                                fillColor: Colors.white,
-                                contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                                  borderSide: BorderSide(color: Colors.transparent),
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              prefixIcon: Icon(Icons.email_outlined),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 14,
+                                horizontal: 12,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                                  borderSide: BorderSide(color: Color(0xFFE6E9EE)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                                  borderSide: BorderSide(color: Color(0xFF2563EB)),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
                                 ),
                               ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFE6E9EE),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF2563EB),
+                                ),
+                              ),
+                            ),
                             validator: (v) {
-                              if (v == null || v.isEmpty) return 'Email wajib diisi';
+                              if (v == null || v.isEmpty) {
+                                return 'Email wajib diisi';
+                              }
                               if (!v.contains('@')) return 'Email tidak valid';
                               return null;
                             },
@@ -111,28 +141,47 @@ class _LoginPageState extends State<LoginPage> {
                           TextFormField(
                             controller: _passwordController,
                             obscureText: true,
-                                decoration: const InputDecoration(
-                                  labelText: 'Password',
-                                  prefixIcon: Icon(Icons.lock_outline),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide(color: Colors.transparent),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide(color: Color(0xFFE6E9EE)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    borderSide: BorderSide(color: Color(0xFF2563EB)),
-                                  ),
+                            decoration: const InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(Icons.lock_outline),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 14,
+                                horizontal: 12,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
                                 ),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFE6E9EE),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF2563EB),
+                                ),
+                              ),
+                            ),
                             validator: (v) {
-                              if (v == null || v.isEmpty) return 'Password wajib diisi';
-                              if (v.length < 6) return 'Password minimal 6 karakter';
+                              if (v == null || v.isEmpty) {
+                                return 'Password wajib diisi';
+                              }
+                              if (v.length < 6) {
+                                return 'Password minimal 6 karakter';
+                              }
                               return null;
                             },
                           ),
@@ -143,16 +192,45 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               onPressed: _loading ? null : _login,
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.resolveWith((states) {
-                                  if (states.contains(MaterialState.disabled)) return Colors.grey;
-                                  if (states.contains(MaterialState.hovered) || states.contains(MaterialState.pressed)) return const Color(0xFF1E40AF);
-                                  return const Color(0xFF2563EB);
-                                }),
-                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith((states) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return Colors.grey;
+                                      }
+                                      if (states.contains(
+                                            WidgetState.hovered,
+                                          ) ||
+                                          states.contains(
+                                            WidgetState.pressed,
+                                          )) {
+                                        return const Color(0xFF1E40AF);
+                                      }
+                                      return const Color(0xFF2563EB);
+                                    }),
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
                               ),
                               child: _loading
-                                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                  : const Text('Masuk', style: TextStyle(fontSize: 16, color: Colors.white)),
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Masuk',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
                           ),
                         ],
@@ -165,7 +243,10 @@ class _LoginPageState extends State<LoginPage> {
                         const Expanded(child: Divider()),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text('atau', style: TextStyle(color: Colors.grey[600])),
+                          child: Text(
+                            'atau',
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
                         ),
                         const Expanded(child: Divider()),
                       ],
@@ -193,3 +274,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+

@@ -32,7 +32,7 @@ class RumahPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         border: Border(
-          bottom: BorderSide(color: dividerGray.withOpacity(0.6), width: 1.5),
+          bottom: BorderSide(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         ),
       ),
       child: Column(
@@ -48,7 +48,7 @@ class RumahPage extends StatelessWidget {
                 size: 22,
               ),
               filled: true,
-              fillColor: dividerGray.withOpacity(0.15),
+              fillColor: dividerGray.withValues(alpha: 0.15),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
@@ -89,7 +89,7 @@ class RumahPage extends StatelessWidget {
         color: isSelected ? primaryBlue : backgroundWhite,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isSelected ? primaryBlue : dividerGray.withOpacity(0.6),
+          color: isSelected ? primaryBlue : dividerGray.withValues(alpha: 0.6),
           width: 1.5,
         ),
       ),
@@ -129,7 +129,7 @@ class RumahPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,15 +142,15 @@ class RumahPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      primaryBlue.withOpacity(0.15),
-                      primaryBlue.withOpacity(0.05),
+                      primaryBlue.withValues(alpha: 0.15),
+                      primaryBlue.withValues(alpha: 0.05),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     width: 1.5,
                   ),
                 ),
@@ -189,10 +189,10 @@ class RumahPage extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: statusColor.withOpacity(0.3),
+                    color: statusColor.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -209,7 +209,7 @@ class RumahPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Divider(color: dividerGray.withOpacity(0.5), height: 1),
+          Divider(color: dividerGray.withValues(alpha: 0.5), height: 1),
           const SizedBox(height: 14),
           Row(
             children: [
@@ -228,7 +228,7 @@ class RumahPage extends StatelessWidget {
               // Action buttons modern
               Container(
                 decoration: BoxDecoration(
-                  color: dividerGray.withOpacity(0.2),
+                  color: dividerGray.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: IconButton(
@@ -248,7 +248,7 @@ class RumahPage extends StatelessWidget {
               const SizedBox(width: 8),
               Container(
                 decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
+                  color: primaryBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: IconButton(
@@ -318,10 +318,10 @@ class RumahPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.05),
+                color: primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: primaryBlue.withOpacity(0.2),
+                  color: primaryBlue.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -394,10 +394,10 @@ class RumahPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.05),
+                color: primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: primaryBlue.withOpacity(0.2),
+                  color: primaryBlue.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -463,3 +463,4 @@ class RumahPage extends StatelessWidget {
     );
   }
 }
+

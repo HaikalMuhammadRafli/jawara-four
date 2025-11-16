@@ -29,17 +29,17 @@ class _KegiatanPageState extends State<KegiatanPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  primaryBlue.withOpacity(0.1),
-                  primaryBlue.withOpacity(0.05),
+                  primaryBlue.withValues(alpha: 0.1),
+                  primaryBlue.withValues(alpha: 0.05),
                 ],
               ),
               shape: BoxShape.circle,
-              border: Border.all(color: primaryBlue.withOpacity(0.2), width: 2),
+              border: Border.all(color: primaryBlue.withValues(alpha: 0.2), width: 2),
             ),
             child: Icon(
               Icons.event_available_rounded,
               size: 64,
-              color: primaryBlue.withOpacity(0.6),
+              color: primaryBlue.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 24),
@@ -91,7 +91,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -106,15 +106,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        item.color.withOpacity(0.15),
-                        item.color.withOpacity(0.05),
+                        item.color.withValues(alpha: 0.15),
+                        item.color.withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: item.color.withOpacity(0.3),
+                      color: item.color.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
@@ -158,7 +158,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  dividerGray.withOpacity(0.5),
+                  dividerGray.withValues(alpha: 0.5),
                   Colors.transparent,
                 ],
               ),
@@ -252,7 +252,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
     required VoidCallback onPressed,
   }) {
     return Material(
-      color: color.withOpacity(0.08),
+      color: color.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onPressed,
@@ -323,10 +323,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.05),
+                color: primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: primaryBlue.withOpacity(0.2),
+                  color: primaryBlue.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -410,10 +410,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFE53935).withOpacity(0.05),
+                color: const Color(0xFFE53935).withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: const Color(0xFFE53935).withOpacity(0.2),
+                  color: const Color(0xFFE53935).withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -481,3 +481,4 @@ class _KegiatanPageState extends State<KegiatanPage> {
     );
   }
 }
+

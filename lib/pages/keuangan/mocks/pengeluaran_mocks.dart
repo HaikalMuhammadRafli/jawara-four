@@ -26,3 +26,4 @@ const List<Pengeluaran> pengeluaranMock = [
     tanggal: '3 Jan 2025',
   ),
 ];
+

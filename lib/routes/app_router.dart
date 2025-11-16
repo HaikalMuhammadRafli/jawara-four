@@ -13,9 +13,12 @@ import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/kependudukan/kependudukan_menu_page.dart';
 import 'package:jawara_four/pages/kependudukan/models/informasi_aspirasi_model.dart';
 import 'package:jawara_four/pages/kependudukan/models/penerimaan_warga_model.dart';
+import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_form_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_page.dart';
+import 'package:jawara_four/pages/kependudukan/screens/kependudukan/rumah_form_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/rumah_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/tambah_page.dart';
+import 'package:jawara_four/pages/kependudukan/screens/kependudukan/warga_form_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/warga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_tambah_page.dart';
@@ -28,6 +31,7 @@ import 'package:jawara_four/pages/kependudukan/screens/pesan_warga/informasi_asp
 import 'package:jawara_four/pages/keuangan/keuangan_menu_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/iuran_tagihan_form_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/iuran_tagihan_page.dart';
+import 'package:jawara_four/pages/keuangan/screens/kategori_iuran_form_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/kategori_iuran_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/keuangan_pengeluaran.dart';
 import 'package:jawara_four/pages/keuangan/screens/keuangan_pengeluaran_form_page.dart';
@@ -35,6 +39,7 @@ import 'package:jawara_four/pages/keuangan/screens/laporan_keuangan_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/pemasukan_lain_form_page.dart';
 import 'package:jawara_four/pages/keuangan/screens/pemasukan_lain_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/log_aktifitas_page.dart';
+import 'package:jawara_four/pages/lainnya/screens/pengguna_form_page.dart';
 import 'package:jawara_four/pages/lainnya/screens/pengguna_page.dart';
 import 'package:jawara_four/pages/login_page.dart';
 import 'package:jawara_four/pages/register_page.dart';
@@ -136,6 +141,12 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Kategori Iuran'),
+        floatingActionButton: const CustomFab(
+          label: 'Tambah Kategori',
+          icon: Icons.category_rounded,
+          routeName: 'kategori-iuran-form',
+          backgroundColor: Color(0xFF1E88E5),
+        ),
         child: KategoriIuranPage(),
       ),
     ),
@@ -173,7 +184,21 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Warga'),
+        floatingActionButton: CustomFab(
+          label: 'Tambah Warga',
+          icon: Icons.person_add_rounded,
+          routeName: 'warga-form',
+        ),
         child: WargaPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/kependudukan/warga/form',
+      name: 'warga-form',
+      builder: (context, state) => CustomScaffold(
+        state: state,
+        appBar: CustomPushAppbar(title: 'Tambah Warga Baru'),
+        child: WargaFormPage(),
       ),
     ),
     GoRoute(
@@ -182,7 +207,21 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Keluarga'),
+        floatingActionButton: CustomFab(
+          label: 'Tambah Keluarga',
+          icon: Icons.group_add_rounded,
+          routeName: 'keluarga-form',
+        ),
         child: KeluargaPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/kependudukan/keluarga/form',
+      name: 'keluarga-form',
+      builder: (context, state) => CustomScaffold(
+        state: state,
+        appBar: CustomPushAppbar(title: 'Tambah Keluarga Baru'),
+        child: KeluargaFormPage(),
       ),
     ),
     GoRoute(
@@ -191,7 +230,21 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Rumah'),
+        floatingActionButton: CustomFab(
+          label: 'Tambah Rumah',
+          icon: Icons.add_home_rounded,
+          routeName: 'rumah-form',
+        ),
         child: RumahPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/kependudukan/rumah/form',
+      name: 'rumah-form',
+      builder: (context, state) => CustomScaffold(
+        state: state,
+        appBar: CustomPushAppbar(title: 'Tambah Rumah Baru'),
+        child: RumahFormPage(),
       ),
     ),
     GoRoute(
@@ -237,6 +290,11 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Mutasi Keluarga'),
+        floatingActionButton: CustomFab(
+          label: 'Tambah Mutasi',
+          icon: Icons.add_circle_outline_rounded,
+          routeName: 'mutasi-keluarga-tambah',
+        ),
         child: MutasiKeluargaPage(),
       ),
     ),
@@ -352,6 +410,11 @@ final GoRouter appRouter = GoRouter(
       name: 'keuangan-pengeluaran-form',
       builder: (context, state) => const KeuanganPengeluaranFormPage(),
     ),
+    GoRoute(
+      path: '/keuangan/kategori-iuran/form',
+      name: 'kategori-iuran-form',
+      builder: (context, state) => const KategoriIuranFormPage(),
+    ),
 
     // ===========================================================
     // Lainnya Routes
@@ -371,8 +434,23 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Daftar Pengguna'),
+        floatingActionButton: CustomFab(
+          label: 'Tambah Pengguna',
+          icon: Icons.person_add_rounded,
+          routeName: 'pengguna-form',
+        ),
         child: PenggunaPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/daftar-pengguna/form',
+      name: 'pengguna-form',
+      builder: (context, state) => CustomScaffold(
+        state: state,
+        appBar: CustomPushAppbar(title: 'Tambah Pengguna Baru'),
+        child: PenggunaFormPage(),
       ),
     ),
   ],
 );
+

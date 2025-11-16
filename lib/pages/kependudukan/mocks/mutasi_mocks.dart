@@ -64,3 +64,4 @@ const List<MutasiKeluarga> mutasiMock = [
     jenisMutasi: 'Pindah Domisili',
   ),
 ];
+

@@ -14,7 +14,8 @@ class InformasiAspirasiFormPage extends StatefulWidget {
   const InformasiAspirasiFormPage({super.key});
 
   @override
-  State<InformasiAspirasiFormPage> createState() => _InformasiAspirasiFormPageState();
+  State<InformasiAspirasiFormPage> createState() =>
+      _InformasiAspirasiFormPageState();
 }
 
 class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
@@ -59,7 +60,9 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
           ),
           backgroundColor: successGreen,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -93,7 +96,11 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
             icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             label: const Text(
               'Kirim',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -109,14 +116,14 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                  colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -127,10 +134,14 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.feedback_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.feedback_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -149,7 +160,11 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Sampaikan aspirasi Anda kepada pengurus RT',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -230,7 +245,10 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
             const SizedBox(height: 24),
 
             // Informasi Aspirasi Section
-            _buildSectionTitle('Informasi Aspirasi', Icons.info_outline_rounded),
+            _buildSectionTitle(
+              'Informasi Aspirasi',
+              Icons.info_outline_rounded,
+            ),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
@@ -289,14 +307,21 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.05),
+                color: primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1.5),
+                border: Border.all(
+                  color: primaryBlue.withValues(alpha: 0.2),
+                  width: 1.5,
+                ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline_rounded, color: primaryBlue, size: 22),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: primaryBlue,
+                    size: 22,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -316,7 +341,7 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
                           'Aspirasi Anda akan ditinjau oleh pengurus RT dan akan mendapat respon dalam waktu 1x24 jam.',
                           style: TextStyle(
                             fontSize: 12,
-                            color: primaryBlue.withOpacity(0.8),
+                            color: primaryBlue.withValues(alpha: 0.8),
                             height: 1.5,
                           ),
                         ),
@@ -340,7 +365,7 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -385,7 +410,7 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withOpacity(0.1),
+            color: primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: primaryBlue),
@@ -410,10 +435,10 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -448,20 +473,27 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
           controller: controller,
           validator: validator,
           maxLines: maxLines,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withValues(alpha: 0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -475,7 +507,10 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: errorRed, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -508,23 +543,29 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withValues(alpha: 0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: primaryBlue, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -554,3 +595,4 @@ class _InformasiAspirasiFormPageState extends State<InformasiAspirasiFormPage> {
     );
   }
 }
+

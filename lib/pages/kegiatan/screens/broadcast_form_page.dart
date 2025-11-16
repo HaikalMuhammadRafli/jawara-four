@@ -65,7 +65,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           ),
           backgroundColor: successGreen,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -99,7 +101,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             label: const Text(
               'Kirim',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -115,14 +121,14 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                  colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -133,10 +139,14 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.campaign_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.campaign_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -155,7 +165,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Kirim pesan ke seluruh warga RT',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -253,7 +267,11 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                 },
                 title: const Text(
                   'Tandai sebagai Penting',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textPrimary),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: textPrimary,
+                  ),
                 ),
                 subtitle: const Text(
                   'Pesan akan diprioritaskan dan ditampilkan di bagian atas',
@@ -279,7 +297,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -324,7 +342,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withOpacity(0.1),
+            color: primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: primaryBlue),
@@ -349,10 +367,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -387,20 +405,27 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           controller: controller,
           validator: validator,
           maxLines: maxLines,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withValues(alpha: 0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -414,7 +439,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: errorRed, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -447,23 +475,29 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withValues(alpha: 0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: primaryBlue, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -493,3 +527,4 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
     );
   }
 }
+

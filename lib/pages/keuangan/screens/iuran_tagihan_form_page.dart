@@ -108,7 +108,9 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
             ),
             backgroundColor: errorRed,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -126,7 +128,9 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           ),
           backgroundColor: successGreen,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -157,10 +161,18 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
         actions: [
           TextButton.icon(
             onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            icon: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
             label: const Text(
               'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -176,14 +188,14 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withOpacity(0.8)],
+                  colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -194,10 +206,14 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.receipt_long_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.receipt_long_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -216,7 +232,11 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Catat iuran atau tagihan warga',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -366,7 +386,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withOpacity(0.3),
+                    color: primaryBlue.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -381,7 +401,11 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.check_circle_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 12),
                         Text(
                           'Simpan Data Iuran',
@@ -411,7 +435,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withOpacity(0.1),
+            color: primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 18, color: primaryBlue),
@@ -436,10 +460,10 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -476,20 +500,27 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           validator: validator,
           maxLines: maxLines,
           keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withValues(alpha: 0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -503,7 +534,10 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: errorRed, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -535,23 +569,29 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           initialValue: value,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: textSecondary.withValues(alpha: 0.6),
+            ),
             prefixIcon: Icon(icon, size: 20, color: primaryBlue),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: dividerGray.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: primaryBlue, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           isExpanded: true,
           items: items.map((String item) {
@@ -603,7 +643,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
         ),
         const SizedBox(height: 8),
         Material(
-          color: dividerGray.withOpacity(0.2),
+          color: dividerGray.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
             onTap: onTap,
@@ -612,7 +652,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: dividerGray.withOpacity(0.6)),
+                border: Border.all(color: dividerGray.withValues(alpha: 0.6)),
               ),
               child: Row(
                 children: [
@@ -623,15 +663,19 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                       value ?? hint,
                       style: TextStyle(
                         fontSize: 14,
-                        color: value != null ? textPrimary : textSecondary.withOpacity(0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
+                        color: value != null
+                            ? textPrimary
+                            : textSecondary.withValues(alpha: 0.6),
+                        fontWeight: value != null
+                            ? FontWeight.w500
+                            : FontWeight.w400,
                       ),
                     ),
                   ),
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: textSecondary.withOpacity(0.6),
+                    color: textSecondary.withValues(alpha: 0.6),
                   ),
                 ],
               ),
@@ -642,3 +686,4 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
     );
   }
 }
+

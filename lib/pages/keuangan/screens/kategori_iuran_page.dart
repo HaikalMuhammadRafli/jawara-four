@@ -71,9 +71,9 @@ class KategoriIuranPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: categoryColor.withOpacity(0.1),
+            color: categoryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: categoryColor.withOpacity(0.3), width: 1),
+            border: Border.all(color: categoryColor.withValues(alpha: 0.3), width: 1),
           ),
           child: Icon(Icons.category_rounded, color: categoryColor, size: 20),
         ),
@@ -101,9 +101,9 @@ class KategoriIuranPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
           decoration: BoxDecoration(
-            color: statusColor.withOpacity(0.1),
+            color: statusColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: statusColor.withOpacity(0.3), width: 1),
+            border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
           ),
           child: Text(
             kategori.status,
@@ -131,7 +131,7 @@ class KategoriIuranPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Icon(Icons.schedule, color: Colors.blue[600], size: 16),
@@ -214,3 +214,4 @@ class KategoriIuranPage extends StatelessWidget {
     }
   }
 }
+

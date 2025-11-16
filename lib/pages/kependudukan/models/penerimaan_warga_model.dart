@@ -24,3 +24,4 @@ class PenerimaanWarga {
     statusRegistrasi: m['statusRegistrasi'] ?? '',
   );
 }
+

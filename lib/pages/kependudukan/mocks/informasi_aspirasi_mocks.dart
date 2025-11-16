@@ -32,3 +32,4 @@ const List<InformasiAspirasi> informasiAspirasiMock = [
     status: 'Diterima',
   ),
 ];
+

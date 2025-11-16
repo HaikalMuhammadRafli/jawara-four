@@ -3,7 +3,11 @@ class LogEntry {
   final String aktor;
   final String tanggal;
 
-  const LogEntry({required this.deskripsi, required this.aktor, required this.tanggal});
+  const LogEntry({
+    required this.deskripsi,
+    required this.aktor,
+    required this.tanggal,
+  });
 
   factory LogEntry.fromMap(Map<String, String> m) => LogEntry(
     deskripsi: m['deskripsi'] ?? '',
@@ -11,3 +15,4 @@ class LogEntry {
     tanggal: m['tanggal'] ?? '',
   );
 }
+

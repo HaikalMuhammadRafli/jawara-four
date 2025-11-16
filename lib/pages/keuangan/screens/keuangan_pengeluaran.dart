@@ -54,7 +54,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
       decoration: BoxDecoration(
         color: backgroundWhite,
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -76,10 +76,10 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       width: 2,
                     ),
                   ),
@@ -94,7 +94,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   'Total Pengeluaran',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w500,
                     letterSpacing: 1.2,
                   ),
@@ -119,7 +119,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
             decoration: BoxDecoration(
               color: backgroundGray,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: dividerGray.withOpacity(0.3), width: 1),
+              border: Border.all(color: dividerGray.withValues(alpha: 0.3), width: 1),
             ),
             child: TextField(
               style: const TextStyle(
@@ -130,7 +130,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Cari pengeluaran...',
                 hintStyle: TextStyle(
-                  color: textSecondary.withOpacity(0.6),
+                  color: textSecondary.withValues(alpha: 0.6),
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
@@ -138,7 +138,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16, right: 12),
                   child: Icon(
                     Icons.search_rounded,
-                    color: textSecondary.withOpacity(0.5),
+                    color: textSecondary.withValues(alpha: 0.5),
                     size: 22,
                   ),
                 ),
@@ -150,7 +150,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide(
-                    color: primaryBlue.withOpacity(0.5),
+                    color: primaryBlue.withValues(alpha: 0.5),
                     width: 1.5,
                   ),
                 ),
@@ -188,7 +188,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundWhite,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -203,15 +203,15 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        primaryBlue.withOpacity(0.1),
-                        primaryBlue.withOpacity(0.05),
+                        primaryBlue.withValues(alpha: 0.1),
+                        primaryBlue.withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: primaryBlue.withOpacity(0.15),
+                      color: primaryBlue.withValues(alpha: 0.15),
                       width: 1,
                     ),
                   ),
@@ -246,7 +246,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: lightBlue.withOpacity(0.3),
+                              color: lightBlue.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -285,14 +285,14 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                         Icon(
                           Icons.calendar_today_rounded,
                           size: 11,
-                          color: textTertiary.withOpacity(0.7),
+                          color: textTertiary.withValues(alpha: 0.7),
                         ),
                         const SizedBox(width: 4),
                         Text(
                           pengeluaran.tanggal,
                           style: TextStyle(
                             fontSize: 12,
-                            color: textTertiary.withOpacity(0.8),
+                            color: textTertiary.withValues(alpha: 0.8),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -311,7 +311,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  dividerGray.withOpacity(0.3),
+                  dividerGray.withValues(alpha: 0.3),
                   Colors.transparent,
                 ],
               ),
@@ -340,7 +340,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        dividerGray.withOpacity(0.5),
+                        dividerGray.withValues(alpha: 0.5),
                         Colors.transparent,
                       ],
                       begin: Alignment.topCenter,
@@ -366,7 +366,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        dividerGray.withOpacity(0.5),
+                        dividerGray.withValues(alpha: 0.5),
                         Colors.transparent,
                       ],
                       begin: Alignment.topCenter,
@@ -425,4 +425,70 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       ),
     );
   }
+
+  // ==================== DIALOG TAMBAH PENGELUARAN ====================
+  void _showTambahPengeluaranDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: primaryBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.add_circle_outline,
+                  color: primaryBlue,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Tambah Pengeluaran',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: textPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Fitur tambah pengeluaran akan segera tersedia',
+            style: TextStyle(fontSize: 14, color: textSecondary),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                backgroundColor: primaryBlue,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+

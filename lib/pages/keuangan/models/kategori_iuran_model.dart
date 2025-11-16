@@ -24,3 +24,4 @@ class KategoriIuran {
     warna: m['warna'] ?? 'blue',
   );
 }
+

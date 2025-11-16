@@ -2,77 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-class MutasiKeluargaTambahPage extends StatefulWidget {
-  const MutasiKeluargaTambahPage({super.key});
+class KeluargaFormPage extends StatefulWidget {
+  const KeluargaFormPage({super.key});
 
   @override
-  State<MutasiKeluargaTambahPage> createState() => _MutasiKeluargaTambahPageState();
+  State<KeluargaFormPage> createState() => _KeluargaFormPageState();
 }
 
-class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
+class _KeluargaFormPageState extends State<KeluargaFormPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   // Controllers untuk input fields
   final TextEditingController _noKKController = TextEditingController();
   final TextEditingController _kepalaKeluargaController = TextEditingController();
-  final TextEditingController _namaWargaController = TextEditingController();
-  final TextEditingController _alamatAsalController = TextEditingController();
-  final TextEditingController _alamatTujuanController = TextEditingController();
-  final TextEditingController _alasanController = TextEditingController();
-  final TextEditingController _keteranganController = TextEditingController();
+  final TextEditingController _rtController = TextEditingController();
+  final TextEditingController _rwController = TextEditingController();
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _jumlahAnggotaController = TextEditingController();
+  final TextEditingController _catatanController = TextEditingController();
 
-  String? _selectedJenisMutasi;
-  DateTime? _selectedTanggalMutasi;
+  String? _selectedStatusKeluarga;
 
   @override
   void dispose() {
     _noKKController.dispose();
     _kepalaKeluargaController.dispose();
-    _namaWargaController.dispose();
-    _alamatAsalController.dispose();
-    _alamatTujuanController.dispose();
-    _alasanController.dispose();
-    _keteranganController.dispose();
+    _rtController.dispose();
+    _rwController.dispose();
+    _alamatController.dispose();
+    _jumlahAnggotaController.dispose();
+    _catatanController.dispose();
     super.dispose();
-  }
-
-  Future<void> _selectTanggalMutasi() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedTanggalMutasi ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now().add(Duration(days: 365)),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: AppColors.textPrimary,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedTanggalMutasi) {
-      setState(() {
-        _selectedTanggalMutasi = picked;
-      });
-    }
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_selectedTanggalMutasi == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tanggal mutasi harus dipilih'), backgroundColor: AppColors.error),
-        );
-        return;
-      }
-
       setState(() {
         _isLoading = true;
       });
@@ -89,7 +54,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
       // Tampilkan pesan sukses
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Mutasi keluarga berhasil ditambahkan!'),
+          content: Text('Data keluarga berhasil ditambahkan!'),
           backgroundColor: AppColors.success,
         ),
       );
@@ -134,7 +99,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.move_to_inbox_rounded, color: Colors.white, size: 32),
+                    child: Icon(Icons.group_add_rounded, color: Colors.white, size: 32),
                   ),
                   SizedBox(width: 16),
                   Expanded(
@@ -142,7 +107,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tambah Mutasi Keluarga',
+                          'Tambah Keluarga Baru',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -151,7 +116,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Catat perpindahan keluarga',
+                          'Masukkan data keluarga baru',
                           style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 14),
                         ),
                       ],
@@ -162,8 +127,8 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
             ),
             SizedBox(height: 24),
 
-            // Section: Data Keluarga
-            _buildSectionTitle(Icons.family_restroom_rounded, 'Data Keluarga'),
+            // Section: Data Kartu Keluarga
+            _buildSectionTitle(Icons.credit_card_rounded, 'Data Kartu Keluarga'),
             _buildCard(
               child: Column(
                 children: [
@@ -187,24 +152,38 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                   _buildTextField(
                     controller: _kepalaKeluargaController,
                     label: 'Nama Kepala Keluarga',
-                    hint: 'Masukkan nama kepala keluarga',
+                    hint: 'Masukkan nama lengkap kepala keluarga',
                     icon: Icons.person_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Nama kepala keluarga harus diisi';
                       }
+                      if (value.length < 3) {
+                        return 'Nama harus minimal 3 karakter';
+                      }
                       return null;
                     },
                   ),
                   SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _namaWargaController,
-                    label: 'Nama Warga yang Pindah',
-                    hint: 'Masukkan nama warga',
-                    icon: Icons.person_outline_rounded,
+                  _buildDropdown(
+                    value: _selectedStatusKeluarga,
+                    label: 'Status Keluarga',
+                    hint: 'Pilih status keluarga',
+                    icon: Icons.family_restroom_rounded,
+                    items: [
+                      'Keluarga Inti',
+                      'Keluarga Besar',
+                      'Keluarga Tidak Lengkap',
+                      'Single Parent',
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedStatusKeluarga = value;
+                      });
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Nama warga harus diisi';
+                        return 'Status keluarga harus dipilih';
                       }
                       return null;
                     },
@@ -214,84 +193,95 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
             ),
             SizedBox(height: 20),
 
-            // Section: Detail Mutasi
-            _buildSectionTitle(Icons.info_rounded, 'Detail Mutasi'),
+            // Section: Data Alamat
+            _buildSectionTitle(Icons.location_on_rounded, 'Data Alamat'),
             _buildCard(
               child: Column(
                 children: [
-                  _buildDropdown(
-                    value: _selectedJenisMutasi,
-                    label: 'Jenis Mutasi',
-                    hint: 'Pilih jenis mutasi',
-                    icon: Icons.swap_horiz_rounded,
-                    items: ['Pindah Masuk', 'Pindah Keluar', 'Pindah Antar RT/RW'],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedJenisMutasi = value;
-                      });
-                    },
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _rtController,
+                          label: 'RT',
+                          hint: 'RT',
+                          icon: Icons.home_work_rounded,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'RT harus diisi';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _rwController,
+                          label: 'RW',
+                          hint: 'RW',
+                          icon: Icons.location_city_rounded,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'RW harus diisi';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _alamatController,
+                    label: 'Alamat Lengkap',
+                    hint: 'Masukkan alamat lengkap keluarga',
+                    icon: Icons.map_rounded,
+                    maxLines: 3,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Jenis mutasi harus dipilih';
+                        return 'Alamat harus diisi';
+                      }
+                      if (value.length < 10) {
+                        return 'Alamat harus minimal 10 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+
+            // Section: Informasi Tambahan
+            _buildSectionTitle(Icons.info_rounded, 'Informasi Tambahan'),
+            _buildCard(
+              child: Column(
+                children: [
+                  _buildTextField(
+                    controller: _jumlahAnggotaController,
+                    label: 'Jumlah Anggota Keluarga',
+                    hint: 'Masukkan jumlah anggota keluarga',
+                    icon: Icons.people_rounded,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Jumlah anggota keluarga harus diisi';
+                      }
+                      final intValue = int.tryParse(value);
+                      if (intValue == null || intValue < 1) {
+                        return 'Jumlah harus minimal 1';
                       }
                       return null;
                     },
                   ),
                   SizedBox(height: 16),
-                  _buildDateTimePicker(
-                    label: 'Tanggal Mutasi',
-                    hint: 'Pilih tanggal mutasi',
-                    icon: Icons.calendar_today_rounded,
-                    selectedDate: _selectedTanggalMutasi,
-                    onTap: _selectTanggalMutasi,
-                  ),
-                  SizedBox(height: 16),
                   _buildTextField(
-                    controller: _alamatAsalController,
-                    label: 'Alamat Asal',
-                    hint: 'Masukkan alamat asal',
-                    icon: Icons.location_on_outlined,
-                    maxLines: 2,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Alamat asal harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _alamatTujuanController,
-                    label: 'Alamat Tujuan',
-                    hint: 'Masukkan alamat tujuan',
-                    icon: Icons.location_on_rounded,
-                    maxLines: 2,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Alamat tujuan harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _alasanController,
-                    label: 'Alasan Mutasi',
-                    hint: 'Masukkan alasan mutasi',
-                    icon: Icons.description_rounded,
-                    maxLines: 2,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Alasan mutasi harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _keteranganController,
-                    label: 'Keterangan Tambahan (Opsional)',
-                    hint: 'Masukkan keterangan tambahan',
+                    controller: _catatanController,
+                    label: 'Catatan (Opsional)',
+                    hint: 'Masukkan catatan tambahan jika ada',
                     icon: Icons.note_rounded,
                     maxLines: 3,
                   ),
@@ -340,7 +330,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                           Icon(Icons.save_rounded, color: Colors.white),
                           SizedBox(width: 8),
                           Text(
-                            'Simpan Mutasi Keluarga',
+                            'Simpan Data Keluarga',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -488,50 +478,6 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
       }).toList(),
       onChanged: onChanged,
       validator: validator,
-    );
-  }
-
-  Widget _buildDateTimePicker({
-    required String label,
-    required String hint,
-    required IconData icon,
-    required DateTime? selectedDate,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          prefixIcon: Icon(icon, color: AppColors.primary),
-          filled: true,
-          fillColor: AppColors.backgroundGray,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.divider),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.divider),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-        child: Text(
-          selectedDate != null
-              ? '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'
-              : hint,
-          style: TextStyle(
-            color: selectedDate != null ? AppColors.textPrimary : AppColors.textSecondary,
-            fontSize: 16,
-          ),
-        ),
-      ),
     );
   }
 }

@@ -129,15 +129,10 @@ class CustomBottomNavigationbar extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            _buildMenuTile(
-              context,
-              Icons.history,
-              'Log Aktifitas',
-              () {
-                Navigator.pop(context);
-                context.pushNamed('log-aktifitas');
-              },
-            ),
+            _buildMenuTile(context, Icons.history, 'Log Aktifitas', () {
+              Navigator.pop(context);
+              context.pushNamed('log-aktifitas');
+            }),
             _buildMenuTile(
               context,
               Icons.supervised_user_circle,
@@ -147,15 +142,10 @@ class CustomBottomNavigationbar extends StatelessWidget {
                 context.pushNamed('daftar-pengguna');
               },
             ),
-            _buildMenuTile(
-              context,
-              Icons.logout,
-              'Log Out',
-              () {
-                Navigator.pop(context);
-                context.goNamed('logout');
-              },
-            ),
+            _buildMenuTile(context, Icons.logout, 'Log Out', () {
+              Navigator.pop(context);
+              context.goNamed('logout');
+            }),
           ],
         ),
       ),
@@ -168,10 +158,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
     String title,
     VoidCallback onTap,
   ) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      onTap: onTap,
-    );
+    return ListTile(leading: Icon(icon), title: Text(title), onTap: onTap);
   }
 }
+

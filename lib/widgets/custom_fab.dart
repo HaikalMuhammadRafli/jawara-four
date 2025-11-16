@@ -24,7 +24,7 @@ class CustomFab extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: bgColor.withOpacity(0.3),
+            color: bgColor.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
             spreadRadius: 0,
@@ -40,7 +40,7 @@ class CustomFab extends StatelessWidget {
         icon: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 20, color: Colors.white),
@@ -54,9 +54,13 @@ class CustomFab extends StatelessWidget {
             letterSpacing: 0.3,
           ),
         ),
-        extendedPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        extendedPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 12,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }
 }
+
