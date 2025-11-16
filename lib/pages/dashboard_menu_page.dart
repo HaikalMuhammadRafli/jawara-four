@@ -2,6 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../colors/app_colors.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
 
 class DashboardMenuPage extends StatelessWidget {
   const DashboardMenuPage({super.key});
@@ -28,6 +30,10 @@ class DashboardMenuPage extends StatelessWidget {
   }
 
   Widget _buildWelcomeCard() {
+    final authService = AuthService();
+    final userService = UserService();
+    final currentUser = authService.currentUser;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -36,24 +42,97 @@ class DashboardMenuPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.divider, width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Selamat Datang',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+      child: currentUser != null
+          ? StreamBuilder(
+              stream: userService.getUserProfileStream(currentUser.uid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selamat Datang',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ],
+                  );
+                }
+
+                final userProfile = snapshot.data;
+                final displayName = userProfile?.nama ?? 
+                                   currentUser.displayName ?? 
+                                   currentUser.email?.split('@')[0] ?? 
+                                   'User';
+                final role = userProfile?.role ?? 'Admin';
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Selamat Datang, $displayName',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (role.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          role,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Pantau perkembangan warga dan aktivitas RW secara real-time',
+                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                    ),
+                  ],
+                );
+              },
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Selamat Datang',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Pantau perkembangan warga dan aktivitas RW secara real-time',
+                  style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Pantau perkembangan warga dan aktivitas RW secara real-time',
-            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
-          ),
-        ],
-      ),
     );
   }
 

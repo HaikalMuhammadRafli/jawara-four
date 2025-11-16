@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../colors/app_colors.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
 
 class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
   const CustomMainAppbar({super.key});
@@ -9,6 +11,10 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authService = AuthService();
+    final userService = UserService();
+    final currentUser = authService.currentUser;
+
     return Container(
       margin: const EdgeInsets.only(top: 30),
       height: 70,
@@ -102,21 +108,79 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
 
               const SizedBox(width: 12),
 
-              GestureDetector(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile tapped'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-                child: Container(
+              // Profile dengan data dari Firestore
+              if (currentUser != null)
+                StreamBuilder(
+                  stream: userService.getUserProfileStream(currentUser.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundGray,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final userProfile = snapshot.data;
+                    final displayName = userProfile?.nama ?? 
+                                       currentUser.displayName ?? 
+                                       currentUser.email?.split('@')[0] ?? 
+                                       'User';
+                    final initials = _getInitials(displayName);
+
+                    return GestureDetector(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Profile: $displayName'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primary,
+                              AppColors.primary.withValues(alpha: 0.9),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              else
+                Container(
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      // ignore: deprecated_member_use
                       colors: [
                         AppColors.primary,
                         AppColors.primary.withValues(alpha: 0.9),
@@ -132,12 +196,20 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                     size: 20,
                   ),
                 ),
-              ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  String _getInitials(String name) {
+    if (name.isEmpty) return 'U';
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name[0].toUpperCase();
   }
 }
 

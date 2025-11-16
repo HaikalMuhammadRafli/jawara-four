@@ -1,0 +1,33 @@
+# GoogleService-Info.plist untuk iOS
+
+File ini diperlukan untuk mengkonfigurasi Firebase di iOS.
+
+## Cara mendapatkan file GoogleService-Info.plist:
+
+1. Buka [Firebase Console](https://console.firebase.google.com/)
+2. Pilih project **jawara4-eb4fe**
+3. Klik ikon pengaturan (⚙️) di sebelah "Project Overview"
+4. Pilih "Project settings"
+5. Scroll ke bawah ke bagian "Your apps"
+6. Jika belum ada app iOS, klik "Add app" → pilih platform iOS
+7. Masukkan Bundle ID: `com.example.jawaraFour`
+8. Ikuti langkah selanjutnya dan download file **GoogleService-Info.plist**
+9. Copy file tersebut ke folder ini: `ios/Runner/GoogleService-Info.plist`
+
+## Setelah mendapatkan GoogleService-Info.plist:
+
+1. Update file `lib/firebase_options.dart` dengan:
+   - App ID iOS (dari GoogleService-Info.plist, key `GOOGLE_APP_ID`)
+   - Pastikan semua konfigurasi sudah sesuai
+
+## Alternatif: Menggunakan FlutterFire CLI
+
+Jalankan command berikut untuk generate konfigurasi otomatis:
+
+```bash
+dart pub global activate flutterfire_cli
+flutterfire configure
+```
+
+Ini akan otomatis membuat `firebase_options.dart` yang lengkap untuk semua platform.
+

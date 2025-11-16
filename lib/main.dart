@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'firebase_options.dart';
 import 'routes/app_router.dart';
+import 'services/firestore_init_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    if (kDebugMode) {
+      print('Firebase initialized successfully');
+    }
+    
+    // Initialize Firestore collections (optional)
+    final firestoreInit = FirestoreInitService();
+    await firestoreInit.initializeCollections();
+  } catch (e) {
+    if (kDebugMode) {
+      print('Firebase initialization error: $e');
+    }
+  }
+
   runApp(const MyApp());
 }
 

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:go_router/go_router.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
+import '../models/user_profile_model.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,8 +20,22 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
   String? _selectedGender;
   bool _loading = false;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _nikController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmController.dispose();
+    super.dispose();
+  }
 
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
@@ -43,10 +61,111 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _loading = true);
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() => _loading = false);
-    if (mounted) context.go('/dashboard');
+
+    setState(() {
+      _loading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      // Check if NIK already exists
+      final nikExists = await _userService.isNikExists(_nikController.text);
+      if (nikExists) {
+        setState(() {
+          _errorMessage = 'NIK sudah terdaftar. Silakan gunakan NIK lain.';
+          _loading = false;
+        });
+        return;
+      }
+
+      // Register user with Firebase Auth
+      final credential = await _authService.registerWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (credential?.user == null) {
+        setState(() {
+          _errorMessage = 'Registrasi gagal. Silakan coba lagi.';
+          _loading = false;
+        });
+        return;
+      }
+
+      // Update user profile with display name
+      if (_nameController.text.isNotEmpty) {
+        try {
+          await _authService.updateUserProfile(
+            displayName: _nameController.text,
+          );
+        } catch (e) {
+          // Non-fatal error, continue
+          if (mounted && kDebugMode) {
+            print('Warning: Failed to update display name: $e');
+          }
+        }
+      }
+
+      // Save additional user data to Firestore
+      try {
+        final userProfile = UserProfile(
+          uid: credential!.user!.uid,
+          nama: _nameController.text,
+          email: _emailController.text,
+          nik: _nikController.text,
+          noTelepon: _phoneController.text,
+          jenisKelamin: _selectedGender ?? '',
+          createdAt: DateTime.now(),
+          role: 'Warga',
+        );
+
+        await _userService.createUserProfile(userProfile);
+      } catch (e) {
+        // Non-fatal error, continue
+        if (mounted && kDebugMode) {
+          print('Warning: Failed to save user profile to Firestore: $e');
+        }
+      }
+
+      // Sign out user after registration to force login
+      try {
+        await _authService.signOut();
+      } catch (e) {
+        // Non-fatal error, continue
+        if (mounted && kDebugMode) {
+          print('Warning: Failed to sign out after registration: $e');
+        }
+      }
+
+      // Reset loading state
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registrasi berhasil! Silakan login.'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Redirect to login page
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) {
+          context.go('/login');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+          _loading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -104,6 +223,33 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: TextStyle(color: Colors.black54),
                       ),
                       const SizedBox(height: 20),
+
+                      // Error message
+                      if (_errorMessage != null)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red.shade700, size: 20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  _errorMessage!,
+                                  style: TextStyle(
+                                    color: Colors.red.shade700,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
                       // Nama Lengkap
                       TextFormField(
