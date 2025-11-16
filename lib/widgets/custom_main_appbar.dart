@@ -69,10 +69,8 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
 
           const Spacer(),
 
-          // Notification dan Profile
           Row(
             children: [
-              // Notification Icon
               Container(
                 width: 40,
                 height: 40,
@@ -89,7 +87,6 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                         size: 20,
                       ),
                     ),
-                    // Notification Badge
                     Positioned(
                       top: 8,
                       right: 8,
@@ -108,7 +105,6 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
 
               const SizedBox(width: 12),
 
-              // Profile dengan data dari Firestore
               if (currentUser != null)
                 StreamBuilder(
                   stream: userService.getUserProfileStream(currentUser.uid),

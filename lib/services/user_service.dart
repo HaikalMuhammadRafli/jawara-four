@@ -5,7 +5,6 @@ class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collection = 'users';
 
-  // Create user profile
   Future<void> createUserProfile(UserProfile userProfile) async {
     try {
       await _firestore
@@ -17,7 +16,6 @@ class UserService {
     }
   }
 
-  // Get user profile by UID
   Future<UserProfile?> getUserProfile(String uid) async {
     try {
       final doc = await _firestore.collection(_collection).doc(uid).get();
@@ -30,7 +28,6 @@ class UserService {
     }
   }
 
-  // Update user profile
   Future<void> updateUserProfile(UserProfile userProfile) async {
     try {
       await _firestore
@@ -42,7 +39,6 @@ class UserService {
     }
   }
 
-  // Check if NIK already exists
   Future<bool> isNikExists(String nik) async {
     try {
       final querySnapshot = await _firestore
@@ -56,7 +52,6 @@ class UserService {
     }
   }
 
-  // Check if email already exists (besides current user)
   Future<bool> isEmailExists(String email, {String? excludeUid}) async {
     try {
       Query query = _firestore
@@ -75,7 +70,6 @@ class UserService {
     }
   }
 
-  // Stream user profile
   Stream<UserProfile?> getUserProfileStream(String uid) {
     return _firestore
         .collection(_collection)

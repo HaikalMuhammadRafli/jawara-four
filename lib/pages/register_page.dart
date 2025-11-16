@@ -68,7 +68,6 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      // Check if NIK already exists
       final nikExists = await _userService.isNikExists(_nikController.text);
       if (nikExists) {
         setState(() {
@@ -78,7 +77,6 @@ class _RegisterPageState extends State<RegisterPage> {
         return;
       }
 
-      // Register user with Firebase Auth
       final credential = await _authService.registerWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
@@ -92,21 +90,18 @@ class _RegisterPageState extends State<RegisterPage> {
         return;
       }
 
-      // Update user profile with display name
       if (_nameController.text.isNotEmpty) {
         try {
           await _authService.updateUserProfile(
             displayName: _nameController.text,
           );
         } catch (e) {
-          // Non-fatal error, continue
           if (mounted && kDebugMode) {
             print('Warning: Failed to update display name: $e');
           }
         }
       }
 
-      // Save additional user data to Firestore
       try {
         final userProfile = UserProfile(
           uid: credential!.user!.uid,
@@ -121,29 +116,24 @@ class _RegisterPageState extends State<RegisterPage> {
 
         await _userService.createUserProfile(userProfile);
       } catch (e) {
-        // Non-fatal error, continue
         if (mounted && kDebugMode) {
           print('Warning: Failed to save user profile to Firestore: $e');
         }
       }
 
-      // Sign out user after registration to force login
       try {
         await _authService.signOut();
       } catch (e) {
-        // Non-fatal error, continue
         if (mounted && kDebugMode) {
           print('Warning: Failed to sign out after registration: $e');
         }
       }
 
-      // Reset loading state
       if (mounted) {
         setState(() {
           _loading = false;
         });
 
-        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Registrasi berhasil! Silakan login.'),
@@ -152,7 +142,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         );
 
-        // Redirect to login page
         await Future.delayed(const Duration(milliseconds: 500));
         if (mounted) {
           context.go('/login');
@@ -224,7 +213,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Error message
                       if (_errorMessage != null)
                         Container(
                           padding: const EdgeInsets.all(12),
@@ -251,7 +239,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
 
-                      // Nama Lengkap
                       TextFormField(
                         controller: _nameController,
                         decoration: _inputDecoration(
@@ -263,7 +250,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // NIK
                       TextFormField(
                         controller: _nikController,
                         decoration: _inputDecoration('NIK', Icons.badge),
@@ -272,7 +258,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Email
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -290,7 +275,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // No Telepon
                       TextFormField(
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
@@ -301,7 +285,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Password
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -319,7 +302,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Konfirmasi Password
                       TextFormField(
                         controller: _confirmController,
                         obscureText: true,
@@ -339,7 +321,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Jenis Kelamin
                       DropdownButtonFormField<String>(
                         initialValue: _selectedGender,
                         decoration: _inputDecoration('Jenis Kelamin', Icons.wc),

@@ -16,7 +16,6 @@ void main() async {
       print('Firebase initialized successfully');
     }
     
-    // Initialize Firestore collections (optional)
     final firestoreInit = FirestoreInitService();
     await firestoreInit.initializeCollections();
   } catch (e) {

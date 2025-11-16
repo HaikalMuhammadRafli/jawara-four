@@ -1,21 +1,7 @@
-// File generated using flutterfire configure
-// Untuk iOS, pastikan Anda sudah menambahkan app iOS di Firebase Console
-// dan download GoogleService-Info.plist ke folder ios/Runner/
-
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -28,8 +14,6 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        // TODO: Uncomment setelah iOS configuration selesai
-        // return ios;
         throw UnsupportedError(
           'iOS configuration belum diatur. Silakan konfigurasi iOS terlebih dahulu.',
         );
@@ -65,7 +49,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBNtnf40MKdUPGFJGr4j73lPg2ZaD_zmYY',
-    appId: 'YOUR_IOS_APP_ID', // Ganti dengan iOS App ID dari Firebase Console (format: 1:276529435482:ios:xxxxx)
+    appId: 'YOUR_IOS_APP_ID',
     messagingSenderId: '276529435482',
     projectId: 'jawara4-eb4fe',
     storageBucket: 'jawara4-eb4fe.firebasestorage.app',
