@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jawara_four/colors/app_colors.dart';
-import '../mocks/tagihan_mocks.dart';
-import '../models/tagihan_model.dart';
+
+import '../../../data/mocks/tagihan_mocks.dart';
+import '../../../data/models/tagihan_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/number_helpers.dart';
 import 'iuran_tagihan_detail_page.dart';
 
 class IuranTagihanPage extends StatelessWidget {
@@ -28,9 +31,7 @@ class IuranTagihanPage extends StatelessWidget {
   }
 
   Widget _buildTagihanCard(Tagihan tagihan) {
-    final statusColor = tagihan.status == 'Lunas'
-        ? AppColors.success
-        : AppColors.warning;
+    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : AppColors.warning;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -74,10 +75,7 @@ class IuranTagihanPage extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 tagihan.kategori,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
-                ),
+                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -89,12 +87,8 @@ class IuranTagihanPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
-            tagihan.status,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: statusColor,
-            ),
+            tagihan.status.value,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
           ),
         ),
       ],
@@ -105,8 +99,8 @@ class IuranTagihanPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildSimpleInfoItem('Total', tagihan.total),
-        _buildSimpleInfoItem('Tanggal', tagihan.tanggal),
+        _buildSimpleInfoItem('Total', NumberHelpers.formatCurrency(tagihan.total)),
+        _buildSimpleInfoItem('Tanggal', DateHelpers.formatDate(tagihan.tanggal)),
       ],
     );
   }
@@ -124,21 +118,11 @@ class IuranTagihanPage extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(
-            Icons.edit_outlined,
-            'Edit',
-            AppColors.primary,
-            tagihan,
-          ),
+          child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', AppColors.primary, tagihan),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(
-            Icons.delete_outline,
-            'Hapus',
-            AppColors.error,
-            tagihan,
-          ),
+          child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', AppColors.error, tagihan),
         ),
       ],
     );
@@ -169,21 +153,14 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSimpleActionButton(
-    IconData icon,
-    String label,
-    Color color,
-    Tagihan tagihan,
-  ) {
+  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Tagihan tagihan) {
     return Builder(
       builder: (context) => GestureDetector(
         onTap: () {
           if (label == 'Lihat') {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => IuranTagihanDetailPage(tagihan: tagihan),
-              ),
+              MaterialPageRoute(builder: (context) => IuranTagihanDetailPage(tagihan: tagihan)),
             );
           }
         },
@@ -200,11 +177,7 @@ class IuranTagihanPage extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                ),
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
               ),
             ],
           ),
@@ -213,4 +186,3 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 }
-

@@ -2,7 +2,7 @@ class Keluarga {
   final String id;
   final String kepalaKeluarga;
   final String alamat;
-  final String jumlahAnggota;
+  final int jumlahAnggota;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -31,7 +31,7 @@ class Keluarga {
       id: map['id'] as String,
       kepalaKeluarga: map['kepalaKeluarga'] as String,
       alamat: map['alamat'] as String,
-      jumlahAnggota: map['jumlahAnggota'] as String,
+      jumlahAnggota: map['jumlahAnggota'] as int,
       createdAt: DateTime.parse(map['createdAt'] as String),
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
     );
@@ -41,7 +41,7 @@ class Keluarga {
     String? id,
     String? kepalaKeluarga,
     String? alamat,
-    String? jumlahAnggota,
+    int? jumlahAnggota,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {

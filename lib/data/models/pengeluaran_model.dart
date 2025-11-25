@@ -2,8 +2,8 @@ class Pengeluaran {
   final String id;
   final String nama;
   final String jenis;
-  final String nominal;
-  final String tanggal;
+  final int nominal;
+  final DateTime tanggal;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -23,7 +23,7 @@ class Pengeluaran {
       'nama': nama,
       'jenis': jenis,
       'nominal': nominal,
-      'tanggal': tanggal,
+      'tanggal': tanggal.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -34,8 +34,8 @@ class Pengeluaran {
       id: map['id'] as String,
       nama: map['nama'] as String,
       jenis: map['jenis'] as String,
-      nominal: map['nominal'] as String,
-      tanggal: map['tanggal'] as String,
+      nominal: map['nominal'] as int,
+      tanggal: DateTime.parse(map['tanggal'] as String),
       createdAt: DateTime.parse(map['createdAt'] as String),
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
     );
@@ -45,8 +45,8 @@ class Pengeluaran {
     String? id,
     String? nama,
     String? jenis,
-    String? nominal,
-    String? tanggal,
+    int? nominal,
+    DateTime? tanggal,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {

@@ -1,34 +1,28 @@
-import 'package:flutter/material.dart';
-
 import '../models/kegiatan_model.dart';
 
-const List<Kegiatan> kegiatanMock = [
+final List<Kegiatan> kegiatanMock = [
   Kegiatan(
-    no: 1,
+    id: '1',
     nama: 'Kerja Bakti Mingguan',
     kategori: 'Kebersihan',
     penanggungJawab: 'Pak Dedi',
-    tanggal: '15 Okt 2025',
-    icon: Icons.cleaning_services,
-    color: Colors.green,
+    tanggal: DateTime(2025, 10, 15),
+    createdAt: DateTime(2025, 10, 15),
   ),
   Kegiatan(
-    no: 2,
+    id: '2',
     nama: 'Rapat Bulanan Warga',
     kategori: 'Rapat',
     penanggungJawab: 'Bu Rina',
-    tanggal: '20 Okt 2025',
-    icon: Icons.groups,
-    color: Colors.blue,
+    tanggal: DateTime(2025, 10, 20),
+    createdAt: DateTime(2025, 10, 20),
   ),
   Kegiatan(
-    no: 3,
+    id: '3',
     nama: 'Senam Bersama',
     kategori: 'Kesehatan',
     penanggungJawab: 'Pak Agus',
-    tanggal: '27 Okt 2025',
-    icon: Icons.fitness_center,
-    color: Colors.orange,
+    tanggal: DateTime(2025, 10, 27),
+    createdAt: DateTime(2025, 10, 27),
   ),
 ];
-

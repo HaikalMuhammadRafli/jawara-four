@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../mocks/informasi_aspirasi_mocks.dart';
-import '../../models/informasi_aspirasi_model.dart';
+import '../../../../data/mocks/aspirasi_mocks.dart';
+import '../../../../data/models/aspirasi_model.dart';
+import '../../../../utils/date_helpers.dart';
 
 class InformasiAspirasiPage extends StatefulWidget {
   const InformasiAspirasiPage({super.key});
@@ -45,11 +46,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             decoration: InputDecoration(
               hintText: 'Cari pengirim atau judul...',
               hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(
-                Icons.search_rounded,
-                color: AppColors.textSecondary,
-                size: 22,
-              ),
+              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -60,10 +57,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
           ),
           const SizedBox(height: 16),
@@ -114,13 +108,12 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
   }
 
   Widget _buildList() {
-    final List<InformasiAspirasi> data = informasiAspirasiMock.where((i) {
+    final List<Aspirasi> data = aspirasiMock.where((i) {
       final matchesQuery =
           _searchQuery.isEmpty ||
           i.pengirim.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           i.judul.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesStatus =
-          _selectedStatus == 'Semua' || i.status == _selectedStatus;
+      final matchesStatus = _selectedStatus == 'Semua' || i.status == _selectedStatus;
       return matchesQuery && matchesStatus;
     }).toList();
 
@@ -155,9 +148,9 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     );
   }
 
-  Widget _buildCard(InformasiAspirasi item) {
+  Widget _buildCard(Aspirasi item) {
     Color statusColor;
-    switch (item.status.toLowerCase()) {
+    switch (item.status.value.toLowerCase()) {
       case 'diterima':
         statusColor = const Color(0xFF43A047);
         break;
@@ -202,11 +195,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                     width: 1.5,
                   ),
                 ),
-                child: Icon(
-                  Icons.mail_outline_rounded,
-                  color: AppColors.softPurple,
-                  size: 24,
-                ),
+                child: Icon(Icons.mail_outline_rounded, color: AppColors.softPurple, size: 24),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -248,20 +237,14 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: statusColor.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.2), width: 1),
                 ),
                 child: Text(
-                  item.status,
+                  item.status.value,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -281,14 +264,10 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.calendar_today_rounded,
-                  size: 14,
-                  color: AppColors.textSecondary,
-                ),
+                Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
                 const SizedBox(width: 6),
                 Text(
-                  item.tanggalDibuat,
+                  DateHelpers.formatDate(item.tanggalDibuat),
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
@@ -302,19 +281,9 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _buildActionButton(
-                'Detail',
-                Icons.visibility_outlined,
-                AppColors.primary,
-                item,
-              ),
+              _buildActionButton('Detail', Icons.visibility_outlined, AppColors.primary, item),
               const SizedBox(width: 8),
-              _buildActionButton(
-                'Proses',
-                Icons.edit_outlined,
-                const Color(0xFFFB8C00),
-                item,
-              ),
+              _buildActionButton('Proses', Icons.edit_outlined, const Color(0xFFFB8C00), item),
             ],
           ),
         ],
@@ -322,12 +291,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     );
   }
 
-  Widget _buildActionButton(
-    String label,
-    IconData icon,
-    Color color,
-    InformasiAspirasi item,
-  ) {
+  Widget _buildActionButton(String label, IconData icon, Color color, Aspirasi item) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -366,4 +330,3 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     );
   }
 }
-

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/pemasukan_model.dart';
+
+import '../../../data/models/pemasukan_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/number_helpers.dart';
 
 class PemasukanLainDetailPage extends StatelessWidget {
   final Pemasukan pemasukan;
@@ -140,9 +143,9 @@ class PemasukanLainDetailPage extends StatelessWidget {
           const SizedBox(height: 12),
           _buildInfoRow('Jenis Pemasukan', pemasukan.jenisPemasukan),
           const SizedBox(height: 12),
-          _buildInfoRow('Tanggal', pemasukan.tanggal),
-          const SizedBox(height: 12),
-          _buildInfoRow('Nominal', pemasukan.jumlah),
+          _buildInfoRow('Tanggal', DateHelpers.formatDate(pemasukan.tanggal)),
+          const SizedBox(height: 16),
+          _buildInfoRow('Nominal', NumberHelpers.formatCurrency(pemasukan.jumlah)),
           const SizedBox(height: 12),
           _buildInfoRow('Kategori', pemasukan.kategori),
           const SizedBox(height: 12),

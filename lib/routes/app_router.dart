@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jawara_four/data/models/aspirasi_model.dart';
+import 'package:jawara_four/data/models/broadcast_model.dart';
+import 'package:jawara_four/data/models/kegiatan_model.dart';
+import 'package:jawara_four/data/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/pages/dashboard_menu_page.dart';
 import 'package:jawara_four/pages/kegiatan/kegiatan_menu_page.dart';
-import 'package:jawara_four/pages/kegiatan/models/broadcast_model.dart';
-import 'package:jawara_four/pages/kegiatan/models/kegiatan_model.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_detail_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_form_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_page.dart';
@@ -11,8 +13,6 @@ import 'package:jawara_four/pages/kegiatan/screens/kegiatan_detail_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/kegiatan_form_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/kependudukan/kependudukan_menu_page.dart';
-import 'package:jawara_four/pages/kependudukan/models/informasi_aspirasi_model.dart';
-import 'package:jawara_four/pages/kependudukan/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_form_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/keluarga_page.dart';
 import 'package:jawara_four/pages/kependudukan/screens/kependudukan/rumah_form_page.dart';
@@ -319,7 +319,7 @@ final GoRouter appRouter = GoRouter(
       path: '/informasi-aspirasi/detail',
       name: 'informasi-aspirasi-detail',
       builder: (context, state) {
-        final aspirasi = state.extra as InformasiAspirasi;
+        final aspirasi = state.extra as Aspirasi;
         return InformasiAspirasiDetailPage(aspirasi: aspirasi);
       },
     ),
@@ -372,7 +372,7 @@ final GoRouter appRouter = GoRouter(
       path: '/broadcast/detail',
       name: 'broadcast-detail',
       builder: (context, state) {
-        final broadcast = state.extra as BroadcastItem;
+        final broadcast = state.extra as Broadcast;
         return BroadcastDetailPage(broadcast: broadcast);
       },
     ),
@@ -453,4 +453,3 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
-

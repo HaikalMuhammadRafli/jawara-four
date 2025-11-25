@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../mocks/kategori_mocks.dart';
-import '../models/kategori_iuran_model.dart';
+
+import '../../../data/mocks/kategori_iuran_mocks.dart';
+import '../../../data/models/kategori_iuran_model.dart';
 
 class KategoriIuranPage extends StatelessWidget {
   const KategoriIuranPage({super.key});
@@ -20,15 +21,13 @@ class KategoriIuranPage extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: kategoriMock.length,
-      itemBuilder: (context, index) => _buildKategoriCard(kategoriMock[index]),
+      itemCount: kategoriIuranMock.length,
+      itemBuilder: (context, index) => _buildKategoriCard(kategoriIuranMock[index]),
     );
   }
 
   Widget _buildKategoriCard(KategoriIuran kategori) {
-    final statusColor = kategori.status == 'Aktif'
-        ? Colors.green
-        : Colors.orange;
+    final statusColor = kategori.status == 'Aktif' ? Colors.green : Colors.orange;
     final categoryColor = _getCategoryColor(kategori.warna);
 
     return Container(
@@ -61,11 +60,7 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-  Widget _buildKategoriHeader(
-    KategoriIuran kategori,
-    Color statusColor,
-    Color categoryColor,
-  ) {
+  Widget _buildKategoriHeader(KategoriIuran kategori, Color statusColor, Color categoryColor) {
     return Row(
       children: [
         Container(
@@ -91,10 +86,7 @@ class KategoriIuranPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                kategori.deskripsi,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
+              Text(kategori.deskripsi, style: const TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
         ),
@@ -106,12 +98,8 @@ class KategoriIuranPage extends StatelessWidget {
             border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
           ),
           child: Text(
-            kategori.status,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: statusColor,
-            ),
+            kategori.status.value,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
           ),
         ),
       ],
@@ -170,11 +158,7 @@ class KategoriIuranPage extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {},
-          icon: const Icon(
-            Icons.visibility_outlined,
-            size: 18,
-            color: Colors.blue,
-          ),
+          icon: const Icon(Icons.visibility_outlined, size: 18, color: Colors.blue),
           tooltip: 'Lihat Detail',
         ),
         IconButton(
@@ -214,4 +198,3 @@ class KategoriIuranPage extends StatelessWidget {
     }
   }
 }
-

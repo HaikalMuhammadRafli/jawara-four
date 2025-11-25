@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../mocks/log_mocks.dart';
-import '../models/log_model.dart';
+import '../../../data/mocks/log_mocks.dart';
+import '../../../data/models/log_model.dart';
+import '../../../utils/date_helpers.dart';
 
 class LogAktifitasPage extends StatelessWidget {
   const LogAktifitasPage({super.key});
@@ -28,16 +29,10 @@ class LogAktifitasPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFE0E0E0),
-                      width: 1,
-                    ),
+                    border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Row(
                       children: [
                         // No
@@ -80,17 +75,11 @@ class LogAktifitasPage extends StatelessWidget {
                               Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF8F9FA),
                                       borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: const Color(0xFFE0E0E0),
-                                        width: 1,
-                                      ),
+                                      border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
                                     ),
                                     child: Text(
                                       log.aktor,
@@ -103,7 +92,7 @@ class LogAktifitasPage extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    log.tanggal,
+                                    DateHelpers.formatDate(log.tanggal),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Color(0xFF9E9E9E),
@@ -127,4 +116,3 @@ class LogAktifitasPage extends StatelessWidget {
     );
   }
 }
-

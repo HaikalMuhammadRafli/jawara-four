@@ -2,8 +2,8 @@ class Pemasukan {
   final String id;
   final String judul;
   final String kategori;
-  final String jumlah;
-  final String tanggal;
+  final int jumlah;
+  final DateTime tanggal;
   final String keterangan;
   final String nama;
   final String jenisPemasukan;
@@ -29,7 +29,7 @@ class Pemasukan {
       'judul': judul,
       'kategori': kategori,
       'jumlah': jumlah,
-      'tanggal': tanggal,
+      'tanggal': tanggal.toIso8601String(),
       'keterangan': keterangan,
       'nama': nama,
       'jenisPemasukan': jenisPemasukan,
@@ -43,8 +43,8 @@ class Pemasukan {
       id: map['id'] as String,
       judul: map['judul'] as String,
       kategori: map['kategori'] as String,
-      jumlah: map['jumlah'] as String,
-      tanggal: map['tanggal'] as String,
+      jumlah: map['jumlah'] as int,
+      tanggal: DateTime.parse(map['tanggal'] as String),
       keterangan: map['keterangan'] as String,
       nama: map['nama'] as String,
       jenisPemasukan: map['jenisPemasukan'] as String,
@@ -57,8 +57,8 @@ class Pemasukan {
     String? id,
     String? judul,
     String? kategori,
-    String? jumlah,
-    String? tanggal,
+    int? jumlah,
+    DateTime? tanggal,
     String? keterangan,
     String? nama,
     String? jenisPemasukan,

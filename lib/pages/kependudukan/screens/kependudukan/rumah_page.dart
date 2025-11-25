@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../mocks/rumah_mocks.dart';
-import '../../models/rumah_model.dart';
+import '../../../../data/mocks/rumah_mocks.dart';
+import '../../../../data/models/rumah_model.dart';
 
 class RumahPage extends StatelessWidget {
   const RumahPage({super.key});
@@ -36,11 +36,7 @@ class RumahPage extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Cari rumah...',
               hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(
-                Icons.search_rounded,
-                color: AppColors.textSecondary,
-                size: 22,
-              ),
+              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -51,10 +47,7 @@ class RumahPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
           ),
           const SizedBox(height: 16),
@@ -143,10 +136,7 @@ class RumahPage extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
                 ),
                 child: Icon(Icons.home_rounded, color: AppColors.primary, size: 24),
               ),
@@ -178,20 +168,14 @@ class RumahPage extends StatelessWidget {
               ),
               // Badge status
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: statusColor.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
                 ),
                 child: Text(
-                  rumah.status,
+                  rumah.status.value,
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -229,11 +213,7 @@ class RumahPage extends StatelessWidget {
                   onPressed: () {
                     _showEditDialog(context, rumah);
                   },
-                  icon: Icon(
-                    Icons.edit_rounded,
-                    size: 18,
-                    color: AppColors.textSecondary,
-                  ),
+                  icon: Icon(Icons.edit_rounded, size: 18, color: AppColors.textSecondary),
                   tooltip: 'Edit',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
@@ -249,11 +229,7 @@ class RumahPage extends StatelessWidget {
                   onPressed: () {
                     _showDetailDialog(context, rumah);
                   },
-                  icon: Icon(
-                    Icons.visibility_rounded,
-                    size: 18,
-                    color: AppColors.primary,
-                  ),
+                  icon: Icon(Icons.visibility_rounded, size: 18, color: AppColors.primary),
                   tooltip: 'Lihat Detail',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
@@ -314,18 +290,11 @@ class RumahPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    color: AppColors.primary,
-                    size: 18,
-                  ),
+                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -383,25 +352,18 @@ class RumahPage extends StatelessWidget {
             const SizedBox(height: 12),
             _buildDetailRow('Pemilik', rumah.pemilik),
             const SizedBox(height: 12),
-            _buildDetailRow('Status', rumah.status),
+            _buildDetailRow('Status', rumah.status.value),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    color: AppColors.primary,
-                    size: 18,
-                  ),
+                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -457,4 +419,3 @@ class RumahPage extends StatelessWidget {
     );
   }
 }
-
