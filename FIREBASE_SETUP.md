@@ -407,7 +407,7 @@ if (currentUser != null) {
 import 'package:jawara_four/services/user_service.dart';
 import 'package:jawara_four/models/user_profile_model.dart';
 
-final userService = UserService();
+final UserRepository = UserRepository();
 
 final userProfile = UserProfile(
   uid: 'user123',
@@ -420,12 +420,12 @@ final userProfile = UserProfile(
   role: 'Admin',
 );
 
-await userService.createUserProfile(userProfile);
+await UserRepository.createUserProfile(userProfile);
 ```
 
 **Get User Profile:**
 ```dart
-final userProfile = await userService.getUserProfile('user123');
+final userProfile = await UserRepository.getUserProfile('user123');
 if (userProfile != null) {
   print('Nama: ${userProfile.nama}');
   print('Role: ${userProfile.role}');
@@ -438,12 +438,12 @@ final updatedProfile = userProfile.copyWith(
   nama: 'John Updated',
   noTelepon: '081999999999',
 );
-await userService.updateUserProfile(updatedProfile);
+await UserRepository.updateUserProfile(updatedProfile);
 ```
 
 **Stream User Profile (Real-time):**
 ```dart
-userService.getUserProfileStream('user123').listen((profile) {
+UserRepository.getUserProfileStream('user123').listen((profile) {
   if (profile != null) {
     print('Profile updated: ${profile.nama}');
   }
