@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../pages/keuangan/models/kategori_iuran_model.dart';
+import 'package:jawara_four/data/models/kategori_iuran_model.dart';
 
 class KategoriIuranRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,7 +15,9 @@ class KategoriIuranRepository {
   Stream<List<KategoriIuran>> getKategoriStream() {
     return _firestore.collection('kategori_iuran').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return KategoriIuran.fromMap(doc.data(), doc.id);
+        final data = Map<String, dynamic>.from(doc.data());
+        data['id'] = doc.id;
+        return KategoriIuran.fromMap(data);
       }).toList();
     });
   }

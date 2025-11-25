@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../pages/keuangan/models/tagihan_model.dart';
+import '../models/tagihan_model.dart';
 
 class TagihanRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -7,7 +7,9 @@ class TagihanRepository {
   Stream<List<Tagihan>> getTagihanStream() {
     return _firestore.collection('tagihan').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return Tagihan.fromMap(doc.data(), doc.id);
+        final data = doc.data();
+        data['id'] = doc.id;
+        return Tagihan.fromMap(data);
       }).toList();
     });
   }
@@ -25,7 +27,10 @@ class TagihanRepository {
       if (tagihan.id.isEmpty) {
         throw Exception('ID tagihan tidak ditemukan');
       }
-      await _firestore.collection('tagihan').doc(tagihan.id).update(tagihan.toMap());
+      await _firestore
+          .collection('tagihan')
+          .doc(tagihan.id)
+          .update(tagihan.toMap());
     } catch (e) {
       throw Exception('Gagal mengupdate tagihan: $e');
     }

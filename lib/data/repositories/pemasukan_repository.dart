@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../pages/keuangan/models/pemasukan_model.dart';
+import '../models/pemasukan_model.dart';
 
 class PemasukanRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,7 +15,9 @@ class PemasukanRepository {
   Stream<List<Pemasukan>> getPemasukanStream() {
     return _firestore.collection('pemasukan').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return Pemasukan.fromMap(doc.data(), doc.id);
+        final data = doc.data();
+        data['id'] = doc.id;
+        return Pemasukan.fromMap(data);
       }).toList();
     });
   }

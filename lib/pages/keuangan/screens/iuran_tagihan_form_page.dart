@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
-import '../models/tagihan_model.dart';
+import '../../../../data/models/tagihan_model.dart';
 import '../../../../data/repositories/tagihan_repository.dart';
 import 'package:uuid/uuid.dart';
-import 'package:intl/intl.dart';
 
 class IuranTagihanFormPage extends StatefulWidget {
   final Tagihan? tagihan;
@@ -64,9 +63,9 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
       final tagihan = widget.tagihan!;
       _namaWargaController.text = tagihan.namaKeluarga;
       _noRumahController.text = tagihan.alamat;
-      _nominalController.text = tagihan.total;
+      _nominalController.text = tagihan.total.toString();
       _selectedJenisIuran = tagihan.kategori;
-      
+
       // Parse periode to get bulan and tahun
       final periodeParts = tagihan.periode.split(' ');
       if (periodeParts.length >= 2) {
@@ -74,12 +73,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
         _selectedTahun = periodeParts[1];
       }
 
-      // Parse tanggal to get jatuh tempo
-      try {
-        _selectedJatuhTempo = DateFormat('yyyy-MM-dd').parse(tagihan.tanggal);
-      } catch (e) {
-        // Handle parse error if necessary
-      }
+      _selectedJatuhTempo = tagihan.tanggal;
     }
   }
 
@@ -147,7 +141,8 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => const Center(child: CircularProgressIndicator()),
+          builder: (context) =>
+              const Center(child: CircularProgressIndicator()),
         );
 
         final isEditing = widget.tagihan != null;
@@ -155,17 +150,21 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           id: isEditing ? widget.tagihan!.id : '',
           judul: _selectedJenisIuran ?? 'Iuran',
           kategori: _selectedJenisIuran ?? 'Lainnya',
-          total: _nominalController.text,
-          status: isEditing ? widget.tagihan!.status : 'Belum Lunas',
-          tanggal: DateFormat('yyyy-MM-dd').format(_selectedJatuhTempo!),
+          total: int.tryParse(_nominalController.text) ?? 0,
+          status: isEditing ? widget.tagihan!.status : StatusTagihan.pending,
+          tanggal: _selectedJatuhTempo!,
           warga: isEditing ? widget.tagihan!.warga : '0',
-          kodeTagihan: isEditing ? widget.tagihan!.kodeTagihan : const Uuid().v4(),
+          kodeTagihan: isEditing
+              ? widget.tagihan!.kodeTagihan
+              : const Uuid().v4(),
           namaKeluarga: _namaWargaController.text,
           statusKeluarga: 'Warga',
           periode: '$_selectedBulan $_selectedTahun',
           alamat: _noRumahController.text,
           metodePembayaran: '-',
           bukti: '-',
+          createdAt: isEditing ? widget.tagihan!.createdAt : DateTime.now(),
+          updatedAt: DateTime.now(),
         );
 
         if (isEditing) {
@@ -184,7 +183,11 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                 children: [
                   const Icon(Icons.check_circle_outline, color: Colors.white),
                   const SizedBox(width: 12),
-                  Text(isEditing ? 'Data iuran berhasil diperbarui!' : 'Data iuran berhasil ditambahkan!'),
+                  Text(
+                    isEditing
+                        ? 'Data iuran berhasil diperbarui!'
+                        : 'Data iuran berhasil ditambahkan!',
+                  ),
                 ],
               ),
               backgroundColor: AppColors.success,
@@ -573,11 +576,15 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -635,11 +642,15 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -672,7 +683,10 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
+          icon: const Icon(
+            Icons.arrow_drop_down_rounded,
+            color: AppColors.primary,
+          ),
           dropdownColor: AppColors.background,
         ),
       ],
@@ -709,7 +723,9 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
+                border: Border.all(
+                  color: AppColors.divider.withValues(alpha: 0.6),
+                ),
               ),
               child: Row(
                 children: [
@@ -743,4 +759,3 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
     );
   }
 }
-

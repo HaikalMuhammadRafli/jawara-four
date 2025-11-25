@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import 'package:intl/intl.dart';
 import '../../../data/repositories/pemasukan_repository.dart';
-import '../models/pemasukan_model.dart';
+import '../../../data/models/pemasukan_model.dart';
 
 class PemasukanLainFormPage extends StatefulWidget {
   final Pemasukan? pemasukan;
@@ -39,16 +38,10 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
     super.initState();
     if (widget.pemasukan != null) {
       _sumberController.text = widget.pemasukan!.judul;
-      _nominalController.text = widget.pemasukan!.jumlah;
+      _nominalController.text = widget.pemasukan!.jumlah.toString();
       _keteranganController.text = widget.pemasukan!.keterangan;
       _selectedKategori = widget.pemasukan!.kategori;
-      try {
-        _selectedTanggal = DateFormat(
-          'dd/MM/yyyy',
-        ).parse(widget.pemasukan!.tanggal);
-      } catch (e) {
-        _selectedTanggal = DateTime.now();
-      }
+      _selectedTanggal = widget.pemasukan!.tanggal;
     }
   }
 
@@ -120,11 +113,13 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
           id: widget.pemasukan?.id ?? '',
           judul: _sumberController.text,
           kategori: _selectedKategori!,
-          jumlah: _nominalController.text,
-          tanggal: DateFormat('dd/MM/yyyy').format(_selectedTanggal!),
+          jumlah: int.parse(_nominalController.text),
+          tanggal: _selectedTanggal!,
           keterangan: _keteranganController.text,
           nama: 'Admin', // Default user
           jenisPemasukan: 'Lainnya',
+          createdAt: widget.pemasukan?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
         );
 
         if (widget.pemasukan != null) {

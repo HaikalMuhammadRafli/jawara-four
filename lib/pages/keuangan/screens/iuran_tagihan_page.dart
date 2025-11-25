@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../data/../../../data/repositories/tagihan_repository.dart';
+import '../../../data/repositories/tagihan_repository.dart';
 import '../../../data/models/tagihan_model.dart';
 import '../../../utils/date_helpers.dart';
 import '../../../utils/number_helpers.dart';
@@ -42,7 +42,8 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
           return ListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
             itemCount: tagihanList.length,
-            itemBuilder: (context, index) => _buildTagihanCard(tagihanList[index]),
+            itemBuilder: (context, index) =>
+                _buildTagihanCard(tagihanList[index]),
           );
         },
       ),
@@ -50,7 +51,9 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
   }
 
   Widget _buildTagihanCard(Tagihan tagihan) {
-    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : AppColors.warning;
+    final statusColor = tagihan.status == StatusTagihan.lunas
+        ? AppColors.success
+        : AppColors.warning;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -94,7 +97,10 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
               const SizedBox(height: 4),
               Text(
                 tagihan.kategori,
-                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -107,7 +113,11 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
           ),
           child: Text(
             tagihan.status.value,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: statusColor,
+            ),
           ),
         ),
       ],
@@ -118,8 +128,14 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildSimpleInfoItem('Total', NumberHelpers.formatCurrency(tagihan.total)),
-        _buildSimpleInfoItem('Tanggal', DateHelpers.formatDate(tagihan.tanggal)),
+        _buildSimpleInfoItem(
+          'Total',
+          NumberHelpers.formatCurrency(tagihan.total),
+        ),
+        _buildSimpleInfoItem(
+          'Tanggal',
+          DateHelpers.formatDate(tagihan.tanggal),
+        ),
       ],
     );
   }
@@ -137,11 +153,21 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', AppColors.primary, tagihan),
+          child: _buildSimpleActionButton(
+            Icons.edit_outlined,
+            'Edit',
+            AppColors.primary,
+            tagihan,
+          ),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', AppColors.error, tagihan),
+          child: _buildSimpleActionButton(
+            Icons.delete_outline,
+            'Hapus',
+            AppColors.error,
+            tagihan,
+          ),
         ),
       ],
     );
@@ -172,14 +198,21 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
     );
   }
 
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Tagihan tagihan) {
+  Widget _buildSimpleActionButton(
+    IconData icon,
+    String label,
+    Color color,
+    Tagihan tagihan,
+  ) {
     return Builder(
       builder: (context) => GestureDetector(
         onTap: () {
           if (label == 'Lihat') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => IuranTagihanDetailPage(tagihan: tagihan)),
+              MaterialPageRoute(
+                builder: (context) => IuranTagihanDetailPage(tagihan: tagihan),
+              ),
             );
           } else if (label == 'Edit') {
             Navigator.push(
@@ -212,7 +245,11 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
               ),
             ],
           ),
@@ -226,7 +263,9 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Hapus Tagihan'),
-        content: Text('Apakah Anda yakin ingin menghapus tagihan "${tagihan.judul}"?'),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus tagihan "${tagihan.judul}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -257,4 +296,3 @@ class _IuranTagihanPageState extends State<IuranTagihanPage> {
     );
   }
 }
-

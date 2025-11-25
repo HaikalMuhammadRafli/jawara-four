@@ -22,7 +22,11 @@ class IuranTagihanDetailPage extends StatelessWidget {
         ),
         title: Text(
           'Detail Iuran',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
         ),
         centerTitle: true,
       ),
@@ -45,7 +49,9 @@ class IuranTagihanDetailPage extends StatelessWidget {
   }
 
   Widget _buildHeaderCard() {
-    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : AppColors.warning;
+    final statusColor = tagihan.status == StatusTagihan.lunas
+        ? AppColors.success
+        : AppColors.warning;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -89,14 +95,21 @@ class IuranTagihanDetailPage extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   tagihan.status.value,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                  ),
                 ),
               ),
             ],
@@ -144,26 +157,29 @@ class IuranTagihanDetailPage extends StatelessWidget {
           const SizedBox(height: 12),
           _buildInfoRow('Metode Pembayaran', tagihan.metodePembayaran),
           const SizedBox(height: 12),
-          _buildInfoRow('Bukti', tagihan.bukti.isEmpty ? 'Tidak ada' : tagihan.bukti),
+          _buildInfoRow(
+            'Bukti',
+            tagihan.bukti.isEmpty ? 'Tidak ada' : tagihan.bukti,
+          ),
         ],
       ),
     );
   }
 
   Widget _buildStatusCard() {
-    final statusColor = tagihan.status == 'Lunas'
+    final statusColor = tagihan.status == StatusTagihan.lunas
         ? AppColors.success
-        : tagihan.status == 'Belum Dibayar'
+        : tagihan.status == StatusTagihan.pending
         ? Colors.orange
         : AppColors.warning;
-    final statusIcon = tagihan.status == 'Lunas'
+    final statusIcon = tagihan.status == StatusTagihan.lunas
         ? Icons.check_circle
-        : tagihan.status == 'Belum Dibayar'
+        : tagihan.status == StatusTagihan.pending
         ? Icons.schedule
         : Icons.schedule;
-    final statusMessage = tagihan.status == 'Lunas'
+    final statusMessage = tagihan.status == StatusTagihan.lunas
         ? 'Tagihan ini telah dibayar lunas'
-        : tagihan.status == 'Belum Dibayar'
+        : tagihan.status == StatusTagihan.pending
         ? 'Tagihan ini belum dibayar'
         : 'Tagihan ini belum dibayar';
 
@@ -191,7 +207,13 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(statusMessage, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                Text(
+                  statusMessage,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -243,15 +265,27 @@ class IuranTagihanDetailPage extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _buildActionButton(context, 'Setujui', Icons.check_circle, Colors.green, () {
-                _showApprovalDialog(context);
-              }),
+              child: _buildActionButton(
+                context,
+                'Setujui',
+                Icons.check_circle,
+                Colors.green,
+                () {
+                  _showApprovalDialog(context);
+                },
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildActionButton(context, 'Tolak', Icons.cancel, Colors.pink, () {
-                _showRejectionDialog(context);
-              }),
+              child: _buildActionButton(
+                context,
+                'Tolak',
+                Icons.cancel,
+                Colors.pink,
+                () {
+                  _showRejectionDialog(context);
+                },
+              ),
             ),
           ],
         ),
@@ -281,7 +315,11 @@ class IuranTagihanDetailPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -296,7 +334,11 @@ class IuranTagihanDetailPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -322,18 +364,26 @@ class IuranTagihanDetailPage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Setujui Tagihan'),
-          content: const Text('Apakah Anda yakin ingin menyetujui tagihan ini?'),
+          content: const Text(
+            'Apakah Anda yakin ingin menyetujui tagihan ini?',
+          ),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Batal')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 // TODO: Implement approval functionality
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Tagihan berhasil disetujui')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tagihan berhasil disetujui')),
+                );
               },
-              child: const Text('Setujui', style: TextStyle(color: Colors.green)),
+              child: const Text(
+                'Setujui',
+                style: TextStyle(color: Colors.green),
+              ),
             ),
           ],
         );
@@ -349,14 +399,17 @@ class IuranTagihanDetailPage extends StatelessWidget {
           title: const Text('Tolak Tagihan'),
           content: const Text('Apakah Anda yakin ingin menolak tagihan ini?'),
           actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Batal')),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 // TODO: Implement rejection functionality
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Tagihan berhasil ditolak')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tagihan berhasil ditolak')),
+                );
               },
               child: const Text('Tolak', style: TextStyle(color: Colors.pink)),
             ),

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
 import '../../../data/repositories/kategori_iuran_repository.dart';
-import '../models/kategori_iuran_model.dart';
+import 'package:jawara_four/data/models/kategori_iuran_model.dart';
 
 class KategoriIuranFormPage extends StatefulWidget {
   final KategoriIuran? kategori;
@@ -21,7 +21,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
   final _keteranganController = TextEditingController();
 
   String? _selectedPeriode;
-  bool _isMandatory = true;
+  bool _isActive = true;
 
   final List<String> _periodeList = [
     'Bulanan',
@@ -39,7 +39,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
       _nominalController.text = widget.kategori!.nominal;
       _keteranganController.text = widget.kategori!.deskripsi;
       _selectedPeriode = widget.kategori!.periode;
-      _isMandatory = widget.kategori!.status == 'Wajib';
+      _isActive = widget.kategori!.status == StatusKategori.aktif;
     }
   }
 
@@ -67,8 +67,10 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
           deskripsi: _keteranganController.text,
           nominal: _nominalController.text,
           periode: _selectedPeriode!,
-          status: _isMandatory ? 'Wajib' : 'Sukarela',
+          status: _isActive ? StatusKategori.aktif : StatusKategori.nonaktif,
           warna: 'blue', // Default color
+          createdAt: widget.kategori?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
         );
 
         if (widget.kategori != null) {
@@ -318,7 +320,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Iuran Wajib',
+                              'Status Aktif',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -327,7 +329,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'Iuran ini wajib dibayar oleh semua warga',
+                              'Status kategori ini aktif',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: AppColors.textSecondary,
@@ -337,10 +339,10 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                         ),
                       ),
                       Switch(
-                        value: _isMandatory,
+                        value: _isActive,
                         onChanged: (value) {
                           setState(() {
-                            _isMandatory = value;
+                            _isActive = value;
                           });
                         },
                         activeThumbColor: AppColors.primary,

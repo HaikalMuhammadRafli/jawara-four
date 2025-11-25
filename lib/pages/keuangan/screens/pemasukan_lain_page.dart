@@ -123,15 +123,6 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
     );
   }
 
-  Widget _buildPemasukanList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: pemasukanMock.length,
-      itemBuilder: (context, index) => _buildPemasukanCard(pemasukanMock[index]),
-    );
-  }
-
   Widget _buildPemasukanCard(Pemasukan pemasukan) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -173,7 +164,10 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(pemasukan.kategori, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+              Text(
+                pemasukan.kategori,
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
+              ),
             ],
           ),
         ),
@@ -185,7 +179,11 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
           ),
           child: Text(
             'Masuk',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green[700]),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.green[700],
+            ),
           ),
         ),
       ],
@@ -196,8 +194,14 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildInfoItem('Jumlah', NumberHelpers.formatCurrency(pemasukan.jumlah)),
-        _buildInfoItem('Tanggal', DateHelpers.formatDateShort(pemasukan.tanggal)),
+        _buildInfoItem(
+          'Jumlah',
+          NumberHelpers.formatCurrency(pemasukan.jumlah),
+        ),
+        _buildInfoItem(
+          'Tanggal',
+          DateHelpers.formatDateShort(pemasukan.tanggal),
+        ),
       ],
     );
   }
@@ -223,11 +227,21 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue, () => _navigateToForm(pemasukan: pemasukan)),
+          child: _buildSimpleActionButton(
+            Icons.edit_outlined,
+            'Edit',
+            Colors.blue,
+            () => _navigateToForm(pemasukan: pemasukan),
+          ),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red, () => _deletePemasukan(pemasukan.id)),
+          child: _buildSimpleActionButton(
+            Icons.delete_outline,
+            'Hapus',
+            Colors.red,
+            () => _deletePemasukan(pemasukan.id),
+          ),
         ),
       ],
     );
@@ -272,12 +286,20 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 11,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontSize: 13,
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
