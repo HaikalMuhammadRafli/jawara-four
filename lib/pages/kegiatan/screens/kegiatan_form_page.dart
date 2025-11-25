@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
-const Color successGreen = Color(0xFF43A047);
-const Color errorRed = Color(0xFFE53935);
+import 'package:jawara_four/colors/app_colors.dart';
 
 class KegiatanFormPage extends StatefulWidget {
   const KegiatanFormPage({super.key});
@@ -59,9 +51,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: primaryBlue,
+              primary: AppColors.primary,
               onPrimary: Colors.white,
-              surface: backgroundWhite,
+              surface: AppColors.background,
             ),
           ),
           child: child!,
@@ -83,9 +75,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: primaryBlue,
+              primary: AppColors.primary,
               onPrimary: Colors.white,
-              surface: backgroundWhite,
+              surface: AppColors.background,
             ),
           ),
           child: child!,
@@ -111,11 +103,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                 Text('Silakan pilih tanggal kegiatan'),
               ],
             ),
-            backgroundColor: errorRed,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
         return;
@@ -131,11 +121,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                 Text('Silakan pilih waktu kegiatan'),
               ],
             ),
-            backgroundColor: errorRed,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
         return;
@@ -151,11 +139,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               Text('Kegiatan berhasil ditambahkan!'),
             ],
           ),
-          backgroundColor: successGreen,
+          backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
 
@@ -168,7 +154,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: primaryBlue,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -186,18 +172,10 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         actions: [
           TextButton.icon(
             onPressed: _submitForm,
-            icon: const Icon(
-              Icons.check_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
+            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
             label: const Text(
               'Simpan',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
             ),
           ),
           const SizedBox(width: 8),
@@ -213,14 +191,14 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
+                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -234,11 +212,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.event_note_rounded,
-                      color: Colors.white,
-                      size: 32,
-                    ),
+                    child: const Icon(Icons.event_note_rounded, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -257,11 +231,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                         SizedBox(height: 4),
                         Text(
                           'Lengkapi informasi kegiatan di bawah ini',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white70,
-                            letterSpacing: 0.2,
-                          ),
+                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
                     ),
@@ -325,10 +295,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             const SizedBox(height: 24),
 
             // Penanggung Jawab Section
-            _buildSectionTitle(
-              'Penanggung Jawab',
-              Icons.person_outline_rounded,
-            ),
+            _buildSectionTitle('Penanggung Jawab', Icons.person_outline_rounded),
             const SizedBox(height: 12),
             _buildCard(
               child: _buildTextField(
@@ -388,7 +355,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: textPrimary,
+                      color: AppColors.textPrimary,
                       letterSpacing: 0.2,
                     ),
                   ),
@@ -410,10 +377,10 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                           chipColor = const Color(0xFFFF7043);
                           break;
                         case 'Urgent':
-                          chipColor = errorRed;
+                          chipColor = AppColors.error;
                           break;
                         default:
-                          chipColor = textSecondary;
+                          chipColor = AppColors.textSecondary;
                       }
                       return FilterChip(
                         label: Text(prioritas),
@@ -427,19 +394,15 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                         selectedColor: chipColor.withValues(alpha: 0.15),
                         checkmarkColor: chipColor,
                         labelStyle: TextStyle(
-                          color: isSelected ? chipColor : textSecondary,
-                          fontWeight: isSelected
-                              ? FontWeight.w600
-                              : FontWeight.w500,
+                          color: isSelected ? chipColor : AppColors.textSecondary,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                           fontSize: 13,
                         ),
                         side: BorderSide(
-                          color: isSelected ? chipColor : dividerGray,
+                          color: isSelected ? chipColor : AppColors.divider,
                           width: isSelected ? 2 : 1,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       );
                     }).toList(),
                   ),
@@ -454,13 +417,13 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: const LinearGradient(
-                  colors: [primaryBlue, Color(0xFF1976D2)],
+                  colors: [AppColors.primary, Color(0xFF1976D2)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -475,11 +438,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.check_circle_rounded,
-                          color: Colors.white,
-                          size: 22,
-                        ),
+                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
                         SizedBox(width: 12),
                         Text(
                           'Simpan Kegiatan',
@@ -509,10 +468,10 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withValues(alpha: 0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: primaryBlue),
+          child: Icon(icon, size: 18, color: AppColors.primary),
         ),
         const SizedBox(width: 12),
         Text(
@@ -520,7 +479,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: -0.3,
           ),
         ),
@@ -532,9 +491,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -563,7 +522,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -574,42 +533,39 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           maxLines: maxLines,
           style: const TextStyle(
             fontSize: 14,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(icon, size: 20, color: primaryBlue),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.primary),
             filled: true,
-            fillColor: dividerGray.withValues(alpha: 0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: primaryBlue, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 1.5),
+              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
         ),
       ],
@@ -632,7 +588,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -644,27 +600,24 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(icon, size: 20, color: primaryBlue),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.primary),
             filled: true,
-            fillColor: dividerGray.withValues(alpha: 0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: primaryBlue, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -673,7 +626,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                 item,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: textPrimary,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -687,8 +640,8 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: primaryBlue),
-          dropdownColor: backgroundWhite,
+          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
+          dropdownColor: AppColors.background,
         ),
       ],
     );
@@ -709,13 +662,13 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
         const SizedBox(height: 8),
         Material(
-          color: dividerGray.withValues(alpha: 0.2),
+          color: AppColors.divider.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
             onTap: onTap,
@@ -724,11 +677,11 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: dividerGray.withValues(alpha: 0.6)),
+                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
               ),
               child: Row(
                 children: [
-                  Icon(icon, size: 20, color: primaryBlue),
+                  Icon(icon, size: 20, color: AppColors.primary),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -736,18 +689,16 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                       style: TextStyle(
                         fontSize: 14,
                         color: value != null
-                            ? textPrimary
-                            : textSecondary.withValues(alpha: 0.6),
-                        fontWeight: value != null
-                            ? FontWeight.w500
-                            : FontWeight.w400,
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary.withValues(alpha: 0.6),
+                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
                       ),
                     ),
                   ),
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: textSecondary.withValues(alpha: 0.6),
+                    color: AppColors.textSecondary.withValues(alpha: 0.6),
                   ),
                 ],
               ),
@@ -758,4 +709,3 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     );
   }
 }
-

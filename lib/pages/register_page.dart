@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../services/auth_service.dart';
-import '../services/user_service.dart';
-import '../models/user_profile_model.dart';
+
+import '../data/models/user_profile_model.dart';
+import '../data/repositories/user_repository.dart';
+import '../data/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -21,7 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
   final AuthService _authService = AuthService();
-  final UserService _userService = UserService();
+  final UserRepository _userRepository = UserRepository();
   String? _selectedGender;
   bool _loading = false;
   String? _errorMessage;
@@ -68,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      final nikExists = await _userService.isNikExists(_nikController.text);
+      final nikExists = await _userRepository.isNikExists(_nikController.text);
       if (nikExists) {
         setState(() {
           _errorMessage = 'NIK sudah terdaftar. Silakan gunakan NIK lain.';
@@ -92,9 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (_nameController.text.isNotEmpty) {
         try {
-          await _authService.updateUserProfile(
-            displayName: _nameController.text,
-          );
+          await _authService.updateUserProfile(displayName: _nameController.text);
         } catch (e) {
           if (mounted && kDebugMode) {
             print('Warning: Failed to update display name: $e');
@@ -109,12 +108,12 @@ class _RegisterPageState extends State<RegisterPage> {
           email: _emailController.text,
           nik: _nikController.text,
           noTelepon: _phoneController.text,
-          jenisKelamin: _selectedGender ?? '',
+          jenisKelamin: JenisKelamin.fromString(_selectedGender ?? 'Laki-laki'),
           createdAt: DateTime.now(),
-          role: 'Warga',
+          role: UserRole.warga,
         );
 
-        await _userService.createUserProfile(userProfile);
+        await _userRepository.createUserProfile(userProfile);
       } catch (e) {
         if (mounted && kDebugMode) {
           print('Warning: Failed to save user profile to Firestore: $e');
@@ -188,20 +187,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               color: const Color(0xFF2563EB).withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(
-                              Icons.apartment,
-                              color: Color(0xFF2563EB),
-                              size: 28,
-                            ),
+                            child: const Icon(Icons.apartment, color: Color(0xFF2563EB), size: 28),
                           ),
                           const SizedBox(width: 12),
                           const Expanded(
                             child: Text(
                               'Daftar Akun',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -229,10 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               Expanded(
                                 child: Text(
                                   _errorMessage!,
-                                  style: TextStyle(
-                                    color: Colors.red.shade700,
-                                    fontSize: 14,
-                                  ),
+                                  style: TextStyle(color: Colors.red.shade700, fontSize: 14),
                                 ),
                               ),
                             ],
@@ -241,30 +230,22 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       TextFormField(
                         controller: _nameController,
-                        decoration: _inputDecoration(
-                          'Nama Lengkap',
-                          Icons.person,
-                        ),
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'Nama wajib diisi' : null,
+                        decoration: _inputDecoration('Nama Lengkap', Icons.person),
+                        validator: (v) => v == null || v.isEmpty ? 'Nama wajib diisi' : null,
                       ),
                       const SizedBox(height: 12),
 
                       TextFormField(
                         controller: _nikController,
                         decoration: _inputDecoration('NIK', Icons.badge),
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'NIK wajib diisi' : null,
+                        validator: (v) => v == null || v.isEmpty ? 'NIK wajib diisi' : null,
                       ),
                       const SizedBox(height: 12),
 
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: _inputDecoration(
-                          'Email',
-                          Icons.email_outlined,
-                        ),
+                        decoration: _inputDecoration('Email', Icons.email_outlined),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
                             return 'Email wajib diisi';
@@ -279,19 +260,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: _inputDecoration('No Telepon', Icons.phone),
-                        validator: (v) => v == null || v.isEmpty
-                            ? 'No Telepon wajib diisi'
-                            : null,
+                        validator: (v) => v == null || v.isEmpty ? 'No Telepon wajib diisi' : null,
                       ),
                       const SizedBox(height: 12),
 
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
-                        decoration: _inputDecoration(
-                          'Password',
-                          Icons.lock_outline,
-                        ),
+                        decoration: _inputDecoration('Password', Icons.lock_outline),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
                             return 'Password wajib diisi';
@@ -305,10 +281,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: _confirmController,
                         obscureText: true,
-                        decoration: _inputDecoration(
-                          'Konfirmasi Password',
-                          Icons.lock_outline,
-                        ),
+                        decoration: _inputDecoration('Konfirmasi Password', Icons.lock_outline),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
                             return 'Konfirmasi wajib diisi';
@@ -324,14 +297,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       DropdownButtonFormField<String>(
                         initialValue: _selectedGender,
                         decoration: _inputDecoration('Jenis Kelamin', Icons.wc),
-                        items: ['Laki-laki', 'Perempuan']
-                            .map(
-                              (g) => DropdownMenuItem(value: g, child: Text(g)),
-                            )
-                            .toList(),
+                        items: [
+                          'Laki-laki',
+                          'Perempuan',
+                        ].map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
                         onChanged: (v) => setState(() => _selectedGender = v),
-                        validator: (v) =>
-                            v == null ? 'Pilih jenis kelamin' : null,
+                        validator: (v) => v == null ? 'Pilih jenis kelamin' : null,
                       ),
 
                       const SizedBox(height: 24),
@@ -341,9 +312,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: ElevatedButton(
                           onPressed: _loading ? null : _register,
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.resolveWith((
-                              states,
-                            ) {
+                            backgroundColor: WidgetStateProperty.resolveWith((states) {
                               if (states.contains(WidgetState.disabled)) {
                                 return Colors.grey;
                               }
@@ -354,9 +323,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               return const Color(0xFF2563EB);
                             }),
                             shape: WidgetStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                           ),
                           child: _loading
@@ -370,10 +337,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 )
                               : const Text(
                                   'Daftar',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
+                                  style: TextStyle(color: Colors.white, fontSize: 16),
                                 ),
                         ),
                       ),
@@ -399,4 +363,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

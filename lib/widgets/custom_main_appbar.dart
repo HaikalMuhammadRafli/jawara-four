@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../colors/app_colors.dart';
-import '../services/auth_service.dart';
-import '../services/user_service.dart';
+import '../data/services/auth_service.dart';
+import '../data/repositories/user_repository.dart';
 
 class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
   const CustomMainAppbar({super.key});
@@ -12,7 +13,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final authService = AuthService();
-    final userService = UserService();
+    final userRepository = UserRepository();
     final currentUser = authService.currentUser;
 
     return Container(
@@ -35,11 +36,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Icons.home_work,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                child: const Icon(Icons.home_work, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
               Column(
@@ -107,7 +104,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
 
               if (currentUser != null)
                 StreamBuilder(
-                  stream: userService.getUserProfileStream(currentUser.uid),
+                  stream: userRepository.getUserProfileStream(currentUser.uid),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Container(
@@ -128,10 +125,11 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                     }
 
                     final userProfile = snapshot.data;
-                    final displayName = userProfile?.nama ?? 
-                                       currentUser.displayName ?? 
-                                       currentUser.email?.split('@')[0] ?? 
-                                       'User';
+                    final displayName =
+                        userProfile?.nama ??
+                        currentUser.displayName ??
+                        currentUser.email?.split('@')[0] ??
+                        'User';
                     final initials = _getInitials(displayName);
 
                     return GestureDetector(
@@ -148,10 +146,7 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              AppColors.primary,
-                              AppColors.primary.withValues(alpha: 0.9),
-                            ],
+                            colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.9)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -177,20 +172,13 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary,
-                        AppColors.primary.withValues(alpha: 0.9),
-                      ],
+                      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.9)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.person, color: Colors.white, size: 20),
                 ),
             ],
           ),
@@ -208,4 +196,3 @@ class CustomMainAppbar extends StatelessWidget implements PreferredSizeWidget {
     return name[0].toUpperCase();
   }
 }
-

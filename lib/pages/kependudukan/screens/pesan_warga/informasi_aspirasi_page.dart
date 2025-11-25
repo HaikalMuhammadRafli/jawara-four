@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 
 import '../../mocks/informasi_aspirasi_mocks.dart';
 import '../../models/informasi_aspirasi_model.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color softPurple = Color(0xFF7E57C2);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
 
 class InformasiAspirasiPage extends StatefulWidget {
   const InformasiAspirasiPage({super.key});
@@ -26,7 +19,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: backgroundWhite,
+      color: AppColors.background,
       child: Column(
         children: [
           _buildSearchAndFilters(),
@@ -40,9 +33,9 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         border: Border(
-          bottom: BorderSide(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
         ),
       ),
       child: Column(
@@ -51,21 +44,21 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
               hintText: 'Cari pengirim atau judul...',
-              hintStyle: TextStyle(color: textSecondary, fontSize: 15),
+              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
               prefixIcon: Icon(
                 Icons.search_rounded,
-                color: textSecondary,
+                color: AppColors.textSecondary,
                 size: 22,
               ),
               filled: true,
-              fillColor: dividerGray.withValues(alpha: 0.15),
+              fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: primaryBlue, width: 1.5),
+                borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -98,10 +91,10 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected ? primaryBlue : backgroundWhite,
+        color: isSelected ? AppColors.primary : AppColors.background,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isSelected ? primaryBlue : dividerGray.withValues(alpha: 0.6),
+          color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
           width: 1.5,
         ),
       ),
@@ -110,7 +103,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? backgroundWhite : textSecondary,
+            color: isSelected ? AppColors.background : AppColors.textSecondary,
             fontSize: 13,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             letterSpacing: 0.2,
@@ -139,14 +132,14 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
             Icon(
               Icons.inbox_rounded,
               size: 80,
-              color: textSecondary.withValues(alpha: 0.3),
+              color: AppColors.textSecondary.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
               'Tidak ada data aspirasi',
               style: TextStyle(
                 fontSize: 16,
-                color: textSecondary,
+                color: AppColors.textSecondary,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -175,16 +168,16 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
         statusColor = const Color(0xFFE53935);
         break;
       default:
-        statusColor = textSecondary;
+        statusColor = AppColors.textSecondary;
     }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,21 +190,21 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      softPurple.withValues(alpha: 0.2),
-                      softPurple.withValues(alpha: 0.1),
+                      AppColors.softPurple.withValues(alpha: 0.2),
+                      AppColors.softPurple.withValues(alpha: 0.1),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: softPurple.withValues(alpha: 0.25),
+                    color: AppColors.softPurple.withValues(alpha: 0.25),
                     width: 1.5,
                   ),
                 ),
                 child: Icon(
                   Icons.mail_outline_rounded,
-                  color: softPurple,
+                  color: AppColors.softPurple,
                   size: 24,
                 ),
               ),
@@ -225,7 +218,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: textPrimary,
+                        color: AppColors.textPrimary,
                         letterSpacing: -0.3,
                         height: 1.3,
                       ),
@@ -236,7 +229,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                         Icon(
                           Icons.person_outline_rounded,
                           size: 16,
-                          color: textSecondary,
+                          color: AppColors.textSecondary,
                         ),
                         const SizedBox(width: 4),
                         Expanded(
@@ -244,7 +237,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                             item.pengirim,
                             style: TextStyle(
                               fontSize: 13,
-                              color: textSecondary,
+                              color: AppColors.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -283,7 +276,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: dividerGray.withValues(alpha: 0.2),
+              color: AppColors.divider.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -291,14 +284,14 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
                 Icon(
                   Icons.calendar_today_rounded,
                   size: 14,
-                  color: textSecondary,
+                  color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 6),
                 Text(
                   item.tanggalDibuat,
                   style: TextStyle(
                     fontSize: 12,
-                    color: textSecondary,
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -312,7 +305,7 @@ class _InformasiAspirasiPageState extends State<InformasiAspirasiPage> {
               _buildActionButton(
                 'Detail',
                 Icons.visibility_outlined,
-                primaryBlue,
+                AppColors.primary,
                 item,
               ),
               const SizedBox(width: 8),

@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
-const Color successGreen = Color(0xFF43A047);
-const Color errorRed = Color(0xFFE53935);
+import 'package:jawara_four/colors/app_colors.dart';
 
 class KeuanganPengeluaranFormPage extends StatefulWidget {
   const KeuanganPengeluaranFormPage({super.key});
@@ -69,9 +61,9 @@ class _KeuanganPengeluaranFormPageState
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: errorRed,
+              primary: AppColors.error,
               onPrimary: Colors.white,
-              surface: backgroundWhite,
+              surface: AppColors.background,
             ),
           ),
           child: child!,
@@ -97,7 +89,7 @@ class _KeuanganPengeluaranFormPageState
                 Text('Silakan pilih tanggal pengeluaran'),
               ],
             ),
-            backgroundColor: errorRed,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -117,7 +109,7 @@ class _KeuanganPengeluaranFormPageState
               Text('Pengeluaran berhasil ditambahkan!'),
             ],
           ),
-          backgroundColor: successGreen,
+          backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -134,7 +126,7 @@ class _KeuanganPengeluaranFormPageState
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: errorRed,
+        backgroundColor: AppColors.error,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -179,14 +171,14 @@ class _KeuanganPengeluaranFormPageState
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [errorRed, errorRed.withValues(alpha: 0.8)],
+                  colors: [AppColors.error, AppColors.error.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: errorRed.withValues(alpha: 0.3),
+                    color: AppColors.error.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -362,13 +354,13 @@ class _KeuanganPengeluaranFormPageState
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
-                  colors: [errorRed, errorRed.withValues(alpha: 0.8)],
+                  colors: [AppColors.error, AppColors.error.withValues(alpha: 0.8)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: errorRed.withValues(alpha: 0.3),
+                    color: AppColors.error.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -417,10 +409,10 @@ class _KeuanganPengeluaranFormPageState
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: errorRed.withValues(alpha: 0.1),
+            color: AppColors.error.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: errorRed),
+          child: Icon(icon, size: 18, color: AppColors.error),
         ),
         const SizedBox(width: 12),
         Text(
@@ -428,7 +420,7 @@ class _KeuanganPengeluaranFormPageState
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: -0.3,
           ),
         ),
@@ -440,9 +432,9 @@ class _KeuanganPengeluaranFormPageState
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -472,7 +464,7 @@ class _KeuanganPengeluaranFormPageState
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -484,37 +476,37 @@ class _KeuanganPengeluaranFormPageState
           keyboardType: keyboardType,
           style: const TextStyle(
             fontSize: 14,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(icon, size: 20, color: errorRed),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.error),
             filled: true,
-            fillColor: dividerGray.withValues(alpha: 0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 1.5),
+              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -542,7 +534,7 @@ class _KeuanganPengeluaranFormPageState
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -554,22 +546,22 @@ class _KeuanganPengeluaranFormPageState
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(icon, size: 20, color: errorRed),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.error),
             filled: true,
-            fillColor: dividerGray.withValues(alpha: 0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -583,7 +575,7 @@ class _KeuanganPengeluaranFormPageState
                 item,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: textPrimary,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -597,8 +589,8 @@ class _KeuanganPengeluaranFormPageState
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: errorRed),
-          dropdownColor: backgroundWhite,
+          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.error),
+          dropdownColor: AppColors.background,
         ),
       ],
     );
@@ -619,13 +611,13 @@ class _KeuanganPengeluaranFormPageState
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
         const SizedBox(height: 8),
         Material(
-          color: dividerGray.withValues(alpha: 0.2),
+          color: AppColors.divider.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
             onTap: onTap,
@@ -634,11 +626,11 @@ class _KeuanganPengeluaranFormPageState
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: dividerGray.withValues(alpha: 0.6)),
+                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
               ),
               child: Row(
                 children: [
-                  Icon(icon, size: 20, color: errorRed),
+                  Icon(icon, size: 20, color: AppColors.error),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -646,8 +638,8 @@ class _KeuanganPengeluaranFormPageState
                       style: TextStyle(
                         fontSize: 14,
                         color: value != null
-                            ? textPrimary
-                            : textSecondary.withValues(alpha: 0.6),
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary.withValues(alpha: 0.6),
                         fontWeight: value != null
                             ? FontWeight.w500
                             : FontWeight.w400,
@@ -657,7 +649,7 @@ class _KeuanganPengeluaranFormPageState
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: textSecondary.withValues(alpha: 0.6),
+                    color: AppColors.textSecondary.withValues(alpha: 0.6),
                   ),
                 ],
               ),

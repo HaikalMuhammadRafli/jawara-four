@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../colors/app_colors.dart';
 
 class KeuanganMenuPage extends StatelessWidget {
   const KeuanganMenuPage({super.key});

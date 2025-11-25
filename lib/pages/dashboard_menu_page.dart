@@ -1,9 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 
-import '../colors/app_colors.dart';
-import '../services/auth_service.dart';
-import '../services/user_service.dart';
+import '../data/models/user_profile_model.dart';
+import '../data/repositories/user_repository.dart';
+import '../data/services/auth_service.dart';
 
 class DashboardMenuPage extends StatelessWidget {
   const DashboardMenuPage({super.key});
@@ -31,7 +32,7 @@ class DashboardMenuPage extends StatelessWidget {
 
   Widget _buildWelcomeCard() {
     final authService = AuthService();
-    final userService = UserService();
+    final userRepository = UserRepository();
     final currentUser = authService.currentUser;
 
     return Container(
@@ -43,8 +44,8 @@ class DashboardMenuPage extends StatelessWidget {
         border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: currentUser != null
-          ? StreamBuilder(
-              stream: userService.getUserProfileStream(currentUser.uid),
+          ? StreamBuilder<UserProfile?>(
+              stream: userRepository.getUserProfileStream(currentUser.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Column(
@@ -69,11 +70,9 @@ class DashboardMenuPage extends StatelessWidget {
                 }
 
                 final userProfile = snapshot.data;
-                final displayName = userProfile?.nama ?? 
-                                   currentUser.displayName ?? 
-                                   currentUser.email?.split('@')[0] ?? 
-                                   'User';
-                final role = userProfile?.role ?? 'Admin';
+                final displayName =
+                    currentUser.displayName ?? currentUser.email?.split('@')[0] ?? 'User';
+                final role = userProfile?.role.value ?? '';
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,10 +88,7 @@ class DashboardMenuPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     if (role.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -142,11 +138,7 @@ class DashboardMenuPage extends StatelessWidget {
       children: [
         Text(
           'Ringkasan Cepat',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 20),
         GridView.count(
@@ -164,20 +156,8 @@ class DashboardMenuPage extends StatelessWidget {
               Icons.account_balance_wallet,
               AppColors.success,
             ),
-            _buildSummaryCard(
-              'Warga',
-              '1,250',
-              'Warga Terdaftar',
-              Icons.people,
-              AppColors.primary,
-            ),
-            _buildSummaryCard(
-              'Kegiatan',
-              '8',
-              'Berjalan',
-              Icons.event,
-              AppColors.warning,
-            ),
+            _buildSummaryCard('Warga', '1,250', 'Warga Terdaftar', Icons.people, AppColors.primary),
+            _buildSummaryCard('Kegiatan', '8', 'Berjalan', Icons.event, AppColors.warning),
             _buildSummaryCard(
               'Statistik',
               '+12%',
@@ -235,11 +215,7 @@ class DashboardMenuPage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
@@ -276,10 +252,7 @@ class DashboardMenuPage extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -322,12 +295,8 @@ class DashboardMenuPage extends StatelessWidget {
                 ),
                 titlesData: FlTitlesData(
                   show: true,
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
+                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
@@ -361,11 +330,7 @@ class DashboardMenuPage extends StatelessWidget {
                             text = const Text('', style: style);
                             break;
                         }
-                        return SideTitleWidget(
-                          axisSide: meta.axisSide,
-                          space: 16,
-                          child: text,
-                        );
+                        return SideTitleWidget(axisSide: meta.axisSide, space: 16, child: text);
                       },
                       reservedSize: 30,
                     ),
@@ -397,17 +362,12 @@ class DashboardMenuPage extends StatelessWidget {
                       BarChartRodData(
                         toY: 60,
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.success,
-                            AppColors.success.withValues(alpha: 0.7),
-                          ],
+                          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         width: 28,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(8),
-                        ),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                     ],
                   ),
@@ -417,17 +377,12 @@ class DashboardMenuPage extends StatelessWidget {
                       BarChartRodData(
                         toY: 80,
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.success,
-                            AppColors.success.withValues(alpha: 0.7),
-                          ],
+                          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         width: 28,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(8),
-                        ),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                     ],
                   ),
@@ -437,17 +392,12 @@ class DashboardMenuPage extends StatelessWidget {
                       BarChartRodData(
                         toY: 50,
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.success,
-                            AppColors.success.withValues(alpha: 0.7),
-                          ],
+                          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         width: 28,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(8),
-                        ),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                     ],
                   ),
@@ -457,17 +407,12 @@ class DashboardMenuPage extends StatelessWidget {
                       BarChartRodData(
                         toY: 90,
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.success,
-                            AppColors.success.withValues(alpha: 0.7),
-                          ],
+                          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         width: 28,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(8),
-                        ),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                     ],
                   ),
@@ -477,17 +422,12 @@ class DashboardMenuPage extends StatelessWidget {
                       BarChartRodData(
                         toY: 70,
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.success,
-                            AppColors.success.withValues(alpha: 0.7),
-                          ],
+                          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         width: 28,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(8),
-                        ),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                     ],
                   ),
@@ -497,17 +437,12 @@ class DashboardMenuPage extends StatelessWidget {
                       BarChartRodData(
                         toY: 85,
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.success,
-                            AppColors.success.withValues(alpha: 0.7),
-                          ],
+                          colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                         ),
                         width: 28,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(8),
-                        ),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                     ],
                   ),
@@ -517,11 +452,7 @@ class DashboardMenuPage extends StatelessWidget {
                   drawVerticalLine: false,
                   horizontalInterval: 20,
                   getDrawingHorizontalLine: (value) {
-                    return FlLine(
-                      color: AppColors.divider,
-                      strokeWidth: 1,
-                      dashArray: [5, 5],
-                    );
+                    return FlLine(color: AppColors.divider, strokeWidth: 1, dashArray: [5, 5]);
                   },
                 ),
               ),
@@ -555,11 +486,7 @@ class DashboardMenuPage extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
         ),
       ],
     );
@@ -603,12 +530,7 @@ class DashboardMenuPage extends StatelessWidget {
             Icons.event,
             AppColors.primary,
           ),
-          _buildActivityItem(
-            'Rapat RW',
-            '10 Oktober 2025',
-            Icons.event,
-            AppColors.primary,
-          ),
+          _buildActivityItem('Rapat RW', '10 Oktober 2025', Icons.event, AppColors.primary),
           _buildActivityItem(
             'Pembagian Sembako',
             '10 Oktober 2025',
@@ -620,12 +542,7 @@ class DashboardMenuPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityItem(
-    String name,
-    String date,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildActivityItem(String name, String date, IconData icon, Color color) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -662,10 +579,7 @@ class DashboardMenuPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   date,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -676,4 +590,3 @@ class DashboardMenuPage extends StatelessWidget {
     );
   }
 }
-

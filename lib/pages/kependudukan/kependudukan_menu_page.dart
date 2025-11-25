@@ -1,31 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-// ==================== DEFINISI WARNA ====================
-// UBAH DI SINI: Palet warna soft & elegant untuk tampilan yang tidak mencolok
-const Color primaryBlue = Color(0xFF1E88E5); // UBAH DI SINI: Biru soft untuk warga dan tema utama
-const Color softGreen = Color(
-  0xFF43A047,
-); // UBAH DI SINI: Hijau soft untuk keluarga dan statistik positif
-const Color softOrange = Color(
-  0xFFFF7043,
-); // UBAH DI SINI: Orange soft untuk rumah dan aksen hangat
-const Color darkBlue = Color(0xFF1565C0); // UBAH DI SINI: Biru gelap untuk gradient dan depth
-const Color lightBlue = Color(0xFFE3F2FD); // UBAH DI SINI: Biru sangat muda untuk background card
-const Color backgroundWhite = Color(
-  0xFFFFFFFF,
-); // UBAH DI SINI: Putih untuk card dan background utama
-const Color backgroundGray = Color(
-  0xFFF8F9FA,
-); // UBAH DI SINI: Abu-abu lembut untuk background halaman
-const Color textPrimary = Color(0xFF212121); // UBAH DI SINI: Hitam untuk teks utama dan judul
-const Color textSecondary = Color(
-  0xFF757575,
-); // UBAH DI SINI: Abu-abu untuk teks sekunder dan deskripsi
-const Color textTertiary = Color(
-  0xFF9E9E9E,
-); // UBAH DI SINI: Abu-abu muda untuk teks tersier dan info
-const Color dividerGray = Color(0xFFE0E0E0); // UBAH DI SINI: Abu-abu untuk border dan garis pemisah
+import 'package:jawara_four/colors/app_colors.dart';
 
 class KependudukanMenuPage extends StatelessWidget {
   const KependudukanMenuPage({super.key});
@@ -63,7 +38,7 @@ class KependudukanMenuPage extends StatelessWidget {
         // UBAH DI SINI: Background putih
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(24), // UBAH DI SINI: Sudut melengkung card
-        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,13 +49,13 @@ class KependudukanMenuPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: primaryBlue.withValues(alpha: 0.1), // Background biru muda
+                  color: AppColors.primary.withValues(alpha: 0.1), // Background biru muda
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: primaryBlue.withValues(alpha: 0.2), width: 2),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
                 ),
                 child: const Icon(
                   Icons.groups_2_rounded, // Icon grup orang untuk kependudukan
-                  color: primaryBlue,
+                  color: AppColors.primary,
                   size: 32,
                 ),
               ),
@@ -95,7 +70,7 @@ class KependudukanMenuPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
-                        color: textPrimary, // UBAH DI SINI: Warna teks hitam
+                        color: AppColors.textPrimary, // UBAH DI SINI: Warna teks hitam
                         letterSpacing: -0.8,
                         height: 1.1,
                       ),
@@ -106,7 +81,7 @@ class KependudukanMenuPage extends StatelessWidget {
                       'Dashboard Manajemen',
                       style: TextStyle(
                         fontSize: 14,
-                        color: textSecondary,
+                        color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.5,
                       ),
@@ -122,7 +97,7 @@ class KependudukanMenuPage extends StatelessWidget {
             'Kelola data warga, keluarga, dan rumah secara terintegrasi dengan sistem yang modern dan efisien',
             style: TextStyle(
               fontSize: 15,
-              color: textSecondary,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w400,
               height: 1.5,
               letterSpacing: 0.1,
@@ -139,15 +114,15 @@ class KependudukanMenuPage extends StatelessWidget {
     return Row(
       children: [
         // UBAH DI SINI: Card statistik warga (biru)
-        Expanded(child: _buildStatCard('Warga', '1,250', Icons.person_rounded, primaryBlue)),
+        Expanded(child: _buildStatCard('Warga', '1,250', Icons.person_rounded, AppColors.primary)),
         const SizedBox(width: 16), // UBAH DI SINI: Jarak antar card
         // UBAH DI SINI: Card statistik keluarga (hijau)
         Expanded(
-          child: _buildStatCard('Keluarga', '312', Icons.family_restroom_rounded, softGreen),
+          child: _buildStatCard('Keluarga', '312', Icons.family_restroom_rounded, AppColors.success),
         ),
         const SizedBox(width: 16),
         // UBAH DI SINI: Card statistik rumah (orange)
-        Expanded(child: _buildStatCard('Rumah', '298', Icons.home_rounded, softOrange)),
+        Expanded(child: _buildStatCard('Rumah', '298', Icons.home_rounded, AppColors.softOrange)),
       ],
     );
   }
@@ -160,10 +135,10 @@ class KependudukanMenuPage extends StatelessWidget {
         horizontal: 18,
       ), // UBAH DI SINI: Padding card
       decoration: BoxDecoration(
-        color: backgroundWhite, // UBAH DI SINI: Background putih
+        color: AppColors.background, // UBAH DI SINI: Background putih
         borderRadius: BorderRadius.circular(20), // UBAH DI SINI: Sudut melengkung
         border: Border.all(
-          color: dividerGray.withValues(alpha: 0.6), // UBAH DI SINI: Border abu-abu tipis
+          color: AppColors.divider.withValues(alpha: 0.6), // UBAH DI SINI: Border abu-abu tipis
           width: 1.5,
         ),
       ),
@@ -199,7 +174,7 @@ class KependudukanMenuPage extends StatelessWidget {
             label,
             style: const TextStyle(
               fontSize: 13,
-              color: textSecondary,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.3,
             ),
@@ -223,7 +198,7 @@ class KependudukanMenuPage extends StatelessWidget {
               height: 28,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [primaryBlue, darkBlue],
+                  colors: [AppColors.primary, AppColors.primaryDark],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -237,7 +212,7 @@ class KependudukanMenuPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
-                color: textPrimary,
+                color: AppColors.textPrimary,
                 letterSpacing: -0.8,
                 height: 1.2,
               ),
@@ -254,7 +229,7 @@ class KependudukanMenuPage extends StatelessWidget {
               'Data Warga',
               'Kelola dan pantau data seluruh warga RW',
               Icons.person_rounded,
-              primaryBlue,
+              AppColors.primary,
               'kependudukan-warga',
             ),
             const SizedBox(height: 14), // UBAH DI SINI: Jarak antar menu card
@@ -264,7 +239,7 @@ class KependudukanMenuPage extends StatelessWidget {
               'Data Keluarga',
               'Manajemen informasi unit keluarga',
               Icons.family_restroom_rounded,
-              softGreen,
+              AppColors.success,
               'kependudukan-keluarga',
             ),
             const SizedBox(height: 14),
@@ -274,7 +249,7 @@ class KependudukanMenuPage extends StatelessWidget {
               'Data Rumah',
               'Kelola data properti dan hunian',
               Icons.home_rounded,
-              softOrange,
+              AppColors.softOrange,
               'kependudukan-rumah',
             ),
             const SizedBox(height: 14),
@@ -332,10 +307,10 @@ class KependudukanMenuPage extends StatelessWidget {
           width: double.infinity, // UBAH DI SINI: Lebar penuh untuk horizontal layout
           padding: const EdgeInsets.all(20), // UBAH DI SINI: Padding dalam card
           decoration: BoxDecoration(
-            color: backgroundWhite, // UBAH DI SINI: Background putih
+            color: AppColors.background, // UBAH DI SINI: Background putih
             borderRadius: BorderRadius.circular(20), // UBAH DI SINI: Sudut melengkung
             border: Border.all(
-              color: dividerGray.withValues(alpha: 0.6), // UBAH DI SINI: Border tipis
+              color: AppColors.divider.withValues(alpha: 0.6), // UBAH DI SINI: Border tipis
               width: 1.5,
             ),
           ),
@@ -366,7 +341,7 @@ class KependudukanMenuPage extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
-                        color: textPrimary,
+                        color: AppColors.textPrimary,
                         letterSpacing: -0.4,
                         height: 1.2,
                       ),
@@ -376,7 +351,7 @@ class KependudukanMenuPage extends StatelessWidget {
                       subtitle,
                       style: const TextStyle(
                         fontSize: 14,
-                        color: textSecondary,
+                        color: AppColors.textSecondary,
                         fontWeight: FontWeight.w500,
                         height: 1.4,
                         letterSpacing: 0.1,
@@ -407,10 +382,10 @@ class KependudukanMenuPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(28), // UBAH DI SINI: Padding besar untuk section
       decoration: BoxDecoration(
-        color: backgroundWhite, // UBAH DI SINI: Background putih
+        color: AppColors.background, // UBAH DI SINI: Background putih
         borderRadius: BorderRadius.circular(24), // UBAH DI SINI: Sudut melengkung
         border: Border.all(
-          color: dividerGray.withValues(alpha: 0.6), // UBAH DI SINI: Border tebal
+          color: AppColors.divider.withValues(alpha: 0.6), // UBAH DI SINI: Border tebal
           width: 1.5,
         ),
       ),
@@ -425,7 +400,7 @@ class KependudukanMenuPage extends StatelessWidget {
                 height: 28,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [primaryBlue, darkBlue],
+                    colors: [AppColors.primary, AppColors.primaryDark],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -440,7 +415,7 @@ class KependudukanMenuPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
-                    color: textPrimary,
+                    color: AppColors.textPrimary,
                     letterSpacing: -0.8,
                     height: 1.2,
                   ),
@@ -450,16 +425,16 @@ class KependudukanMenuPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: lightBlue.withValues(alpha: 0.3), // Background biru muda
+                  color: AppColors.primaryLight.withValues(alpha: 0.3), // Background biru muda
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: primaryBlue.withValues(alpha: 0.2), width: 1),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
                 ),
                 child: Text(
                   '4 Item',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: primaryBlue,
+                    color: AppColors.primary,
                     letterSpacing: 0.3,
                   ),
                 ),
@@ -472,7 +447,7 @@ class KependudukanMenuPage extends StatelessWidget {
             'Pendaftaran warga baru',
             '10 Jan 2025 • 14:30',
             Icons.person_add_alt_1_rounded,
-            primaryBlue,
+            AppColors.primary,
             'Warga Baru',
           ),
           _buildRecentItem(
@@ -480,7 +455,7 @@ class KependudukanMenuPage extends StatelessWidget {
             'Registrasi unit keluarga',
             '9 Jan 2025 • 09:15',
             Icons.group_add_rounded,
-            softGreen,
+            AppColors.success,
             'Keluarga Baru',
           ),
           _buildRecentItem(
@@ -488,7 +463,7 @@ class KependudukanMenuPage extends StatelessWidget {
             'Pendataan properti baru',
             '8 Jan 2025 • 16:45',
             Icons.home_work_rounded,
-            softOrange,
+            AppColors.softOrange,
             'Rumah Baru',
           ),
           _buildRecentItem(
@@ -496,7 +471,7 @@ class KependudukanMenuPage extends StatelessWidget {
             'Pembaruan data penduduk',
             '7 Jan 2025 • 11:20',
             Icons.edit_note_rounded,
-            textSecondary,
+            AppColors.textSecondary,
             'Update Data',
           ),
         ],
@@ -517,10 +492,10 @@ class KependudukanMenuPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16), // UBAH DI SINI: Jarak antar item
       padding: const EdgeInsets.all(18), // UBAH DI SINI: Padding dalam card
       decoration: BoxDecoration(
-        color: backgroundGray, // UBAH DI SINI: Background abu-abu lembut
+        color: AppColors.backgroundGray, // UBAH DI SINI: Background abu-abu lembut
         borderRadius: BorderRadius.circular(18), // UBAH DI SINI: Sudut melengkung
         border: Border.all(
-          color: dividerGray.withValues(alpha: 0.6), // UBAH DI SINI: Border tipis
+          color: AppColors.divider.withValues(alpha: 0.6), // UBAH DI SINI: Border tipis
           width: 1.5,
         ),
       ),
@@ -531,7 +506,7 @@ class KependudukanMenuPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12), // UBAH DI SINI: Padding icon
             decoration: BoxDecoration(
-              color: backgroundWhite, // UBAH DI SINI: Background putih untuk icon
+              color: AppColors.background, // UBAH DI SINI: Background putih untuk icon
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: color.withValues(alpha: 0.2), // UBAH DI SINI: Border sesuai warna tema
@@ -571,7 +546,7 @@ class KependudukanMenuPage extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: textPrimary,
+                    color: AppColors.textPrimary,
                     letterSpacing: -0.3,
                     height: 1.3,
                   ),
@@ -582,7 +557,7 @@ class KependudukanMenuPage extends StatelessWidget {
                   description, // UBAH DI SINI: Deskripsi aktivitas (Pendaftaran warga baru, dll)
                   style: const TextStyle(
                     fontSize: 14,
-                    color: textSecondary,
+                    color: AppColors.textSecondary,
                     fontWeight: FontWeight.w500,
                     height: 1.4,
                     letterSpacing: 0.1,
@@ -595,14 +570,14 @@ class KependudukanMenuPage extends StatelessWidget {
                     Icon(
                       Icons.access_time_rounded, // UBAH DI SINI: Icon jam
                       size: 14,
-                      color: textTertiary.withValues(alpha: 0.8),
+                      color: AppColors.textHint.withValues(alpha: 0.8),
                     ),
                     const SizedBox(width: 6),
                     Text(
                       datetime, // UBAH DI SINI: Tanggal dan waktu (10 Jan 2025 • 14:30)
                       style: TextStyle(
                         fontSize: 12,
-                        color: textTertiary.withValues(alpha: 0.9),
+                        color: AppColors.textHint.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.2,
                       ),

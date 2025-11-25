@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
-const Color successGreen = Color(0xFF43A047);
-const Color errorRed = Color(0xFFE53935);
+import 'package:jawara_four/colors/app_colors.dart';
 
 class BroadcastFormPage extends StatefulWidget {
   const BroadcastFormPage({super.key});
@@ -63,7 +55,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               Text('Broadcast berhasil dikirim!'),
             ],
           ),
-          backgroundColor: successGreen,
+          backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -80,7 +72,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: primaryBlue,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -121,14 +113,14 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryBlue, primaryBlue.withValues(alpha: 0.8)],
+                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -270,14 +262,14 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: textPrimary,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 subtitle: const Text(
                   'Pesan akan diprioritaskan dan ditampilkan di bagian atas',
-                  style: TextStyle(fontSize: 12, color: textSecondary),
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
-                activeColor: primaryBlue,
+                activeColor: AppColors.primary,
                 checkColor: Colors.white,
                 contentPadding: EdgeInsets.zero,
                 controlAffinity: ListTileControlAffinity.leading,
@@ -291,13 +283,13 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: const LinearGradient(
-                  colors: [primaryBlue, Color(0xFF1976D2)],
+                  colors: [AppColors.primary, Color(0xFF1976D2)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: primaryBlue.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -342,10 +334,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: primaryBlue.withValues(alpha: 0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: primaryBlue),
+          child: Icon(icon, size: 18, color: AppColors.primary),
         ),
         const SizedBox(width: 12),
         Text(
@@ -353,7 +345,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: -0.3,
           ),
         ),
@@ -365,9 +357,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -396,7 +388,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -407,37 +399,37 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           maxLines: maxLines,
           style: const TextStyle(
             fontSize: 14,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(icon, size: 20, color: primaryBlue),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.primary),
             filled: true,
-            fillColor: dividerGray.withValues(alpha: 0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: primaryBlue, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 1.5),
+              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -465,7 +457,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -477,22 +469,22 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             hintText: hint,
             hintStyle: TextStyle(
               fontSize: 14,
-              color: textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
             ),
-            prefixIcon: Icon(icon, size: 20, color: primaryBlue),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.primary),
             filled: true,
-            fillColor: dividerGray.withValues(alpha: 0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withValues(alpha: 0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: primaryBlue, width: 2),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -506,7 +498,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                 item,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: textPrimary,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -520,8 +512,8 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: primaryBlue),
-          dropdownColor: backgroundWhite,
+          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
+          dropdownColor: AppColors.background,
         ),
       ],
     );

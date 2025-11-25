@@ -28,6 +28,10 @@ class AppColors {
   static const Color warning = Color(0xFFFB8C00); // Material Orange 600
   static const Color info = Color(0xFF039BE5); // Material Light Blue 600
 
+  // Additional Soft Colors
+  static const Color softOrange = Color(0xFFFF9800); // Material Orange 500
+  static const Color softPurple = Color(0xFF9C27B0); // Material Purple 500
+
   // Border & Divider Colors
   static const Color divider = Color(0xFFE0E0E0); // Material Grey 300
   static const Color border = Color(0xFFBDBDBD); // Material Grey 400

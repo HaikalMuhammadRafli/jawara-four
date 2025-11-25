@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 
 import '../mocks/kegiatan_mocks.dart';
 import '../models/kegiatan_model.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
 
 class KegiatanPage extends StatefulWidget {
   const KegiatanPage({super.key});
@@ -29,17 +23,17 @@ class _KegiatanPageState extends State<KegiatanPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  primaryBlue.withValues(alpha: 0.1),
-                  primaryBlue.withValues(alpha: 0.05),
+                  AppColors.primary.withValues(alpha: 0.1),
+                  AppColors.primary.withValues(alpha: 0.05),
                 ],
               ),
               shape: BoxShape.circle,
-              border: Border.all(color: primaryBlue.withValues(alpha: 0.2), width: 2),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
             ),
             child: Icon(
               Icons.event_available_rounded,
               size: 64,
-              color: primaryBlue.withValues(alpha: 0.6),
+              color: AppColors.primary.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 24),
@@ -48,7 +42,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: textPrimary,
+              color: AppColors.textPrimary,
               letterSpacing: -0.3,
             ),
           ),
@@ -57,7 +51,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
             'Belum ada kegiatan yang tersedia',
             style: TextStyle(
               fontSize: 14,
-              color: textSecondary,
+              color: AppColors.textSecondary,
               letterSpacing: 0.2,
             ),
           ),
@@ -71,7 +65,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
     final List<Kegiatan> kegiatanList = kegiatanMock;
 
     return Container(
-      color: backgroundWhite,
+      color: AppColors.background,
       child: kegiatanList.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
@@ -89,9 +83,9 @@ class _KegiatanPageState extends State<KegiatanPage> {
   Widget _buildKegiatanCard(Kegiatan item) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -130,7 +124,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
-                          color: textPrimary,
+                          color: AppColors.textPrimary,
                           letterSpacing: -0.3,
                         ),
                       ),
@@ -139,7 +133,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         item.kategori,
                         style: TextStyle(
                           fontSize: 12,
-                          color: textSecondary,
+                          color: AppColors.textSecondary,
                           letterSpacing: 0.2,
                         ),
                       ),
@@ -158,7 +152,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  dividerGray.withValues(alpha: 0.5),
+                  AppColors.divider.withValues(alpha: 0.5),
                   Colors.transparent,
                 ],
               ),
@@ -175,7 +169,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                     Icon(
                       Icons.person_outline_rounded,
                       size: 16,
-                      color: textSecondary,
+                      color: AppColors.textSecondary,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -183,7 +177,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         item.penanggungJawab,
                         style: const TextStyle(
                           fontSize: 13,
-                          color: textPrimary,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -191,14 +185,14 @@ class _KegiatanPageState extends State<KegiatanPage> {
                     Icon(
                       Icons.calendar_today_rounded,
                       size: 14,
-                      color: textSecondary,
+                      color: AppColors.textSecondary,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       item.tanggal,
                       style: const TextStyle(
                         fontSize: 13,
-                        color: textPrimary,
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -213,7 +207,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                       child: _buildActionButton(
                         icon: Icons.edit_outlined,
                         label: 'Edit',
-                        color: primaryBlue,
+                        color: AppColors.primary,
                         onPressed: () => _showEditDialog(item),
                       ),
                     ),
@@ -222,7 +216,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                       child: _buildActionButton(
                         icon: Icons.visibility_outlined,
                         label: 'Detail',
-                        color: textSecondary,
+                        color: AppColors.textSecondary,
                         onPressed: () => _showDetailDialog(item),
                       ),
                     ),
@@ -290,14 +284,14 @@ class _KegiatanPageState extends State<KegiatanPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.edit_rounded, color: primaryBlue, size: 24),
+            Icon(Icons.edit_rounded, color: AppColors.primary, size: 24),
             const SizedBox(width: 12),
             const Text(
               'Edit Kegiatan',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: textPrimary,
+                color: AppColors.textPrimary,
               ),
             ),
           ],
@@ -308,7 +302,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
           children: [
             Text(
               'Fitur edit untuk:',
-              style: TextStyle(color: textSecondary, fontSize: 14),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 8),
             Text(
@@ -316,17 +310,17 @@ class _KegiatanPageState extends State<KegiatanPage> {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: textPrimary,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: primaryBlue.withValues(alpha: 0.05),
+                color: AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: primaryBlue.withValues(alpha: 0.2),
+                  color: AppColors.primary.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -334,7 +328,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    color: primaryBlue,
+                    color: AppColors.primary,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -343,7 +337,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
                       'Fitur ini akan segera tersedia',
                       style: TextStyle(
                         fontSize: 12,
-                        color: primaryBlue,
+                        color: AppColors.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -357,7 +351,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
-              backgroundColor: primaryBlue,
+              backgroundColor: AppColors.primary,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -394,7 +388,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: textPrimary,
+                color: AppColors.textPrimary,
               ),
             ),
           ],
@@ -404,7 +398,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
           children: [
             Text(
               'Yakin ingin menghapus kegiatan "${item.nama}"?',
-              style: const TextStyle(fontSize: 14, color: textSecondary),
+              style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 12),
             Container(
@@ -446,7 +440,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
             child: Text(
               'Batal',
               style: TextStyle(
-                color: textSecondary,
+                color: AppColors.textSecondary,
                 fontWeight: FontWeight.w600,
               ),
             ),
