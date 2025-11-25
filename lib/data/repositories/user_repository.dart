@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/user_profile_model.dart';
 
-class UserService {
+class UserRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collection = 'users';
 
   Future<void> createUserProfile(UserProfile userProfile) async {
     try {
-      await _firestore
-          .collection(_collection)
-          .doc(userProfile.uid)
-          .set(userProfile.toMap());
+      await _firestore.collection(_collection).doc(userProfile.uid).set(userProfile.toMap());
     } catch (e) {
       throw 'Gagal menyimpan data pengguna: ${e.toString()}';
     }
@@ -30,10 +28,11 @@ class UserService {
 
   Future<void> updateUserProfile(UserProfile userProfile) async {
     try {
+      final updatedProfile = userProfile.copyWith(updatedAt: DateTime.now());
       await _firestore
           .collection(_collection)
           .doc(userProfile.uid)
-          .update(userProfile.copyWith(updatedAt: DateTime.now()).toMap());
+          .set(updatedProfile.toMap(), SetOptions(merge: true));
     } catch (e) {
       throw 'Gagal memperbarui data pengguna: ${e.toString()}';
     }
@@ -54,16 +53,14 @@ class UserService {
 
   Future<bool> isEmailExists(String email, {String? excludeUid}) async {
     try {
-      Query query = _firestore
-          .collection(_collection)
-          .where('email', isEqualTo: email);
-      
+      Query query = _firestore.collection(_collection).where('email', isEqualTo: email);
+
       final querySnapshot = await query.limit(1).get();
-      
+
       if (excludeUid != null && querySnapshot.docs.isNotEmpty) {
         return querySnapshot.docs.first.id != excludeUid;
       }
-      
+
       return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       return false;
@@ -71,11 +68,7 @@ class UserService {
   }
 
   Stream<UserProfile?> getUserProfileStream(String uid) {
-    return _firestore
-        .collection(_collection)
-        .doc(uid)
-        .snapshots()
-        .map((doc) {
+    return _firestore.collection(_collection).doc(uid).snapshots().map((doc) {
       if (doc.exists) {
         return UserProfile.fromMap(doc.data()!);
       }
@@ -83,4 +76,3 @@ class UserService {
     });
   }
 }
-

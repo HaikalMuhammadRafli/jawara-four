@@ -1,13 +1,43 @@
+enum UserRole {
+  warga('Warga'),
+  admin('Admin');
+
+  final String value;
+  const UserRole(this.value);
+
+  static UserRole fromString(String value) {
+    return UserRole.values.firstWhere(
+      (e) => e.value.toLowerCase() == value.toLowerCase(),
+      orElse: () => UserRole.warga,
+    );
+  }
+}
+
+enum JenisKelamin {
+  lakiLaki('Laki-laki'),
+  perempuan('Perempuan');
+
+  final String value;
+  const JenisKelamin(this.value);
+
+  static JenisKelamin fromString(String value) {
+    return JenisKelamin.values.firstWhere(
+      (e) => e.value.toLowerCase() == value.toLowerCase(),
+      orElse: () => JenisKelamin.lakiLaki,
+    );
+  }
+}
+
 class UserProfile {
   final String uid;
   final String nama;
   final String email;
   final String nik;
   final String noTelepon;
-  final String jenisKelamin;
+  final JenisKelamin jenisKelamin;
+  final UserRole role;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final String? role;
 
   UserProfile({
     required this.uid,
@@ -16,9 +46,9 @@ class UserProfile {
     required this.nik,
     required this.noTelepon,
     required this.jenisKelamin,
+    required this.role,
     required this.createdAt,
     this.updatedAt,
-    this.role,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,10 +58,10 @@ class UserProfile {
       'email': email,
       'nik': nik,
       'noTelepon': noTelepon,
-      'jenisKelamin': jenisKelamin,
+      'jenisKelamin': jenisKelamin.value,
+      'role': role.value,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
-      'role': role ?? 'Warga',
     };
   }
 
@@ -42,12 +72,10 @@ class UserProfile {
       email: map['email'] as String,
       nik: map['nik'] as String,
       noTelepon: map['noTelepon'] as String,
-      jenisKelamin: map['jenisKelamin'] as String,
+      jenisKelamin: JenisKelamin.fromString(map['jenisKelamin'] as String),
+      role: UserRole.fromString(map['role'] as String),
       createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null
-          ? DateTime.parse(map['updatedAt'] as String)
-          : null,
-      role: map['role'] as String?,
+      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
     );
   }
 
@@ -57,10 +85,10 @@ class UserProfile {
     String? email,
     String? nik,
     String? noTelepon,
-    String? jenisKelamin,
+    JenisKelamin? jenisKelamin,
+    UserRole? role,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? role,
   }) {
     return UserProfile(
       uid: uid ?? this.uid,
@@ -69,10 +97,9 @@ class UserProfile {
       nik: nik ?? this.nik,
       noTelepon: noTelepon ?? this.noTelepon,
       jenisKelamin: jenisKelamin ?? this.jenisKelamin,
+      role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      role: role ?? this.role,
     );
   }
 }
-

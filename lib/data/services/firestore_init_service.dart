@@ -21,7 +21,7 @@ class FirestoreInitService {
     await _ensureCollectionExists('roles');
     await _ensureCollectionExists('settings');
     await _ensureCollectionExists('logs');
-    
+
     // Tambahkan collection baru di sini:
     // await _ensureCollectionExists('kegiatan');
     // await _ensureCollectionExists('pengeluaran');
@@ -30,13 +30,13 @@ class FirestoreInitService {
   Future<void> _ensureCollectionExists(String collectionName) async {
     try {
       final snapshot = await _firestore.collection(collectionName).limit(1).get();
-      
+
       if (snapshot.docs.isEmpty) {
         await _firestore.collection(collectionName).doc('_init').set({
           'createdAt': FieldValue.serverTimestamp(),
           'initialized': true,
         });
-        
+
         if (kDebugMode) {
           print('Collection "$collectionName" initialized');
         }
@@ -56,4 +56,3 @@ class FirestoreInitService {
     return _firestore.collection(collectionName).doc(documentId);
   }
 }
-
