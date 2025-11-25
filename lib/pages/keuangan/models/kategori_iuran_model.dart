@@ -1,4 +1,5 @@
 class KategoriIuran {
+  final String id;
   final String nama;
   final String deskripsi;
   final String nominal;
@@ -7,6 +8,7 @@ class KategoriIuran {
   final String warna;
 
   const KategoriIuran({
+    this.id = '',
     required this.nama,
     required this.deskripsi,
     required this.nominal,
@@ -15,13 +17,25 @@ class KategoriIuran {
     required this.warna,
   });
 
-  factory KategoriIuran.fromMap(Map<String, String> m) => KategoriIuran(
-    nama: m['nama'] ?? '',
-    deskripsi: m['deskripsi'] ?? '',
-    nominal: m['nominal'] ?? '',
-    periode: m['periode'] ?? '',
-    status: m['status'] ?? '',
-    warna: m['warna'] ?? 'blue',
-  );
-}
+  factory KategoriIuran.fromMap(Map<String, dynamic> m, String id) =>
+      KategoriIuran(
+        id: id,
+        nama: m['nama'] ?? '',
+        deskripsi: m['deskripsi'] ?? '',
+        nominal: m['nominal'] ?? '',
+        periode: m['periode'] ?? '',
+        status: m['status'] ?? '',
+        warna: m['warna'] ?? 'blue',
+      );
 
+  Map<String, dynamic> toMap() {
+    return {
+      'nama': nama,
+      'deskripsi': deskripsi,
+      'nominal': nominal,
+      'periode': periode,
+      'status': status,
+      'warna': warna,
+    };
+  }
+}

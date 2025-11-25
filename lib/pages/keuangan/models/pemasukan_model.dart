@@ -1,4 +1,5 @@
 class Pemasukan {
+  final String id;
   final String judul;
   final String kategori;
   final String jumlah;
@@ -8,6 +9,7 @@ class Pemasukan {
   final String jenisPemasukan;
 
   const Pemasukan({
+    this.id = '',
     required this.judul,
     required this.kategori,
     required this.jumlah,
@@ -17,7 +19,8 @@ class Pemasukan {
     required this.jenisPemasukan,
   });
 
-  factory Pemasukan.fromMap(Map<String, String> m) => Pemasukan(
+  factory Pemasukan.fromMap(Map<String, dynamic> m, String id) => Pemasukan(
+    id: id,
     judul: m['judul'] ?? '',
     kategori: m['kategori'] ?? '',
     jumlah: m['jumlah'] ?? '',
@@ -26,5 +29,16 @@ class Pemasukan {
     nama: m['nama'] ?? '',
     jenisPemasukan: m['jenisPemasukan'] ?? '',
   );
-}
 
+  Map<String, dynamic> toMap() {
+    return {
+      'judul': judul,
+      'kategori': kategori,
+      'jumlah': jumlah,
+      'tanggal': tanggal,
+      'keterangan': keterangan,
+      'nama': nama,
+      'jenisPemasukan': jenisPemasukan,
+    };
+  }
+}

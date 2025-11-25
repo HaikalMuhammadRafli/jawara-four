@@ -1,42 +1,122 @@
 import 'package:flutter/material.dart';
-import '../mocks/pemasukan_mocks.dart';
+import 'package:jawara_four/colors/app_colors.dart';
+import '../../../data/repositories/pemasukan_repository.dart';
 import '../models/pemasukan_model.dart';
 import 'pemasukan_lain_detail_page.dart';
+import 'pemasukan_lain_form_page.dart';
 
-class PemasukanLainPage extends StatelessWidget {
+class PemasukanLainPage extends StatefulWidget {
   const PemasukanLainPage({super.key});
 
   @override
+  State<PemasukanLainPage> createState() => _PemasukanLainPageState();
+}
+
+class _PemasukanLainPageState extends State<PemasukanLainPage> {
+  final PemasukanRepository _repository = PemasukanRepository();
+
+  void _navigateToForm({Pemasukan? pemasukan}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PemasukanLainFormPage(pemasukan: pemasukan),
+      ),
+    );
+  }
+
+  Future<void> _deletePemasukan(String id) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Hapus Pemasukan'),
+        content: const Text('Apakah Anda yakin ingin menghapus data ini?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        await _repository.deletePemasukan(id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Pemasukan berhasil dihapus'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Gagal menghapus: $e'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFFFFFFF),
-      child: Stack(
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
+      body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-            child: _buildPemasukanList(),
+          StreamBuilder<List<Pemasukan>>(
+            stream: _repository.getPemasukanStream(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Terjadi kesalahan: ${snapshot.error}'),
+                );
+              }
+
+              final pemasukanList = snapshot.data ?? [];
+
+              if (pemasukanList.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'Belum ada data pemasukan',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                itemCount: pemasukanList.length,
+                itemBuilder: (context, index) =>
+                    _buildPemasukanCard(pemasukanList[index]),
+              );
+            },
           ),
           Positioned(
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {},
-              backgroundColor: Colors.blue,
+              onPressed: () => _navigateToForm(),
+              backgroundColor: AppColors.primary,
               child: const Icon(Icons.add, color: Colors.white),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildPemasukanList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: pemasukanMock.length,
-      itemBuilder: (context, index) =>
-          _buildPemasukanCard(pemasukanMock[index]),
     );
   }
 
@@ -125,7 +205,15 @@ class PemasukanLainPage extends StatelessWidget {
             Icons.visibility_outlined,
             'Lihat',
             Colors.grey,
-            pemasukan,
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PemasukanLainDetailPage(pemasukan: pemasukan),
+                ),
+              );
+            },
           ),
         ),
         const SizedBox(width: 8),
@@ -134,7 +222,7 @@ class PemasukanLainPage extends StatelessWidget {
             Icons.edit_outlined,
             'Edit',
             Colors.blue,
-            pemasukan,
+            () => _navigateToForm(pemasukan: pemasukan),
           ),
         ),
         const SizedBox(width: 8),
@@ -143,7 +231,7 @@ class PemasukanLainPage extends StatelessWidget {
             Icons.delete_outline,
             'Hapus',
             Colors.red,
-            pemasukan,
+            () => _deletePemasukan(pemasukan.id),
           ),
         ),
       ],
@@ -154,42 +242,30 @@ class PemasukanLainPage extends StatelessWidget {
     IconData icon,
     String label,
     Color color,
-    Pemasukan pemasukan,
+    VoidCallback onTap,
   ) {
-    return Builder(
-      builder: (context) => GestureDetector(
-        onTap: () {
-          if (label == 'Lihat') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    PemasukanLainDetailPage(pemasukan: pemasukan),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 18),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: color,
               ),
-            );
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 18),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -220,4 +296,3 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 }
-

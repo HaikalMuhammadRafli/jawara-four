@@ -1,4 +1,5 @@
 class Tagihan {
+  final String id;
   final String judul;
   final String kategori;
   final String total;
@@ -14,6 +15,7 @@ class Tagihan {
   final String bukti;
 
   const Tagihan({
+    this.id = '',
     required this.judul,
     required this.kategori,
     required this.total,
@@ -29,7 +31,8 @@ class Tagihan {
     required this.bukti,
   });
 
-  factory Tagihan.fromMap(Map<String, String> m) => Tagihan(
+  factory Tagihan.fromMap(Map<String, dynamic> m, String id) => Tagihan(
+    id: id,
     judul: m['judul'] ?? '',
     kategori: m['kategori'] ?? '',
     total: m['total'] ?? '',
@@ -44,5 +47,23 @@ class Tagihan {
     metodePembayaran: m['metodePembayaran'] ?? '',
     bukti: m['bukti'] ?? '',
   );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'judul': judul,
+      'kategori': kategori,
+      'total': total,
+      'status': status,
+      'tanggal': tanggal,
+      'warga': warga,
+      'kodeTagihan': kodeTagihan,
+      'namaKeluarga': namaKeluarga,
+      'statusKeluarga': statusKeluarga,
+      'periode': periode,
+      'alamat': alamat,
+      'metodePembayaran': metodePembayaran,
+      'bukti': bukti,
+    };
+  }
 }
 
