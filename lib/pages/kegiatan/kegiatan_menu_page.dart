@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import './mocks/kegiatan_mocks.dart';
-import './models/kegiatan_model.dart';
+import '../../data/mocks/kegiatan_mocks.dart';
+import '../../data/models/kegiatan_model.dart';
+import '../../utils/date_helpers.dart';
+import '../../utils/ui_helpers.dart';
 
 class KegiatanMenuPage extends StatefulWidget {
   const KegiatanMenuPage({super.key});
@@ -58,16 +60,9 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    width: 2,
-                  ),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
                 ),
-                child: const Icon(
-                  Icons.event_rounded,
-                  color: AppColors.primary,
-                  size: 32,
-                ),
+                child: const Icon(Icons.event_rounded, color: AppColors.primary, size: 32),
               ),
               const SizedBox(width: 20),
               Expanded(
@@ -117,9 +112,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
   Widget _buildQuickStats() {
     final List<Kegiatan> kegiatanList = kegiatanMock;
     final totalKegiatan = kegiatanList.length;
-    final activeKegiatan = kegiatanList
-        .where((k) => k.kategori != 'Selesai')
-        .length;
+    final activeKegiatan = kegiatanList.where((k) => k.kategori != 'Selesai').length;
 
     return Row(
       children: [
@@ -142,23 +135,13 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: _buildStatCard(
-            'Broadcast',
-            '12',
-            Icons.campaign_rounded,
-            AppColors.softPurple,
-          ),
+          child: _buildStatCard('Broadcast', '12', Icons.campaign_rounded, AppColors.softPurple),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
       decoration: BoxDecoration(
@@ -282,10 +265,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
                   ),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: color.withValues(alpha: 0.25),
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
                 ),
                 child: Icon(icon, color: color, size: 28),
               ),
@@ -322,11 +302,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                   color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                  color: color,
-                ),
+                child: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: color),
               ),
             ],
           ),
@@ -372,17 +348,11 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.2),
-                    width: 1,
-                  ),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
                 ),
                 child: Text(
                   '${recentItems.length} Item',
@@ -420,11 +390,15 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
               color: AppColors.background,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: item.color.withValues(alpha: 0.2),
+                color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.2),
                 width: 1.5,
               ),
             ),
-            child: Icon(item.icon, color: item.color, size: 22),
+            child: Icon(
+              UIHelpers.getKegiatanIcon(item.kategori),
+              color: UIHelpers.getKegiatanColor(item.kategori),
+              size: 22,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -432,15 +406,12 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: item.color.withValues(alpha: 0.1),
+                    color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: item.color.withValues(alpha: 0.2),
+                      color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -449,7 +420,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: item.color,
+                      color: UIHelpers.getKegiatanColor(item.kategori),
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -483,7 +454,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      item.tanggal,
+                      DateHelpers.formatDateShort(item.tanggal),
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary.withValues(alpha: 0.8),
@@ -500,4 +471,3 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
     );
   }
 }
-

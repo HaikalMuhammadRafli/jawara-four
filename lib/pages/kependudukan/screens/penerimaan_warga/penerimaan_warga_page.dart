@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../mocks/penerimaan_warga_mocks.dart';
-import '../../models/penerimaan_warga_model.dart';
+import '../../../../data/mocks/penerimaan_warga_mocks.dart';
+import '../../../../data/models/penerimaan_warga_model.dart';
 
 class PenerimaanWargaPage extends StatefulWidget {
   const PenerimaanWargaPage({super.key});
@@ -45,11 +45,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             decoration: InputDecoration(
               hintText: 'Cari nama atau NIK...',
               hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(
-                Icons.search_rounded,
-                color: AppColors.textSecondary,
-                size: 22,
-              ),
+              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -60,10 +56,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             ),
           ),
           const SizedBox(height: 16),
@@ -119,8 +112,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           _searchQuery.isEmpty ||
           p.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           p.nik.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesStatus =
-          _selectedStatus == 'Semua' || p.statusRegistrasi == _selectedStatus;
+      final matchesStatus = _selectedStatus == 'Semua' || p.statusRegistrasi == _selectedStatus;
       return matchesQuery && matchesStatus;
     }).toList();
 
@@ -157,7 +149,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
 
   Widget _buildPenerimaanCard(PenerimaanWarga w) {
     Color statusColor;
-    switch (w.statusRegistrasi.toLowerCase()) {
+    switch (w.statusRegistrasi.value.toLowerCase()) {
       case 'diterima':
         statusColor = const Color(0xFF43A047);
         break;
@@ -190,10 +182,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 height: 110,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.divider.withValues(alpha: 0.6),
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
@@ -202,11 +191,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                     fit: BoxFit.cover,
                     errorBuilder: (c, e, s) => Container(
                       color: AppColors.divider.withValues(alpha: 0.2),
-                      child: Icon(
-                        Icons.person_rounded,
-                        size: 48,
-                        color: AppColors.textSecondary,
-                      ),
+                      child: Icon(Icons.person_rounded, size: 48, color: AppColors.textSecondary),
                     ),
                   ),
                 ),
@@ -232,27 +217,19 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                     _buildInfoRow(Icons.email_outlined, w.email),
                     const SizedBox(height: 6),
                     _buildInfoRow(
-                      w.jenisKelamin == 'Laki-laki'
-                          ? Icons.male_rounded
-                          : Icons.female_rounded,
-                      w.jenisKelamin,
+                      w.jenisKelamin == 'Laki-laki' ? Icons.male_rounded : Icons.female_rounded,
+                      w.jenisKelamin.value,
                     ),
                     const SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: statusColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: statusColor.withValues(alpha: 0.2),
-                          width: 1,
-                        ),
+                        border: Border.all(color: statusColor.withValues(alpha: 0.2), width: 1),
                       ),
                       child: Text(
-                        w.statusRegistrasi,
+                        w.statusRegistrasi.value,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -325,12 +302,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 
-  Widget _buildActionButton(
-    String label,
-    IconData icon,
-    Color color,
-    PenerimaanWarga warga,
-  ) {
+  Widget _buildActionButton(String label, IconData icon, Color color, PenerimaanWarga warga) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -370,4 +342,3 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 }
-

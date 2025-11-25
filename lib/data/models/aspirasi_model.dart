@@ -19,7 +19,7 @@ class Aspirasi {
   final String id;
   final String pengirim;
   final String judul;
-  final String tanggalDibuat;
+  final DateTime tanggalDibuat;
   final StatusAspirasi status;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -39,7 +39,7 @@ class Aspirasi {
       'id': id,
       'pengirim': pengirim,
       'judul': judul,
-      'tanggalDibuat': tanggalDibuat,
+      'tanggalDibuat': tanggalDibuat.toIso8601String(),
       'status': status.value,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
@@ -51,7 +51,7 @@ class Aspirasi {
       id: map['id'] as String,
       pengirim: map['pengirim'] as String,
       judul: map['judul'] as String,
-      tanggalDibuat: map['tanggalDibuat'] as String,
+      tanggalDibuat: DateTime.parse(map['tanggalDibuat'] as String),
       status: StatusAspirasi.fromString(map['status'] as String),
       createdAt: DateTime.parse(map['createdAt'] as String),
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
@@ -62,7 +62,7 @@ class Aspirasi {
     String? id,
     String? pengirim,
     String? judul,
-    String? tanggalDibuat,
+    DateTime? tanggalDibuat,
     StatusAspirasi? status,
     DateTime? createdAt,
     DateTime? updatedAt,

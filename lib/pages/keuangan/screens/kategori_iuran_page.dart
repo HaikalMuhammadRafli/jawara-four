@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/repositories/kategori_iuran_repository.dart';
-import '../models/kategori_iuran_model.dart';
+
+import '../../../data/../../data/repositories/kategori_iuran_iuran_repository.dart';
+import '../../../data/models/kategori_iuran_model.dart';
 import '../screens/kategori_iuran_form_page.dart';
 
 class KategoriIuranPage extends StatefulWidget {
@@ -47,15 +48,13 @@ class _KategoriIuranPageState extends State<KategoriIuranPage> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: kategoriList.length,
-      itemBuilder: (context, index) => _buildKategoriCard(kategoriList[index]),
+      itemCount: kategoriIuranList.length,
+      itemBuilder: (context, index) => _buildKategoriCard(kategoriIuranList[index]),
     );
   }
 
   Widget _buildKategoriCard(KategoriIuran kategori) {
-    final statusColor = kategori.status == 'Aktif'
-        ? Colors.green
-        : Colors.orange;
+    final statusColor = kategori.status == 'Aktif' ? Colors.green : Colors.orange;
     final categoryColor = _getCategoryColor(kategori.warna);
 
     return Container(
@@ -88,11 +87,7 @@ class _KategoriIuranPageState extends State<KategoriIuranPage> {
     );
   }
 
-  Widget _buildKategoriHeader(
-    KategoriIuran kategori,
-    Color statusColor,
-    Color categoryColor,
-  ) {
+  Widget _buildKategoriHeader(KategoriIuran kategori, Color statusColor, Color categoryColor) {
     return Row(
       children: [
         Container(
@@ -121,10 +116,7 @@ class _KategoriIuranPageState extends State<KategoriIuranPage> {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                kategori.deskripsi,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
+              Text(kategori.deskripsi, style: const TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
         ),
@@ -139,12 +131,8 @@ class _KategoriIuranPageState extends State<KategoriIuranPage> {
             ),
           ),
           child: Text(
-            kategori.status,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: statusColor,
-            ),
+            kategori.status.value,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
           ),
         ),
       ],

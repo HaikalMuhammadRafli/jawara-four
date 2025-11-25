@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../mocks/pengeluaran_mocks.dart';
-import '../models/pengeluaran_model.dart';
+import '../../../data/mocks/pengeluaran_mocks.dart';
+import '../../../data/models/pengeluaran_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/number_helpers.dart';
 
 class KeuanganPengeluaranPage extends StatelessWidget {
   const KeuanganPengeluaranPage({super.key});
@@ -226,7 +228,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      pengeluaran.nominal,
+                      NumberHelpers.formatCurrency(pengeluaran.nominal),
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
@@ -245,7 +247,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          pengeluaran.tanggal,
+                          DateHelpers.formatDateShort(pengeluaran.tanggal),
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textHint.withValues(alpha: 0.8),
@@ -383,53 +385,54 @@ class KeuanganPengeluaranPage extends StatelessWidget {
   }
 
   // ==================== DIALOG TAMBAH PENGELUARAN ====================
-  void _showTambahPengeluaranDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.add_circle_outline, color: AppColors.primary, size: 24),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Tambah Pengeluaran',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          content: const Text(
-            'Fitur tambah pengeluaran akan segera tersedia',
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text(
-                'OK',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // TODO: Uncomment when needed
+  // void _showTambahPengeluaranDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  //         title: Row(
+  //           children: [
+  //             Container(
+  //               padding: const EdgeInsets.all(8),
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.primary.withValues(alpha: 0.1),
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //               child: const Icon(Icons.add_circle_outline, color: AppColors.primary, size: 24),
+  //             ),
+  //             const SizedBox(width: 12),
+  //             const Text(
+  //               'Tambah Pengeluaran',
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w700,
+  //                 color: AppColors.textPrimary,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         content: const Text(
+  //           'Fitur tambah pengeluaran akan segera tersedia',
+  //           style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             style: TextButton.styleFrom(
+  //               backgroundColor: AppColors.primary,
+  //               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  //             ),
+  //             child: const Text(
+  //               'OK',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

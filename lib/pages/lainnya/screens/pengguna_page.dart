@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../mocks/pengguna_mocks.dart';
-import '../models/pengguna_model.dart';
+import '../../../data/mocks/user_profile_mocks.dart';
+import '../../../data/models/user_profile_model.dart';
+import '../../../utils/ui_helpers.dart';
 
 class PenggunaPage extends StatelessWidget {
   const PenggunaPage({super.key});
 
-  void _showEditDialog(BuildContext context, Pengguna item) {
+  void _showEditDialog(BuildContext context, UserProfile item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -21,7 +22,7 @@ class PenggunaPage extends StatelessWidget {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, Pengguna item) {
+  void _showDeleteDialog(BuildContext context, UserProfile item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -38,7 +39,7 @@ class PenggunaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final penggunaList = penggunaMock; // hanya data dummy
+    final penggunaList = userProfileMock; // hanya data dummy
 
     return penggunaList.isEmpty
         ? _buildEmptyState()
@@ -87,7 +88,7 @@ class PenggunaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPenggunaCard(BuildContext context, Pengguna item) {
+  Widget _buildPenggunaCard(BuildContext context, UserProfile item) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
@@ -112,11 +113,14 @@ class PenggunaPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: item.color,
+                    color: UIHelpers.getUserColor(item.role),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: item.color.withValues(alpha: 0.2), width: 1),
+                    border: Border.all(
+                      color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
-                  child: Icon(item.icon, color: Colors.white, size: 20),
+                  child: Icon(UIHelpers.getUserIcon(item.role), color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -132,13 +136,20 @@ class PenggunaPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: item.color.withValues(alpha: 0.1),
+                    color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: item.color.withValues(alpha: 0.2), width: 1),
+                    border: Border.all(
+                      color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Text(
-                    item.role,
-                    style: TextStyle(fontWeight: FontWeight.w600, color: item.color, fontSize: 12),
+                    item.role.value,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: UIHelpers.getUserColor(item.role),
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -202,4 +213,3 @@ class PenggunaPage extends StatelessWidget {
     );
   }
 }
-

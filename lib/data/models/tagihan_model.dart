@@ -18,9 +18,9 @@ class Tagihan {
   final String id;
   final String judul;
   final String kategori;
-  final String total;
+  final int total;
   final StatusTagihan status;
-  final String tanggal;
+  final DateTime tanggal;
   final String warga;
   final String kodeTagihan;
   final String namaKeluarga;
@@ -58,7 +58,7 @@ class Tagihan {
       'kategori': kategori,
       'total': total,
       'status': status.value,
-      'tanggal': tanggal,
+      'tanggal': tanggal.toIso8601String(),
       'warga': warga,
       'kodeTagihan': kodeTagihan,
       'namaKeluarga': namaKeluarga,
@@ -77,9 +77,9 @@ class Tagihan {
       id: map['id'] as String,
       judul: map['judul'] as String,
       kategori: map['kategori'] as String,
-      total: map['total'] as String,
+      total: map['total'] as int,
       status: StatusTagihan.fromString(map['status'] as String),
-      tanggal: map['tanggal'] as String,
+      tanggal: DateTime.parse(map['tanggal'] as String),
       warga: map['warga'] as String,
       kodeTagihan: map['kodeTagihan'] as String,
       namaKeluarga: map['namaKeluarga'] as String,
@@ -97,9 +97,9 @@ class Tagihan {
     String? id,
     String? judul,
     String? kategori,
-    String? total,
+    int? total,
     StatusTagihan? status,
-    String? tanggal,
+    DateTime? tanggal,
     String? warga,
     String? kodeTagihan,
     String? namaKeluarga,

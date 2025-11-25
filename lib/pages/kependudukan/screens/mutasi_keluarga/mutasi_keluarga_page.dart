@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../mocks/mutasi_mocks.dart';
-import '../../models/mutasi_model.dart';
+import '../../../../data/mocks/mutasi_keluarga_mocks.dart';
+import '../../../../data/models/mutasi_keluarga_model.dart';
+import '../../../../utils/date_helpers.dart';
+import '../../../../utils/ui_helpers.dart';
 
 class MutasiKeluargaPage extends StatefulWidget {
   const MutasiKeluargaPage({super.key});
@@ -39,10 +41,7 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(color: Colors.green, width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
           ),
           const SizedBox(height: 12),
@@ -80,7 +79,7 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
   }
 
   Widget _buildMutasiKeluargaList() {
-    final List<MutasiKeluarga> mutasiKeluargaData = mutasiMock;
+    final List<MutasiKeluarga> mutasiKeluargaData = mutasiKeluargaMock;
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -105,14 +104,15 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(keluarga.icon, color: Colors.white, size: 20),
+              child: Icon(
+                UIHelpers.getMutasiIcon(keluarga.jenisMutasi),
+                color: Colors.white,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                keluarga.keluarga,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+              child: Text(keluarga.keluarga, style: const TextStyle(fontWeight: FontWeight.w600)),
             ),
           ],
         ),
@@ -120,28 +120,17 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('Keluarga: ${keluarga.keluarga}', style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 8),
             Text(
-              'Keluarga: ${keluarga.keluarga}',
+              'Tanggal: ${DateHelpers.formatDate(keluarga.tanggal)}',
               style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Tanggal: ${keluarga.tanggal}',
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Jenis Mutasi: ${keluarga.jenisMutasi}',
-              style: const TextStyle(fontSize: 14),
-            ),
+            Text('Jenis Mutasi: ${keluarga.jenisMutasi}', style: const TextStyle(fontSize: 14)),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup'))],
       ),
     );
   }
@@ -174,7 +163,11 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.green[200]!, width: 1),
                 ),
-                child: Icon(keluarga.icon, color: Colors.green, size: 24),
+                child: Icon(
+                  UIHelpers.getMutasiIcon(keluarga.jenisMutasi),
+                  color: Colors.green,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -194,7 +187,7 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  keluarga.jenisMutasi,
+                  keluarga.jenisMutasi.value,
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
@@ -211,17 +204,13 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  keluarga.tanggal,
+                  DateHelpers.formatDate(keluarga.tanggal),
                   style: const TextStyle(fontSize: 12, color: Colors.black87),
                 ),
               ),
               IconButton(
                 onPressed: () => _showDetailDialog(context, keluarga),
-                icon: const Icon(
-                  Icons.visibility,
-                  size: 18,
-                  color: Colors.grey,
-                ),
+                icon: const Icon(Icons.visibility, size: 18, color: Colors.grey),
                 tooltip: 'Lihat Detail',
               ),
             ],
@@ -231,4 +220,3 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
     );
   }
 }
-

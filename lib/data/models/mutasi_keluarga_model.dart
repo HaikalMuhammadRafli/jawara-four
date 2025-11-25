@@ -18,7 +18,7 @@ enum JenisMutasi {
 class MutasiKeluarga {
   final String id;
   final String keluarga;
-  final String tanggal;
+  final DateTime tanggal;
   final JenisMutasi jenisMutasi;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -36,7 +36,7 @@ class MutasiKeluarga {
     return {
       'id': id,
       'keluarga': keluarga,
-      'tanggal': tanggal,
+      'tanggal': tanggal.toIso8601String(),
       'jenisMutasi': jenisMutasi.value,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
@@ -47,7 +47,7 @@ class MutasiKeluarga {
     return MutasiKeluarga(
       id: map['id'] as String,
       keluarga: map['keluarga'] as String,
-      tanggal: map['tanggal'] as String,
+      tanggal: DateTime.parse(map['tanggal'] as String),
       jenisMutasi: JenisMutasi.fromString(map['jenisMutasi'] as String),
       createdAt: DateTime.parse(map['createdAt'] as String),
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
@@ -57,7 +57,7 @@ class MutasiKeluarga {
   MutasiKeluarga copyWith({
     String? id,
     String? keluarga,
-    String? tanggal,
+    DateTime? tanggal,
     JenisMutasi? jenisMutasi,
     DateTime? createdAt,
     DateTime? updatedAt,

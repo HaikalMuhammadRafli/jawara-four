@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../mocks/kegiatan_mocks.dart';
-import '../models/kegiatan_model.dart';
+import '../../../data/mocks/kegiatan_mocks.dart';
+import '../../../data/models/kegiatan_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/ui_helpers.dart';
 
 class KegiatanPage extends StatefulWidget {
   const KegiatanPage({super.key});
@@ -49,11 +51,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
           const SizedBox(height: 8),
           Text(
             'Belum ada kegiatan yang tersedia',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-              letterSpacing: 0.2,
-            ),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary, letterSpacing: 0.2),
           ),
         ],
       ),
@@ -100,19 +98,23 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        item.color.withValues(alpha: 0.15),
-                        item.color.withValues(alpha: 0.05),
+                        UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.15),
+                        UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: item.color.withValues(alpha: 0.3),
+                      color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
-                  child: Icon(item.icon, color: item.color, size: 24),
+                  child: Icon(
+                    UIHelpers.getKegiatanIcon(item.kategori),
+                    color: UIHelpers.getKegiatanColor(item.kategori),
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -166,11 +168,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.person_outline_rounded,
-                      size: 16,
-                      color: AppColors.textSecondary,
-                    ),
+                    Icon(Icons.person_outline_rounded, size: 16, color: AppColors.textSecondary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -182,14 +180,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         ),
                       ),
                     ),
-                    Icon(
-                      Icons.calendar_today_rounded,
-                      size: 14,
-                      color: AppColors.textSecondary,
-                    ),
+                    Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     Text(
-                      item.tanggal,
+                      DateHelpers.formatDateShort(item.tanggal),
                       style: const TextStyle(
                         fontSize: 13,
                         color: AppColors.textPrimary,
@@ -319,18 +313,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    color: AppColors.primary,
-                    size: 18,
-                  ),
+                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -353,16 +340,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
             style: TextButton.styleFrom(
               backgroundColor: AppColors.primary,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             child: const Text(
               'Tutup',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -377,11 +359,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(
-              Icons.warning_rounded,
-              color: const Color(0xFFE53935),
-              size: 24,
-            ),
+            Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
             const SizedBox(width: 12),
             const Text(
               'Hapus Kegiatan',
@@ -406,18 +384,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
               decoration: BoxDecoration(
                 color: const Color(0xFFE53935).withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: const Color(0xFFE53935).withValues(alpha: 0.2),
-                  width: 1,
-                ),
+                border: Border.all(color: const Color(0xFFE53935).withValues(alpha: 0.2), width: 1),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.info_outline_rounded,
-                    color: const Color(0xFFE53935),
-                    size: 18,
-                  ),
+                  Icon(Icons.info_outline_rounded, color: const Color(0xFFE53935), size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -439,10 +410,7 @@ class _KegiatanPageState extends State<KegiatanPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Batal',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
             ),
           ),
           TextButton(
@@ -458,16 +426,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFFE53935),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             child: const Text(
               'Hapus',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -475,4 +438,3 @@ class _KegiatanPageState extends State<KegiatanPage> {
     );
   }
 }
-

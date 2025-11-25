@@ -3,7 +3,7 @@ class Kegiatan {
   final String nama;
   final String kategori;
   final String penanggungJawab;
-  final String tanggal;
+  final DateTime tanggal;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -23,7 +23,7 @@ class Kegiatan {
       'nama': nama,
       'kategori': kategori,
       'penanggungJawab': penanggungJawab,
-      'tanggal': tanggal,
+      'tanggal': tanggal.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -35,7 +35,7 @@ class Kegiatan {
       nama: map['nama'] as String,
       kategori: map['kategori'] as String,
       penanggungJawab: map['penanggungJawab'] as String,
-      tanggal: map['tanggal'] as String,
+      tanggal: DateTime.parse(map['tanggal'] as String),
       createdAt: DateTime.parse(map['createdAt'] as String),
       updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
     );
@@ -46,7 +46,7 @@ class Kegiatan {
     String? nama,
     String? kategori,
     String? penanggungJawab,
-    String? tanggal,
+    DateTime? tanggal,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {

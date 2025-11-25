@@ -1,32 +1,37 @@
 import '../models/pemasukan_model.dart';
 
-const List<Pemasukan> pemasukanMock = [
+final List<Pemasukan> pemasukanMock = [
   Pemasukan(
+    id: '1',
     judul: 'Dana Bantuan Pemerintah',
     kategori: 'Bantuan',
-    jumlah: 'Rp 11,00',
-    tanggal: '15 Oktober 2025',
+    jumlah: 11,
+    tanggal: DateTime(2025, 10, 15),
     keterangan: 'Dana bantuan dari pemerintah untuk pembangunan',
     nama: 'aaaaa',
     jenisPemasukan: 'Dana Bantuan Pemerintah',
+    createdAt: DateTime(2025, 10, 15),
   ),
   Pemasukan(
+    id: '2',
     judul: 'Joki by firman',
     kategori: 'Pendapatan Lainnya',
-    jumlah: 'Rp 49.999.997,00',
-    tanggal: '13 Oktober 2025',
+    jumlah: 49999997,
+    tanggal: DateTime(2025, 10, 13),
     keterangan: 'Pendapatan dari joki',
     nama: 'Joki by firman',
     jenisPemasukan: 'Pendapatan Lainnya',
+    createdAt: DateTime(2025, 10, 13),
   ),
   Pemasukan(
+    id: '3',
     judul: 'tes',
     kategori: 'Pendapatan Lainnya',
-    jumlah: 'Rp 10.000,00',
-    tanggal: '12 Agustus 2025',
+    jumlah: 10000,
+    tanggal: DateTime(2025, 8, 12),
     keterangan: 'Pendapatan lainnya untuk tes',
     nama: 'tes',
     jenisPemasukan: 'Pendapatan Lainnya',
+    createdAt: DateTime(2025, 8, 12),
   ),
 ];
-
