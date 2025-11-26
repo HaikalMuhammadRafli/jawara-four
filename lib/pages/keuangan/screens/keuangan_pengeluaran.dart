@@ -12,7 +12,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFFFFFFF), // Background putih untuk keseluruhan halaman
+      color: const Color(0xFFFFFFFF), 
       child: Stack(
         children: [
           Column(
@@ -21,7 +21,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
               Expanded(child: _buildPengeluaranList()),
             ],
           ),
-          // Floating Action Button dengan desain yang lebih elegant
           Positioned(
             right: 24,
             bottom: 24,
@@ -32,7 +31,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
     );
   }
 
-  // ==================== HEADER: TOTAL PENGELUARAN & SEARCH ====================
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
@@ -42,7 +40,6 @@ class KeuanganPengeluaranPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Card Total Pengeluaran dengan desain yang lebih elegant
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 28),

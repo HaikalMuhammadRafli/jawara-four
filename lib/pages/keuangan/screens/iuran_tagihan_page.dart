@@ -1,37 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../data/mocks/tagihan_mocks.dart';
+import '../../../data/repositories/tagihan_repository.dart';
 import '../../../data/models/tagihan_model.dart';
 import '../../../utils/date_helpers.dart';
 import '../../../utils/number_helpers.dart';
 import 'iuran_tagihan_detail_page.dart';
+import 'iuran_tagihan_form_page.dart';
 
-class IuranTagihanPage extends StatelessWidget {
+class IuranTagihanPage extends StatefulWidget {
   const IuranTagihanPage({super.key});
+
+  @override
+  State<IuranTagihanPage> createState() => _IuranTagihanPageState();
+}
+
+class _IuranTagihanPageState extends State<IuranTagihanPage> {
+  final TagihanRepository _repository = TagihanRepository();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFFFFFFFF),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
-        child: _buildTagihanList(),
+      child: StreamBuilder<List<Tagihan>>(
+        stream: _repository.getTagihanStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final tagihanList = snapshot.data ?? [];
+
+          if (tagihanList.isEmpty) {
+            return const Center(child: Text('Belum ada data tagihan'));
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+            itemCount: tagihanList.length,
+            itemBuilder: (context, index) =>
+                _buildTagihanCard(tagihanList[index]),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildTagihanList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: tagihanMock.length,
-      itemBuilder: (context, index) => _buildTagihanCard(tagihanMock[index]),
-    );
-  }
-
   Widget _buildTagihanCard(Tagihan tagihan) {
-    final statusColor = tagihan.status == 'Lunas' ? AppColors.success : AppColors.warning;
+    final statusColor = tagihan.status == StatusTagihan.lunas
+        ? AppColors.success
+        : AppColors.warning;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -75,7 +97,10 @@ class IuranTagihanPage extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 tagihan.kategori,
-                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -88,7 +113,11 @@ class IuranTagihanPage extends StatelessWidget {
           ),
           child: Text(
             tagihan.status.value,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: statusColor,
+            ),
           ),
         ),
       ],
@@ -99,8 +128,14 @@ class IuranTagihanPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildSimpleInfoItem('Total', NumberHelpers.formatCurrency(tagihan.total)),
-        _buildSimpleInfoItem('Tanggal', DateHelpers.formatDate(tagihan.tanggal)),
+        _buildSimpleInfoItem(
+          'Total',
+          NumberHelpers.formatCurrency(tagihan.total),
+        ),
+        _buildSimpleInfoItem(
+          'Tanggal',
+          DateHelpers.formatDate(tagihan.tanggal),
+        ),
       ],
     );
   }
@@ -118,11 +153,21 @@ class IuranTagihanPage extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', AppColors.primary, tagihan),
+          child: _buildSimpleActionButton(
+            Icons.edit_outlined,
+            'Edit',
+            AppColors.primary,
+            tagihan,
+          ),
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', AppColors.error, tagihan),
+          child: _buildSimpleActionButton(
+            Icons.delete_outline,
+            'Hapus',
+            AppColors.error,
+            tagihan,
+          ),
         ),
       ],
     );
@@ -153,15 +198,38 @@ class IuranTagihanPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Tagihan tagihan) {
+  Widget _buildSimpleActionButton(
+    IconData icon,
+    String label,
+    Color color,
+    Tagihan tagihan,
+  ) {
     return Builder(
       builder: (context) => GestureDetector(
         onTap: () {
           if (label == 'Lihat') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => IuranTagihanDetailPage(tagihan: tagihan)),
+              MaterialPageRoute(
+                builder: (context) => IuranTagihanDetailPage(tagihan: tagihan),
+              ),
             );
+          } else if (label == 'Edit') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => IuranTagihanDetailPage(tagihan: tagihan),
+              ),
+            );
+          } else if (label == 'Edit') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => IuranTagihanFormPage(tagihan: tagihan),
+              ),
+            );
+          } else if (label == 'Hapus') {
+            _showDeleteConfirmation(context, tagihan);
           }
         },
         child: Container(
@@ -177,11 +245,53 @@ class IuranTagihanPage extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, Tagihan tagihan) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Hapus Tagihan'),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus tagihan "${tagihan.judul}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              try {
+                await _repository.deleteTagihan(tagihan.id);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Tagihan berhasil dihapus')),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Gagal menghapus: $e')),
+                  );
+                }
+              }
+            },
+            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

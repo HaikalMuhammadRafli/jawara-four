@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum StatusKategori {
   aktif('Aktif'),
   nonaktif('Nonaktif');
@@ -52,16 +54,33 @@ class KategoriIuran {
 
   factory KategoriIuran.fromMap(Map<String, dynamic> map) {
     return KategoriIuran(
-      id: map['id'] as String,
-      nama: map['nama'] as String,
-      deskripsi: map['deskripsi'] as String,
-      nominal: map['nominal'] as String,
-      periode: map['periode'] as String,
-      status: StatusKategori.fromString(map['status'] as String),
-      warna: map['warna'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      id: map['id'] as String? ?? '',
+      nama: map['nama'] as String? ?? '',
+      deskripsi: map['deskripsi'] as String? ?? '',
+      nominal: map['nominal'] as String? ?? '',
+      periode: map['periode'] as String? ?? '',
+      status: StatusKategori.fromString(map['status'] as String? ?? ''),
+      warna: map['warna'] as String? ?? 'blue',
+      createdAt: _parseDate(map['createdAt']),
+      updatedAt: map['updatedAt'] != null ? _parseDate(map['updatedAt']) : null,
     );
+  }
+
+  static DateTime _parseDate(dynamic date) {
+    if (date == null) return DateTime.now();
+    if (date is DateTime) return date;
+    if (date is String) {
+      try {
+        return DateTime.parse(date);
+      } catch (e) {
+        try {
+          return DateFormat('dd/MM/yyyy').parse(date);
+        } catch (e) {
+          return DateTime.now();
+        }
+      }
+    }
+    return DateTime.now();
   }
 
   KategoriIuran copyWith({
