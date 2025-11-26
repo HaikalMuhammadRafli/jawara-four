@@ -7,7 +7,14 @@ class CustomScaffold extends StatefulWidget {
   final PreferredSizeWidget appBar;
   final Widget? floatingActionButton;
   final Widget? bottomNavigationBar;
-  const CustomScaffold({super.key, required this.state, required this.child, required this.appBar, this.floatingActionButton, this.bottomNavigationBar});
+  const CustomScaffold({
+    super.key,
+    required this.state,
+    required this.child,
+    required this.appBar,
+    this.floatingActionButton,
+    this.bottomNavigationBar,
+  });
 
   @override
   State<CustomScaffold> createState() => _CustomScaffoldState();
@@ -25,3 +32,4 @@ class _CustomScaffoldState extends State<CustomScaffold> {
     );
   }
 }
+

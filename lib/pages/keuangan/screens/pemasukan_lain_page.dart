@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import '../mocks/pemasukan_mocks.dart';
-import '../models/pemasukan_model.dart';
+
+import '../../../data/mocks/pemasukan_mocks.dart';
+import '../../../data/models/pemasukan_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/number_helpers.dart';
 import 'pemasukan_lain_detail_page.dart';
 
 class PemasukanLainPage extends StatelessWidget {
@@ -20,8 +23,7 @@ class PemasukanLainPage extends StatelessWidget {
             bottom: 16,
             right: 16,
             child: FloatingActionButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               backgroundColor: Colors.blue,
               child: const Icon(Icons.add, color: Colors.white),
             ),
@@ -30,8 +32,6 @@ class PemasukanLainPage extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget _buildPemasukanList() {
     return ListView.builder(
@@ -83,29 +83,19 @@ class PemasukanLainPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                pemasukan.kategori,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey,
-                ),
-              ),
+              Text(pemasukan.kategori, style: const TextStyle(fontSize: 13, color: Colors.grey)),
             ],
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
+            color: Colors.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
             'Masuk',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.green[700],
-            ),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green[700]),
           ),
         ),
       ],
@@ -116,8 +106,8 @@ class PemasukanLainPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildInfoItem('Jumlah', pemasukan.jumlah),
-        _buildInfoItem('Tanggal', pemasukan.tanggal),
+        _buildInfoItem('Jumlah', NumberHelpers.formatCurrency(pemasukan.jumlah)),
+        _buildInfoItem('Tanggal', DateHelpers.formatDateShort(pemasukan.tanggal)),
       ],
     );
   }
@@ -125,11 +115,22 @@ class PemasukanLainPage extends StatelessWidget {
   Widget _buildPemasukanActions(Pemasukan pemasukan) {
     return Row(
       children: [
-        Expanded(child: _buildSimpleActionButton(Icons.visibility_outlined, 'Lihat', Colors.grey, pemasukan)),
+        Expanded(
+          child: _buildSimpleActionButton(
+            Icons.visibility_outlined,
+            'Lihat',
+            Colors.grey,
+            pemasukan,
+          ),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue, pemasukan)),
+        Expanded(
+          child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue, pemasukan),
+        ),
         const SizedBox(width: 8),
-        Expanded(child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red, pemasukan)),
+        Expanded(
+          child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red, pemasukan),
+        ),
       ],
     );
   }
@@ -150,7 +151,7 @@ class PemasukanLainPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
+            color: color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
@@ -160,11 +161,7 @@ class PemasukanLainPage extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                ),
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
               ),
             ],
           ),
@@ -179,20 +176,12 @@ class PemasukanLainPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 13,
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w600),
         ),
       ],
     );

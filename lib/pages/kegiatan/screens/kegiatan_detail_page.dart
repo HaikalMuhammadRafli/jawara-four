@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../models/kegiatan_model.dart';
+import '../../../data/models/kegiatan_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/ui_helpers.dart';
 
 class KegiatanDetailPage extends StatelessWidget {
   final Kegiatan kegiatan;
@@ -42,10 +44,13 @@ class KegiatanDetailPage extends StatelessWidget {
       expandedHeight: 200,
       floating: false,
       pinned: true,
-      backgroundColor: kegiatan.color,
+      backgroundColor: UIHelpers.getKegiatanColor(kegiatan.kategori),
       leading: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.9),
+          shape: BoxShape.circle,
+        ),
         child: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
@@ -58,7 +63,10 @@ class KegiatanDetailPage extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [kegiatan.color, kegiatan.color.withOpacity(0.7)],
+              colors: [
+                UIHelpers.getKegiatanColor(kegiatan.kategori),
+                UIHelpers.getKegiatanColor(kegiatan.kategori).withValues(alpha: 0.7),
+              ],
             ),
           ),
           child: Stack(
@@ -66,7 +74,11 @@ class KegiatanDetailPage extends StatelessWidget {
               Positioned(
                 right: -50,
                 top: -50,
-                child: Icon(kegiatan.icon, size: 200, color: Colors.white.withOpacity(0.1)),
+                child: Icon(
+                  UIHelpers.getKegiatanIcon(kegiatan.kategori),
+                  size: 200,
+                  color: Colors.white.withValues(alpha: 0.1),
+                ),
               ),
               Center(
                 child: Column(
@@ -75,17 +87,21 @@ class KegiatanDetailPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
                       ),
-                      child: Icon(kegiatan.icon, size: 48, color: Colors.white),
+                      child: Icon(
+                        UIHelpers.getKegiatanIcon(kegiatan.kategori),
+                        size: 48,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -115,7 +131,7 @@ class KegiatanDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -154,15 +170,15 @@ class KegiatanDetailPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: kegiatan.color.withOpacity(0.1),
+                  color: UIHelpers.getKegiatanColor(kegiatan.kategori).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '#${kegiatan.no}',
+                  kegiatan.kategori,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: kegiatan.color,
+                    color: UIHelpers.getKegiatanColor(kegiatan.kategori),
                   ),
                 ),
               ),
@@ -181,7 +197,7 @@ class KegiatanDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -205,7 +221,7 @@ class KegiatanDetailPage extends StatelessWidget {
           _buildInfoItem(
             Icons.calendar_today_outlined,
             'Tanggal Pelaksanaan',
-            kegiatan.tanggal,
+            DateHelpers.formatDate(kegiatan.tanggal),
             Colors.orange,
           ),
           const SizedBox(height: 16),
@@ -219,16 +235,16 @@ class KegiatanDetailPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.1), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.1), width: 1),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -271,7 +287,7 @@ class KegiatanDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -326,7 +342,7 @@ class KegiatanDetailPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isCompleted ? color.withOpacity(0.1) : Colors.grey[100],
+              color: isCompleted ? color.withValues(alpha: 0.1) : Colors.grey[100],
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: isCompleted ? color : Colors.grey, size: 20),
@@ -398,9 +414,9 @@ class KegiatanDetailPage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -428,7 +444,7 @@ class KegiatanDetailPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.warning_outlined, color: Colors.red, size: 24),

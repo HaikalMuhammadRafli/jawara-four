@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 
-import '../mocks/broadcast_mocks.dart';
-import '../models/broadcast_model.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
+import '../../../data/mocks/broadcast_mocks.dart';
+import '../../../data/models/broadcast_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/ui_helpers.dart';
 
 class BroadcastPage extends StatefulWidget {
   const BroadcastPage({super.key});
@@ -28,12 +24,19 @@ class _BroadcastPageState extends State<BroadcastPage> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [primaryBlue.withOpacity(0.1), primaryBlue.withOpacity(0.05)],
+                colors: [
+                  AppColors.primary.withValues(alpha: 0.1),
+                  AppColors.primary.withValues(alpha: 0.05),
+                ],
               ),
               shape: BoxShape.circle,
-              border: Border.all(color: primaryBlue.withOpacity(0.2), width: 2),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
             ),
-            child: Icon(Icons.campaign_rounded, size: 64, color: primaryBlue.withOpacity(0.6)),
+            child: Icon(
+              Icons.campaign_rounded,
+              size: 64,
+              color: AppColors.primary.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 24),
           const Text(
@@ -41,14 +44,14 @@ class _BroadcastPageState extends State<BroadcastPage> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: textPrimary,
+              color: AppColors.textPrimary,
               letterSpacing: -0.3,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Belum ada broadcast yang tersedia',
-            style: TextStyle(fontSize: 14, color: textSecondary, letterSpacing: 0.2),
+            style: TextStyle(fontSize: 14, color: AppColors.textSecondary, letterSpacing: 0.2),
           ),
         ],
       ),
@@ -57,10 +60,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<BroadcastItem> broadcasts = broadcastMock;
+    final List<Broadcast> broadcasts = broadcastMock;
 
     return Container(
-      color: backgroundWhite,
+      color: AppColors.background,
       child: broadcasts.isEmpty
           ? _buildEmptyState()
           : ListView.separated(
@@ -75,12 +78,12 @@ class _BroadcastPageState extends State<BroadcastPage> {
     );
   }
 
-  Widget _buildBroadcastCard(BroadcastItem item) {
+  Widget _buildBroadcastCard(Broadcast item) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -94,14 +97,24 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [item.color.withOpacity(0.15), item.color.withOpacity(0.05)],
+                      colors: [
+                        UIHelpers.getBroadcastColor(item.judul).withValues(alpha: 0.15),
+                        UIHelpers.getBroadcastColor(item.judul).withValues(alpha: 0.05),
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: item.color.withOpacity(0.3), width: 1.5),
+                    border: Border.all(
+                      color: UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
                   ),
-                  child: Icon(item.icon, color: item.color, size: 24),
+                  child: Icon(
+                    UIHelpers.getBroadcastIcon(item.kategori),
+                    color: UIHelpers.getBroadcastColor(item.kategori),
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -110,7 +123,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
-                      color: textPrimary,
+                      color: AppColors.textPrimary,
                       letterSpacing: -0.3,
                     ),
                   ),
@@ -125,7 +138,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
             margin: const EdgeInsets.symmetric(horizontal: 18),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.transparent, dividerGray.withOpacity(0.5), Colors.transparent],
+                colors: [
+                  Colors.transparent,
+                  AppColors.divider.withValues(alpha: 0.5),
+                  Colors.transparent,
+                ],
               ),
             ),
           ),
@@ -138,25 +155,25 @@ class _BroadcastPageState extends State<BroadcastPage> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.person_outline_rounded, size: 16, color: textSecondary),
+                    Icon(Icons.person_outline_rounded, size: 16, color: AppColors.textSecondary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         item.pengirim,
                         style: const TextStyle(
                           fontSize: 13,
-                          color: textPrimary,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    Icon(Icons.calendar_today_rounded, size: 14, color: textSecondary),
+                    Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     Text(
-                      item.tanggal,
+                      DateHelpers.formatDateShort(item.tanggal),
                       style: const TextStyle(
                         fontSize: 13,
-                        color: textPrimary,
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -167,7 +184,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   item.judul,
                   style: TextStyle(
                     fontSize: 14,
-                    color: textSecondary,
+                    color: AppColors.textSecondary,
                     height: 1.5,
                     letterSpacing: 0.2,
                   ),
@@ -183,7 +200,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                       child: _buildActionButton(
                         icon: Icons.edit_outlined,
                         label: 'Edit',
-                        color: primaryBlue,
+                        color: AppColors.primary,
                         onPressed: () => _showEditDialog(item),
                       ),
                     ),
@@ -192,7 +209,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                       child: _buildActionButton(
                         icon: Icons.visibility_outlined,
                         label: 'Detail',
-                        color: textSecondary,
+                        color: AppColors.textSecondary,
                         onPressed: () => _showDetailDialog(item),
                       ),
                     ),
@@ -222,7 +239,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
     required VoidCallback onPressed,
   }) {
     return Material(
-      color: color.withOpacity(0.08),
+      color: color.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onPressed,
@@ -249,22 +266,26 @@ class _BroadcastPageState extends State<BroadcastPage> {
     );
   }
 
-  void _showDetailDialog(BroadcastItem item) {
+  void _showDetailDialog(Broadcast item) {
     context.pushNamed('broadcast-detail', extra: item);
   }
 
-  void _showEditDialog(BroadcastItem item) {
+  void _showEditDialog(Broadcast item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.edit_rounded, color: primaryBlue, size: 24),
+            Icon(Icons.edit_rounded, color: AppColors.primary, size: 24),
             const SizedBox(width: 12),
             const Text(
               'Edit Broadcast',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
             ),
           ],
         ),
@@ -272,30 +293,37 @@ class _BroadcastPageState extends State<BroadcastPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Fitur edit untuk:', style: TextStyle(color: textSecondary, fontSize: 14)),
+            Text(
+              'Fitur edit untuk:',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+            ),
             const SizedBox(height: 8),
             Text(
               item.nama,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textPrimary),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
             ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: primaryBlue.withOpacity(0.05),
+                color: AppColors.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: primaryBlue.withOpacity(0.2), width: 1),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: primaryBlue, size: 18),
+                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Fitur ini akan segera tersedia',
                       style: TextStyle(
                         fontSize: 12,
-                        color: primaryBlue,
+                        color: AppColors.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -309,7 +337,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
-              backgroundColor: primaryBlue,
+              backgroundColor: AppColors.primary,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
@@ -323,7 +351,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
     );
   }
 
-  void _showDeleteDialog(BroadcastItem item) {
+  void _showDeleteDialog(Broadcast item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -334,7 +362,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
             const SizedBox(width: 12),
             const Text(
               'Hapus Broadcast',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: textPrimary),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
             ),
           ],
         ),
@@ -343,15 +375,15 @@ class _BroadcastPageState extends State<BroadcastPage> {
           children: [
             Text(
               'Yakin ingin menghapus broadcast "${item.nama}"?',
-              style: const TextStyle(fontSize: 14, color: textSecondary),
+              style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFFE53935).withOpacity(0.05),
+                color: const Color(0xFFE53935).withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFE53935).withOpacity(0.2), width: 1),
+                border: Border.all(color: const Color(0xFFE53935).withValues(alpha: 0.2), width: 1),
               ),
               child: Row(
                 children: [
@@ -377,7 +409,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Batal',
-              style: TextStyle(color: textSecondary, fontWeight: FontWeight.w600),
+              style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
             ),
           ),
           TextButton(

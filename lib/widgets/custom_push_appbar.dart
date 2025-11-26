@@ -10,7 +10,6 @@ class CustomPushAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return AppBar(
       title: Text(title),
       backgroundColor: Colors.white,
@@ -19,3 +18,4 @@ class CustomPushAppbar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 }
+

@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
-import '../mocks/pengeluaran_mocks.dart';
-import '../models/pengeluaran_model.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 
-// ==================== DEFINISI WARNA ====================
-// Palet warna monokromatik biru untuk konsistensi desain
-const Color primaryBlue = Color(0xFF1E88E5);     // Biru utama #1E88E5
-const Color darkBlue = Color(0xFF1565C0);        // Biru gelap untuk emphasis
-const Color lightBlue = Color(0xFFE3F2FD);       // Biru sangat muda untuk background
-const Color backgroundWhite = Color(0xFFFFFFFF); // Putih untuk card
-const Color backgroundGray = Color(0xFFF8F9FA);  // Abu-abu lembut untuk background
-const Color textPrimary = Color(0xFF212121);     // Hitam untuk teks utama
-const Color textSecondary = Color(0xFF757575);   // Abu-abu untuk teks sekunder
-const Color textTertiary = Color(0xFF9E9E9E);    // Abu-abu muda untuk teks tersier
-const Color dividerGray = Color(0xFFE0E0E0);     // Abu-abu untuk border/divider
+import '../../../data/mocks/pengeluaran_mocks.dart';
+import '../../../data/models/pengeluaran_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/number_helpers.dart';
 
 class KeuanganPengeluaranPage extends StatelessWidget {
   const KeuanganPengeluaranPage({super.key});
@@ -33,32 +25,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           Positioned(
             right: 24,
             bottom: 24,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  _showTambahPengeluaranDialog(context);
-                },
-                backgroundColor: primaryBlue,
-                elevation: 0,
-                icon: const Icon(
-                  Icons.add_rounded,
-                  color: Colors.white,
-                  size: 24,
-                ),
-                label: const Text(
-                  'Tambah',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ),
-            ),
+            child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(18))),
           ),
         ],
       ),
@@ -70,11 +37,8 @@ class KeuanganPengeluaranPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
       decoration: BoxDecoration(
-        color: backgroundWhite,
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        color: AppColors.background,
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -84,7 +48,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 28),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [primaryBlue, darkBlue],
+                colors: [AppColors.primary, AppColors.primaryDark],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -96,25 +60,18 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 2,
-                    ),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 2),
                   ),
-                  child: const Icon(
-                    Icons.arrow_downward_rounded,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+                  child: const Icon(Icons.arrow_downward_rounded, color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   'Total Pengeluaran',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w500,
                     letterSpacing: 1.2,
                   ),
@@ -137,20 +94,20 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           // Search Field dengan desain yang lebih subtle dan elegant
           Container(
             decoration: BoxDecoration(
-              color: backgroundGray,
+              color: AppColors.backgroundGray,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: dividerGray.withOpacity(0.3), width: 1),
+              border: Border.all(color: AppColors.divider.withValues(alpha: 0.3), width: 1),
             ),
             child: TextField(
               style: const TextStyle(
                 fontSize: 14,
-                color: textPrimary,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
                 hintText: 'Cari pengeluaran...',
                 hintStyle: TextStyle(
-                  color: textSecondary.withOpacity(0.6),
+                  color: AppColors.textSecondary.withValues(alpha: 0.6),
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
@@ -158,27 +115,21 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16, right: 12),
                   child: Icon(
                     Icons.search_rounded,
-                    color: textSecondary.withOpacity(0.5),
+                    color: AppColors.textSecondary.withValues(alpha: 0.5),
                     size: 22,
                   ),
                 ),
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 50,
-                  minHeight: 50,
-                ),
+                prefixIconConstraints: const BoxConstraints(minWidth: 50, minHeight: 50),
                 border: InputBorder.none,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide(
-                    color: primaryBlue.withOpacity(0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                     width: 1.5,
                   ),
                 ),
                 enabledBorder: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               ),
             ),
           ),
@@ -206,12 +157,9 @@ class KeuanganPengeluaranPage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: dividerGray.withOpacity(0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -226,23 +174,16 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        primaryBlue.withOpacity(0.1),
-                        primaryBlue.withOpacity(0.05),
+                        AppColors.primary.withValues(alpha: 0.1),
+                        AppColors.primary.withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: primaryBlue.withOpacity(0.15),
-                      width: 1,
-                    ),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.15), width: 1),
                   ),
-                  child: const Icon(
-                    Icons.receipt_long_rounded,
-                    color: primaryBlue,
-                    size: 24,
-                  ),
+                  child: const Icon(Icons.receipt_long_rounded, color: AppColors.primary, size: 24),
                 ),
                 const SizedBox(width: 18),
                 // Detail pengeluaran (nama dan jenis)
@@ -255,7 +196,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: textPrimary,
+                          color: AppColors.textPrimary,
                           letterSpacing: -0.4,
                           height: 1.3,
                         ),
@@ -264,19 +205,16 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: lightBlue.withOpacity(0.3),
+                              color: AppColors.primaryLight.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
                               pengeluaran.jenis,
                               style: TextStyle(
                                 fontSize: 11,
-                                color: darkBlue,
+                                color: AppColors.primaryDark,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.3,
                               ),
@@ -293,11 +231,11 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      pengeluaran.nominal,
+                      NumberHelpers.formatCurrency(pengeluaran.nominal),
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
-                        color: primaryBlue,
+                        color: AppColors.primary,
                         letterSpacing: -0.5,
                         height: 1.3,
                       ),
@@ -308,14 +246,14 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                         Icon(
                           Icons.calendar_today_rounded,
                           size: 11,
-                          color: textTertiary.withOpacity(0.7),
+                          color: AppColors.textHint.withValues(alpha: 0.7),
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          pengeluaran.tanggal,
+                          DateHelpers.formatDateShort(pengeluaran.tanggal),
                           style: TextStyle(
                             fontSize: 12,
-                            color: textTertiary.withOpacity(0.8),
+                            color: AppColors.textHint.withValues(alpha: 0.8),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -334,7 +272,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  dividerGray.withOpacity(0.3),
+                  AppColors.divider.withValues(alpha: 0.3),
                   Colors.transparent,
                 ],
               ),
@@ -350,7 +288,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   child: _buildActionButton(
                     icon: Icons.edit_outlined,
                     label: 'Edit',
-                    color: textSecondary,
+                    color: AppColors.textSecondary,
                     onPressed: () {},
                   ),
                 ),
@@ -363,7 +301,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        dividerGray.withOpacity(0.5),
+                        AppColors.divider.withValues(alpha: 0.5),
                         Colors.transparent,
                       ],
                       begin: Alignment.topCenter,
@@ -376,7 +314,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   child: _buildActionButton(
                     icon: Icons.visibility_outlined,
                     label: 'Detail',
-                    color: textSecondary,
+                    color: AppColors.textSecondary,
                     onPressed: () {},
                   ),
                 ),
@@ -389,7 +327,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        dividerGray.withOpacity(0.5),
+                        AppColors.divider.withValues(alpha: 0.5),
                         Colors.transparent,
                       ],
                       begin: Alignment.topCenter,
@@ -402,7 +340,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
                   child: _buildActionButton(
                     icon: Icons.delete_outline_rounded,
                     label: 'Hapus',
-                    color: primaryBlue,
+                    color: AppColors.primary,
                     onPressed: () {},
                   ),
                 ),
@@ -431,11 +369,7 @@ class KeuanganPengeluaranPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 17,
-                color: color,
-              ),
+              Icon(icon, size: 17, color: color),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -454,67 +388,54 @@ class KeuanganPengeluaranPage extends StatelessWidget {
   }
 
   // ==================== DIALOG TAMBAH PENGELUARAN ====================
-  void _showTambahPengeluaranDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: primaryBlue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.add_circle_outline,
-                  color: primaryBlue,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Tambah Pengeluaran',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: textPrimary,
-                ),
-              ),
-            ],
-          ),
-          content: const Text(
-            'Fitur tambah pengeluaran akan segera tersedia',
-            style: TextStyle(
-              fontSize: 14,
-              color: textSecondary,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                backgroundColor: primaryBlue,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'OK',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // TODO: Uncomment when needed
+  // void _showTambahPengeluaranDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  //         title: Row(
+  //           children: [
+  //             Container(
+  //               padding: const EdgeInsets.all(8),
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.primary.withValues(alpha: 0.1),
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //               child: const Icon(Icons.add_circle_outline, color: AppColors.primary, size: 24),
+  //             ),
+  //             const SizedBox(width: 12),
+  //             const Text(
+  //               'Tambah Pengeluaran',
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.w700,
+  //                 color: AppColors.textPrimary,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         content: const Text(
+  //           'Fitur tambah pengeluaran akan segera tersedia',
+  //           style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(),
+  //             style: TextButton.styleFrom(
+  //               backgroundColor: AppColors.primary,
+  //               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  //             ),
+  //             child: const Text(
+  //               'OK',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

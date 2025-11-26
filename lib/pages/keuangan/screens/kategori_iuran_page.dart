@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../mocks/kategori_mocks.dart';
-import '../models/kategori_iuran_model.dart';
+
+import '../../../data/mocks/kategori_iuran_mocks.dart';
+import '../../../data/models/kategori_iuran_model.dart';
 
 class KategoriIuranPage extends StatelessWidget {
   const KategoriIuranPage({super.key});
@@ -16,13 +17,12 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-
   Widget _buildKategoriList() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: kategoriMock.length,
-      itemBuilder: (context, index) => _buildKategoriCard(kategoriMock[index]),
+      itemCount: kategoriIuranMock.length,
+      itemBuilder: (context, index) => _buildKategoriCard(kategoriIuranMock[index]),
     );
   }
 
@@ -41,8 +41,7 @@ class KategoriIuranPage extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
-          onTap: () {
-          },
+          onTap: () {},
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -67,9 +66,9 @@ class KategoriIuranPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: categoryColor.withOpacity(0.1),
+            color: categoryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: categoryColor.withOpacity(0.3), width: 1),
+            border: Border.all(color: categoryColor.withValues(alpha: 0.3), width: 1),
           ),
           child: Icon(Icons.category_rounded, color: categoryColor, size: 20),
         ),
@@ -87,30 +86,20 @@ class KategoriIuranPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                kategori.deskripsi,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
+              Text(kategori.deskripsi, style: const TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
           decoration: BoxDecoration(
-            color: statusColor.withOpacity(0.1),
+            color: statusColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: statusColor.withOpacity(0.3), width: 1),
+            border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
           ),
           child: Text(
-            kategori.status,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: statusColor,
-            ),
+            kategori.status.value,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
           ),
         ),
       ],
@@ -130,7 +119,7 @@ class KategoriIuranPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
+              color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Icon(Icons.schedule, color: Colors.blue[600], size: 16),
@@ -168,8 +157,7 @@ class KategoriIuranPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-          onPressed: () {
-          },
+          onPressed: () {},
           icon: const Icon(Icons.visibility_outlined, size: 18, color: Colors.blue),
           tooltip: 'Lihat Detail',
         ),
@@ -186,7 +174,6 @@ class KategoriIuranPage extends StatelessWidget {
       ],
     );
   }
-
 
   Color _getCategoryColor(String colorName) {
     switch (colorName) {

@@ -1,31 +1,13 @@
 import 'package:flutter/material.dart';
-import '../mocks/pengguna_mocks.dart';
-import '../models/pengguna_model.dart';
+
+import '../../../data/mocks/user_profile_mocks.dart';
+import '../../../data/models/user_profile_model.dart';
+import '../../../utils/ui_helpers.dart';
 
 class PenggunaPage extends StatelessWidget {
   const PenggunaPage({super.key});
 
-  void _showAddForm(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Tambah Pengguna', style: TextStyle(fontWeight: FontWeight.w600)),
-        content: const Text(
-          'Form tambah pengguna (dummy)\nFungsionalitas belum diaktifkan.',
-          style: TextStyle(fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showEditDialog(BuildContext context, Pengguna item) {
+  void _showEditDialog(BuildContext context, UserProfile item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -35,17 +17,12 @@ class PenggunaPage extends StatelessWidget {
           'Edit data untuk "${item.nama}" (dummy)\nFungsionalitas belum diaktifkan.',
           style: const TextStyle(fontSize: 14),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup'))],
       ),
     );
   }
 
-  void _showDeleteDialog(BuildContext context, Pengguna item) {
+  void _showDeleteDialog(BuildContext context, UserProfile item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -55,94 +32,35 @@ class PenggunaPage extends StatelessWidget {
           'Konfirmasi hapus "${item.nama}" (dummy)\nFungsionalitas belum diaktifkan.',
           style: const TextStyle(fontSize: 14),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup'))],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final penggunaList = penggunaMock; // hanya data dummy
+    final penggunaList = userProfileMock; // hanya data dummy
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Color(0xFF1E88E5),
-            size: 20,
-          ),
-        ),
-        title: const Text(
-          'Manajemen Pengguna',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF212121),
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          penggunaList.isEmpty
-              ? _buildEmptyState()
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: penggunaList.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 16),
-                        itemBuilder: (context, index) {
-                          final item = penggunaList[index];
-                          return _buildPenggunaCard(context, item);
-                        },
-                      ),
-                    ],
-                  ),
+    return penggunaList.isEmpty
+        ? _buildEmptyState()
+        : SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: penggunaList.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 16),
+                  itemBuilder: (context, index) {
+                    final item = penggunaList[index];
+                    return _buildPenggunaCard(context, item);
+                  },
                 ),
-          Positioned(
-            right: 20,
-            bottom: 20,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF1E88E5).withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: FloatingActionButton(
-                onPressed: () => _showAddForm(context),
-                backgroundColor: const Color(0xFF1E88E5),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                child: const Icon(Icons.add, color: Colors.white),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   Widget _buildEmptyState() {
@@ -170,7 +88,7 @@ class PenggunaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPenggunaCard(BuildContext context, Pengguna item) {
+  Widget _buildPenggunaCard(BuildContext context, UserProfile item) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
@@ -195,11 +113,14 @@ class PenggunaPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: item.color,
+                    color: UIHelpers.getUserColor(item.role),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
+                    border: Border.all(
+                      color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
-                  child: Icon(item.icon, color: Colors.white, size: 20),
+                  child: Icon(UIHelpers.getUserIcon(item.role), color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -215,15 +136,18 @@ class PenggunaPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: item.color.withOpacity(0.1),
+                    color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: item.color.withOpacity(0.2), width: 1),
+                    border: Border.all(
+                      color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Text(
-                    item.role,
+                    item.role.value,
                     style: TextStyle(
-                      fontWeight: FontWeight.w600, 
-                      color: item.color, 
+                      fontWeight: FontWeight.w600,
+                      color: UIHelpers.getUserColor(item.role),
                       fontSize: 12,
                     ),
                   ),

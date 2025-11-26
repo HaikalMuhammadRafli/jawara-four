@@ -39,7 +39,11 @@ class KependudukanTambahPage extends StatelessWidget {
         children: [
           const Text(
             'Tambah Data Kependudukan',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 16),
           const Text(
@@ -57,7 +61,11 @@ class KependudukanTambahPage extends StatelessWidget {
       children: [
         const Text(
           'Pilihan Menu',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
         const SizedBox(height: 16),
         Expanded(
@@ -138,7 +146,10 @@ class KependudukanTambahPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withAlpha((0.3 * 255).round()), width: 1),
+                border: Border.all(
+                  color: color.withAlpha((0.3 * 255).round()),
+                  width: 1,
+                ),
               ),
               child: Icon(icon, color: color, size: 24),
             ),
@@ -152,10 +163,14 @@ class KependudukanTambahPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
           ],
         ),
       ),
     );
   }
 }
+

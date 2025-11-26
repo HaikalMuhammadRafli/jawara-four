@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../colors/app_colors.dart';
 
 class KeuanganMenuPage extends StatelessWidget {
   const KeuanganMenuPage({super.key});
@@ -12,16 +12,16 @@ class KeuanganMenuPage extends StatelessWidget {
       color: AppColors.background,
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
-      child: Column(
-        children: [
-          _buildQuickStats(context),
-          const SizedBox(height: 20),
-          _buildMenuGrid(context),
-          const SizedBox(height: 20),
-          _buildTransactionLists(context),
-          const SizedBox(height: 20),
-          _buildFinanceChart(),
-        ],
+        child: Column(
+          children: [
+            _buildQuickStats(context),
+            const SizedBox(height: 20),
+            _buildMenuGrid(context),
+            const SizedBox(height: 20),
+            _buildTransactionLists(context),
+            const SizedBox(height: 20),
+            _buildFinanceChart(),
+          ],
         ),
       ),
     );
@@ -36,7 +36,7 @@ class KeuanganMenuPage extends StatelessWidget {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppColors.primaryText,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 16),
@@ -45,14 +45,17 @@ class KeuanganMenuPage extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.success.withOpacity(0.1),
-                AppColors.success.withOpacity(0.05),
+                AppColors.success.withValues(alpha: 0.1),
+                AppColors.success.withValues(alpha: 0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.success.withOpacity(0.3), width: 2),
+            border: Border.all(
+              color: AppColors.success.withValues(alpha: 0.3),
+              width: 2,
+            ),
           ),
           child: Row(
             children: [
@@ -62,14 +65,18 @@ class KeuanganMenuPage extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       AppColors.success,
-                      AppColors.success.withOpacity(0.8),
+                      AppColors.success.withValues(alpha: 0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Icon(Icons.account_balance_wallet, color: Colors.white, size: 32),
+                child: Icon(
+                  Icons.account_balance_wallet,
+                  color: Colors.white,
+                  size: 32,
+                ),
               ),
               const SizedBox(width: 20),
               Expanded(
@@ -91,7 +98,7 @@ class KeuanganMenuPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryText,
+                        color: AppColors.textPrimary,
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -100,7 +107,7 @@ class KeuanganMenuPage extends StatelessWidget {
                       'Update terakhir: Hari ini',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.descriptionText,
+                        color: AppColors.textSecondary,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -110,208 +117,214 @@ class KeuanganMenuPage extends StatelessWidget {
             ],
           ),
         ),
-
       ],
     );
   }
 
-
-Widget _buildFinanceChart() {
-  return Container(
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      color: AppColors.background,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: AppColors.cardBorder, width: 1.5),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header with title and subtitle
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Distribusi Keuangan',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primaryText,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Alokasi anggaran tahunan',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: AppColors.primaryText.withOpacity(0.6),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 28),
-        Center(
-          child: SizedBox(
-            height: 300,
-            width: 300,
-            child: PieChart(
-              PieChartData(
-                pieTouchData: PieTouchData(
-                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                  },
-                  enabled: true,
-                ),
-                sectionsSpace: 3,
-                centerSpaceRadius: 60,
-                sections: [
-                  PieChartSectionData(
-                    color: AppColors.success,
-                    value: 40,
-                    title: '40%',
-                    radius: 70,
-                    titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                  PieChartSectionData(
-                    color: AppColors.primaryBlue,
-                    value: 25,
-                    title: '25%',
-                    radius: 70,
-                    titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                  PieChartSectionData(
-                    color: AppColors.prompt,
-                    value: 20,
-                    title: '20%',
-                    radius: 70,
-                    titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                  PieChartSectionData(
-                    color: AppColors.error,
-                    value: 15,
-                    title: '15%',
-                    radius: 70,
-                    titleStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 32),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.background.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.cardBorder.withOpacity(0.5),
-              width: 1,
-            ),
-          ),
-          child: GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            childAspectRatio: 2.8,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+  Widget _buildFinanceChart() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.divider, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with title and subtitle
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildEnhancedLegendItem('Pendidikan', AppColors.success, '40%', 'Rp4,000,000'),
-              _buildEnhancedLegendItem('Kesehatan', AppColors.primaryBlue, '25%', 'Rp2,500,000'),
-              _buildEnhancedLegendItem('Lainnya', AppColors.prompt, '20%', 'Rp2,000,000'),
-              _buildEnhancedLegendItem('Sosial', AppColors.error, '15%', 'Rp1,500,000'),
+              Text(
+                'Distribusi Keuangan',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Alokasi anggaran tahunan',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textPrimary.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 28),
+          Center(
+            child: SizedBox(
+              height: 300,
+              width: 300,
+              child: PieChart(
+                PieChartData(
+                  pieTouchData: PieTouchData(
+                    touchCallback: (FlTouchEvent event, pieTouchResponse) {},
+                    enabled: true,
+                  ),
+                  sectionsSpace: 3,
+                  centerSpaceRadius: 60,
+                  sections: [
+                    PieChartSectionData(
+                      color: AppColors.success,
+                      value: 40,
+                      title: '40%',
+                      radius: 70,
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
+                      ),
+                    ),
+                    PieChartSectionData(
+                      color: AppColors.primary,
+                      value: 25,
+                      title: '25%',
+                      radius: 70,
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
+                      ),
+                    ),
+                    PieChartSectionData(
+                      color: AppColors.warning,
+                      value: 20,
+                      title: '20%',
+                      radius: 70,
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
+                      ),
+                    ),
+                    PieChartSectionData(
+                      color: AppColors.error,
+                      value: 15,
+                      title: '15%',
+                      radius: 70,
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.background.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.divider.withValues(alpha: 0.5),
+                width: 1,
+              ),
+            ),
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              childAspectRatio: 2.8,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              children: [
+                _buildEnhancedLegendItem(
+                  'Pendidikan',
+                  AppColors.success,
+                  '40%',
+                  'Rp4,000,000',
+                ),
+                _buildEnhancedLegendItem(
+                  'Kesehatan',
+                  AppColors.primary,
+                  '25%',
+                  'Rp2,500,000',
+                ),
+                _buildEnhancedLegendItem(
+                  'Lainnya',
+                  AppColors.warning,
+                  '20%',
+                  'Rp2,000,000',
+                ),
+                _buildEnhancedLegendItem(
+                  'Sosial',
+                  AppColors.error,
+                  '15%',
+                  'Rp1,500,000',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEnhancedLegendItem(
+    String label,
+    Color color,
+    String percentage,
+    String amount,
+  ) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.3),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Text(
+                '$percentage • $amount',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textPrimary.withValues(alpha: 0.6),
+                ),
+              ),
             ],
           ),
         ),
       ],
-    ),
-  );
-}
-
-Widget _buildEnhancedLegendItem(String label, Color color, String percentage, String amount) {
-  return Row(
-    children: [
-      Container(
-        width: 12,
-        height: 12,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(3),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(width: 10),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primaryText,
-              ),
-            ),
-            Text(
-              '$percentage • $amount',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w400,
-                color: AppColors.primaryText.withOpacity(0.6),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
-}
+    );
+  }
 
   Widget _buildMenuGrid(BuildContext context) {
     return Column(
@@ -322,7 +335,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppColors.primaryText,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 16),
@@ -343,7 +356,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
                 context,
                 'Kategori Iuran',
                 Icons.category,
-                AppColors.prompt,
+                AppColors.warning,
                 'keuangan-kategori-iuran',
               ),
             ),
@@ -353,7 +366,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
                 context,
                 'Laporan',
                 Icons.analytics,
-                AppColors.primaryBlue,
+                AppColors.primary,
                 'keuangan-laporan',
               ),
             ),
@@ -365,7 +378,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
           'Pemasukan',
           'Rp 5.000.000',
           Icons.trending_up,
-          AppColors.primaryBlue,
+          AppColors.primary,
           'keuangan-pemasukan-lain',
         ),
         const SizedBox(height: 12),
@@ -384,38 +397,63 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
   Widget _buildTransactionLists(BuildContext context) {
     return Column(
       children: [
-        _buildTransactionSection(
-          context,
-          'Pemasukan Terbaru',
-          [
-            _buildTransactionItem('Iuran Bulanan - Pak Budi', 'Rp 50.000', '10 Jan 2025', AppColors.success),
-            _buildTransactionItem('Donasi Acara 17 Agustus', 'Rp 5.000.000', '8 Jan 2025', AppColors.primaryBlue),
-            _buildTransactionItem('Iuran Bulanan - Pak Sari', 'Rp 50.000', '7 Jan 2025', AppColors.success),
-          ],
-          'keuangan-pemasukan-lain',
-        ),
+        _buildTransactionSection(context, 'Pemasukan Terbaru', [
+          _buildTransactionItem(
+            'Iuran Bulanan - Pak Budi',
+            'Rp 50.000',
+            '10 Jan 2025',
+            AppColors.success,
+          ),
+          _buildTransactionItem(
+            'Donasi Acara 17 Agustus',
+            'Rp 5.000.000',
+            '8 Jan 2025',
+            AppColors.primary,
+          ),
+          _buildTransactionItem(
+            'Iuran Bulanan - Pak Sari',
+            'Rp 50.000',
+            '7 Jan 2025',
+            AppColors.success,
+          ),
+        ], 'keuangan-pemasukan-lain'),
         const SizedBox(height: 20),
-        _buildTransactionSection(
-          context,
-          'Pengeluaran Terbaru',
-          [
-            _buildTransactionItem('Perbaikan Jalan', 'Rp 2.000.000', '9 Jan 2025', AppColors.error),
-            _buildTransactionItem('Pembelian Alat Kebersihan', 'Rp 500.000', '7 Jan 2025', AppColors.error),
-            _buildTransactionItem('Maintenance Pos RW', 'Rp 300.000', '6 Jan 2025', AppColors.error),
-          ],
-          'keuangan-pengeluaran',
-        ),
+        _buildTransactionSection(context, 'Pengeluaran Terbaru', [
+          _buildTransactionItem(
+            'Perbaikan Jalan',
+            'Rp 2.000.000',
+            '9 Jan 2025',
+            AppColors.error,
+          ),
+          _buildTransactionItem(
+            'Pembelian Alat Kebersihan',
+            'Rp 500.000',
+            '7 Jan 2025',
+            AppColors.error,
+          ),
+          _buildTransactionItem(
+            'Maintenance Pos RW',
+            'Rp 300.000',
+            '6 Jan 2025',
+            AppColors.error,
+          ),
+        ], 'keuangan-pengeluaran'),
       ],
     );
   }
 
-  Widget _buildTransactionSection(BuildContext context, String title, List<Widget> items, String routeName) {
+  Widget _buildTransactionSection(
+    BuildContext context,
+    String title,
+    List<Widget> items,
+    String routeName,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder, width: 1),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,7 +466,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryText,
+                  color: AppColors.textPrimary,
                 ),
               ),
               TextButton(
@@ -436,7 +474,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
                 child: Text(
                   'Selengkapnya',
                   style: TextStyle(
-                    color: AppColors.primaryBlue,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -450,14 +488,19 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
     );
   }
 
-  Widget _buildTransactionItem(String title, String amount, String date, Color color) {
+  Widget _buildTransactionItem(
+    String title,
+    String amount,
+    String date,
+    Color color,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.lightGray.withOpacity(0.3),
+        color: AppColors.backgroundGray.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.cardBorder, width: 1),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Row(
         children: [
@@ -479,20 +522,27 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primaryText,
+                    color: AppColors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   date,
-                  style: TextStyle(fontSize: 12, color: AppColors.descriptionText),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
           ),
           Text(
             amount,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
         ],
       ),
@@ -513,7 +563,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.cardBorder, width: 1),
+          border: Border.all(color: AppColors.divider, width: 1),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -521,7 +571,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 24),
@@ -532,7 +582,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: AppColors.primaryText,
+                color: AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -559,14 +609,14 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.cardBorder, width: 1),
+          border: Border.all(color: AppColors.divider, width: 1),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 24),
@@ -581,7 +631,7 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primaryText,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -601,5 +651,5 @@ Widget _buildEnhancedLegendItem(String label, Color color, String percentage, St
       ),
     );
   }
-
 }
+

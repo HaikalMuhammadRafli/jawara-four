@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../mocks/log_mocks.dart';
-import '../models/log_model.dart';
+import '../../../data/mocks/log_mocks.dart';
+import '../../../data/models/log_model.dart';
+import '../../../utils/date_helpers.dart';
 
 class LogAktifitasPage extends StatelessWidget {
   const LogAktifitasPage({super.key});
@@ -12,31 +13,6 @@ class LogAktifitasPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Color(0xFF1E88E5),
-            size: 20,
-          ),
-        ),
-        title: const Text(
-          'Detail Log Aktifitas',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF212121),
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
         child: Column(
@@ -64,15 +40,18 @@ class LogAktifitasPage extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1E88E5).withOpacity(0.1),
+                            color: const Color(0xFF1E88E5).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF1E88E5).withOpacity(0.2), width: 1),
+                            border: Border.all(
+                              color: const Color(0xFF1E88E5).withValues(alpha: 0.2),
+                              width: 1,
+                            ),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             '${index + 1}',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               color: Color(0xFF1E88E5),
                               fontSize: 14,
                             ),
@@ -87,7 +66,7 @@ class LogAktifitasPage extends StatelessWidget {
                               Text(
                                 log.deskripsi,
                                 style: const TextStyle(
-                                  fontSize: 16, 
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xFF212121),
                                 ),
@@ -105,7 +84,7 @@ class LogAktifitasPage extends StatelessWidget {
                                     child: Text(
                                       log.aktor,
                                       style: const TextStyle(
-                                        fontSize: 12, 
+                                        fontSize: 12,
                                         color: Color(0xFF757575),
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -113,9 +92,9 @@ class LogAktifitasPage extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    log.tanggal,
+                                    DateHelpers.formatDate(log.tanggal),
                                     style: const TextStyle(
-                                      fontSize: 12, 
+                                      fontSize: 12,
                                       color: Color(0xFF9E9E9E),
                                       fontWeight: FontWeight.w500,
                                     ),

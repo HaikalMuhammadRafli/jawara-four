@@ -41,7 +41,12 @@ class CustomBottomNavigationbar extends StatelessWidget {
             context,
           ),
           _buildNavItem(Icons.event_outlined, Icons.event, 3, context),
-          _buildNavItem(Icons.more_horiz_outlined, Icons.more_horiz, 4, context),
+          _buildNavItem(
+            Icons.more_horiz_outlined,
+            Icons.more_horiz,
+            4,
+            context,
+          ),
         ],
       ),
     );
@@ -72,7 +77,6 @@ class CustomBottomNavigationbar extends StatelessWidget {
       label: '',
     );
   }
-
 
   int _getCurrentIndex(BuildContext context) {
     final location = GoRouterState.of(context).fullPath;
@@ -120,30 +124,41 @@ class CustomBottomNavigationbar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Semua Menu', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Semua Menu',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
-            _buildMenuTile(context, Icons.history, 'Log Aktifitas', 'log-aktifitas'),
+            _buildMenuTile(context, Icons.history, 'Log Aktifitas', () {
+              Navigator.pop(context);
+              context.pushNamed('log-aktifitas');
+            }),
             _buildMenuTile(
               context,
               Icons.supervised_user_circle,
               'Daftar Pengguna',
-              'daftar-pengguna',
+              () {
+                Navigator.pop(context);
+                context.pushNamed('daftar-pengguna');
+              },
             ),
-            _buildMenuTile(context, Icons.logout, 'Log Out', 'logout'),
+            _buildMenuTile(context, Icons.logout, 'Log Out', () {
+              Navigator.pop(context);
+              context.goNamed('logout');
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenuTile(BuildContext context, IconData icon, String title, String routeName) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      onTap: () {
-        Navigator.pop(context);
-        context.goNamed(routeName);
-      },
-    );
+  Widget _buildMenuTile(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
+    return ListTile(leading: Icon(icon), title: Text(title), onTap: onTap);
   }
 }
+
