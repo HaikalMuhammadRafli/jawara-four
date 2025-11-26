@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-// ==================== DEFINISI WARNA ====================
-const Color primaryBlue = Color(0xFF1E88E5);
-const Color backgroundWhite = Color(0xFFFFFFFF);
-const Color textPrimary = Color(0xFF212121);
-const Color textSecondary = Color(0xFF757575);
-const Color dividerGray = Color(0xFFE0E0E0);
-const Color successGreen = Color(0xFF43A047);
-const Color errorRed = Color(0xFFE53935);
+import 'package:jawara_four/colors/app_colors.dart';
 
 class KeuanganPengeluaranFormPage extends StatefulWidget {
   const KeuanganPengeluaranFormPage({super.key});
 
   @override
-  State<KeuanganPengeluaranFormPage> createState() => _KeuanganPengeluaranFormPageState();
+  State<KeuanganPengeluaranFormPage> createState() =>
+      _KeuanganPengeluaranFormPageState();
 }
 
-class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPage> {
+class _KeuanganPengeluaranFormPageState
+    extends State<KeuanganPengeluaranFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _judulController = TextEditingController();
   final _nominalController = TextEditingController();
@@ -41,7 +35,12 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
     'Lainnya',
   ];
 
-  final List<String> _metodePembayaranList = ['Tunai', 'Transfer Bank', 'E-Wallet', 'Cek'];
+  final List<String> _metodePembayaranList = [
+    'Tunai',
+    'Transfer Bank',
+    'E-Wallet',
+    'Cek',
+  ];
 
   @override
   void dispose() {
@@ -62,9 +61,9 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: errorRed,
+              primary: AppColors.error,
               onPrimary: Colors.white,
-              surface: backgroundWhite,
+              surface: AppColors.background,
             ),
           ),
           child: child!,
@@ -90,9 +89,11 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
                 Text('Silakan pilih tanggal pengeluaran'),
               ],
             ),
-            backgroundColor: errorRed,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -108,9 +109,11 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
               Text('Pengeluaran berhasil ditambahkan!'),
             ],
           ),
-          backgroundColor: successGreen,
+          backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -123,7 +126,7 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: errorRed,
+        backgroundColor: AppColors.error,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -141,10 +144,18 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
         actions: [
           TextButton.icon(
             onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            icon: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
             label: const Text(
               'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -160,14 +171,14 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [errorRed, errorRed.withOpacity(0.8)],
+                  colors: [AppColors.error, AppColors.error.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: errorRed.withOpacity(0.3),
+                    color: AppColors.error.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -178,10 +189,14 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.trending_down_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.trending_down_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -200,7 +215,11 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
                         SizedBox(height: 4),
                         Text(
                           'Catat semua pengeluaran kas RT',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -211,7 +230,10 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
             const SizedBox(height: 24),
 
             // Informasi Pengeluaran Section
-            _buildSectionTitle('Informasi Pengeluaran', Icons.info_outline_rounded),
+            _buildSectionTitle(
+              'Informasi Pengeluaran',
+              Icons.info_outline_rounded,
+            ),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
@@ -332,13 +354,13 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
-                  colors: [errorRed, errorRed.withOpacity(0.8)],
+                  colors: [AppColors.error, AppColors.error.withValues(alpha: 0.8)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: errorRed.withOpacity(0.3),
+                    color: AppColors.error.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -353,7 +375,11 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.add_circle_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 12),
                         Text(
                           'Tambah Pengeluaran',
@@ -383,10 +409,10 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: errorRed.withOpacity(0.1),
+            color: AppColors.error.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: errorRed),
+          child: Icon(icon, size: 18, color: AppColors.error),
         ),
         const SizedBox(width: 12),
         Text(
@@ -394,7 +420,7 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: -0.3,
           ),
         ),
@@ -406,12 +432,12 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: backgroundWhite,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: dividerGray.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -438,7 +464,7 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -448,34 +474,44 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
           validator: validator,
           maxLines: maxLines,
           keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 14, color: textPrimary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
-            prefixIcon: Icon(icon, size: 20, color: errorRed),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
+            ),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.error),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 1.5),
+              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -498,7 +534,7 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
@@ -508,23 +544,29 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
           isExpanded: true,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: textSecondary.withOpacity(0.6)),
-            prefixIcon: Icon(icon, size: 20, color: errorRed),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary.withValues(alpha: 0.6),
+            ),
+            prefixIcon: Icon(icon, size: 20, color: AppColors.error),
             filled: true,
-            fillColor: dividerGray.withOpacity(0.2),
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: dividerGray.withOpacity(0.6)),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: errorRed, width: 2),
+              borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -533,7 +575,7 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
                 item,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: textPrimary,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -547,8 +589,8 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: errorRed),
-          dropdownColor: backgroundWhite,
+          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.error),
+          dropdownColor: AppColors.background,
         ),
       ],
     );
@@ -569,13 +611,13 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: textPrimary,
+            color: AppColors.textPrimary,
             letterSpacing: 0.2,
           ),
         ),
         const SizedBox(height: 8),
         Material(
-          color: dividerGray.withOpacity(0.2),
+          color: AppColors.divider.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
             onTap: onTap,
@@ -584,26 +626,30 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: dividerGray.withOpacity(0.6)),
+                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
               ),
               child: Row(
                 children: [
-                  Icon(icon, size: 20, color: errorRed),
+                  Icon(icon, size: 20, color: AppColors.error),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       value ?? hint,
                       style: TextStyle(
                         fontSize: 14,
-                        color: value != null ? textPrimary : textSecondary.withOpacity(0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
+                        color: value != null
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary.withValues(alpha: 0.6),
+                        fontWeight: value != null
+                            ? FontWeight.w500
+                            : FontWeight.w400,
                       ),
                     ),
                   ),
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: textSecondary.withOpacity(0.6),
+                    color: AppColors.textSecondary.withValues(alpha: 0.6),
                   ),
                 ],
               ),
@@ -614,3 +660,4 @@ class _KeuanganPengeluaranFormPageState extends State<KeuanganPengeluaranFormPag
     );
   }
 }
+

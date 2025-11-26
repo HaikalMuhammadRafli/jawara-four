@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../colors/app_colors.dart';
 
 class KeuanganMenuPage extends StatelessWidget {
   const KeuanganMenuPage({super.key});
@@ -45,15 +45,15 @@ class KeuanganMenuPage extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.success.withOpacity(0.1),
-                AppColors.success.withOpacity(0.05),
+                AppColors.success.withValues(alpha: 0.1),
+                AppColors.success.withValues(alpha: 0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.success.withOpacity(0.3),
+              color: AppColors.success.withValues(alpha: 0.3),
               width: 2,
             ),
           ),
@@ -65,7 +65,7 @@ class KeuanganMenuPage extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       AppColors.success,
-                      AppColors.success.withOpacity(0.8),
+                      AppColors.success.withValues(alpha: 0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -151,7 +151,7 @@ class KeuanganMenuPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.textPrimary.withOpacity(0.6),
+                  color: AppColors.textPrimary.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -179,7 +179,7 @@ class KeuanganMenuPage extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        shadows: [Shadow(color: Colors.black.withOpacity(0.2))],
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
                       ),
                     ),
                     PieChartSectionData(
@@ -191,7 +191,7 @@ class KeuanganMenuPage extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        shadows: [Shadow(color: Colors.black.withOpacity(0.2))],
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
                       ),
                     ),
                     PieChartSectionData(
@@ -203,7 +203,7 @@ class KeuanganMenuPage extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        shadows: [Shadow(color: Colors.black.withOpacity(0.2))],
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
                       ),
                     ),
                     PieChartSectionData(
@@ -215,7 +215,7 @@ class KeuanganMenuPage extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
-                        shadows: [Shadow(color: Colors.black.withOpacity(0.2))],
+                        shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
                       ),
                     ),
                   ],
@@ -227,10 +227,10 @@ class KeuanganMenuPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.background.withOpacity(0.5),
+              color: AppColors.background.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.divider.withOpacity(0.5),
+                color: AppColors.divider.withValues(alpha: 0.5),
                 width: 1,
               ),
             ),
@@ -290,7 +290,7 @@ class KeuanganMenuPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.3),
+                color: color.withValues(alpha: 0.3),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -316,7 +316,7 @@ class KeuanganMenuPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.textPrimary.withOpacity(0.6),
+                  color: AppColors.textPrimary.withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -498,7 +498,7 @@ class KeuanganMenuPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.backgroundGray.withOpacity(0.3),
+        color: AppColors.backgroundGray.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.divider, width: 1),
       ),
@@ -571,7 +571,7 @@ class KeuanganMenuPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 24),
@@ -616,7 +616,7 @@ class KeuanganMenuPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 24),
@@ -652,3 +652,4 @@ class KeuanganMenuPage extends StatelessWidget {
     );
   }
 }
+

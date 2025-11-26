@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../models/kegiatan_model.dart';
+import '../../../data/models/kegiatan_model.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/ui_helpers.dart';
 
 class KegiatanDetailPage extends StatelessWidget {
   final Kegiatan kegiatan;
@@ -42,11 +44,11 @@ class KegiatanDetailPage extends StatelessWidget {
       expandedHeight: 200,
       floating: false,
       pinned: true,
-      backgroundColor: kegiatan.color,
+      backgroundColor: UIHelpers.getKegiatanColor(kegiatan.kategori),
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           shape: BoxShape.circle,
         ),
         child: IconButton(
@@ -61,7 +63,10 @@ class KegiatanDetailPage extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [kegiatan.color, kegiatan.color.withOpacity(0.7)],
+              colors: [
+                UIHelpers.getKegiatanColor(kegiatan.kategori),
+                UIHelpers.getKegiatanColor(kegiatan.kategori).withValues(alpha: 0.7),
+              ],
             ),
           ),
           child: Stack(
@@ -70,9 +75,9 @@ class KegiatanDetailPage extends StatelessWidget {
                 right: -50,
                 top: -50,
                 child: Icon(
-                  kegiatan.icon,
+                  UIHelpers.getKegiatanIcon(kegiatan.kategori),
                   size: 200,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
               Center(
@@ -82,23 +87,21 @@ class KegiatanDetailPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 2,
-                        ),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
                       ),
-                      child: Icon(kegiatan.icon, size: 48, color: Colors.white),
+                      child: Icon(
+                        UIHelpers.getKegiatanIcon(kegiatan.kategori),
+                        size: 48,
+                        color: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -128,7 +131,7 @@ class KegiatanDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -167,15 +170,15 @@ class KegiatanDetailPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: kegiatan.color.withOpacity(0.1),
+                  color: UIHelpers.getKegiatanColor(kegiatan.kategori).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '#${kegiatan.no}',
+                  kegiatan.kategori,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: kegiatan.color,
+                    color: UIHelpers.getKegiatanColor(kegiatan.kategori),
                   ),
                 ),
               ),
@@ -194,7 +197,7 @@ class KegiatanDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -205,11 +208,7 @@ class KegiatanDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Informasi Kegiatan',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 20),
           _buildInfoItem(
@@ -222,40 +221,30 @@ class KegiatanDetailPage extends StatelessWidget {
           _buildInfoItem(
             Icons.calendar_today_outlined,
             'Tanggal Pelaksanaan',
-            kegiatan.tanggal,
+            DateHelpers.formatDate(kegiatan.tanggal),
             Colors.orange,
           ),
           const SizedBox(height: 16),
-          _buildInfoItem(
-            Icons.category_outlined,
-            'Kategori',
-            kegiatan.kategori,
-            Colors.purple,
-          ),
+          _buildInfoItem(Icons.category_outlined, 'Kategori', kegiatan.kategori, Colors.purple),
         ],
       ),
     );
   }
 
-  Widget _buildInfoItem(
-    IconData icon,
-    String label,
-    String value,
-    Color color,
-  ) {
+  Widget _buildInfoItem(IconData icon, String label, String value, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.1), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.1), width: 1),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -298,7 +287,7 @@ class KegiatanDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -309,11 +298,7 @@ class KegiatanDetailPage extends StatelessWidget {
         children: [
           const Text(
             'Status Kegiatan',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 20),
           _buildTimelineItem(
@@ -357,14 +342,10 @@ class KegiatanDetailPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isCompleted ? color.withOpacity(0.1) : Colors.grey[100],
+              color: isCompleted ? color.withValues(alpha: 0.1) : Colors.grey[100],
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: isCompleted ? color : Colors.grey,
-              size: 20,
-            ),
+            child: Icon(icon, color: isCompleted ? color : Colors.grey, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -401,38 +382,22 @@ class KegiatanDetailPage extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _buildActionButton(
-                'Edit Kegiatan',
-                Icons.edit_outlined,
-                Colors.blue,
-                () {
-                  // TODO: Navigate to edit page
-                },
-              ),
+              child: _buildActionButton('Edit Kegiatan', Icons.edit_outlined, Colors.blue, () {
+                // TODO: Navigate to edit page
+              }),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _buildActionButton(
-                'Bagikan',
-                Icons.share_outlined,
-                Colors.green,
-                () {
-                  // TODO: Implement share functionality
-                },
-              ),
+              child: _buildActionButton('Bagikan', Icons.share_outlined, Colors.green, () {
+                // TODO: Implement share functionality
+              }),
             ),
           ],
         ),
         const SizedBox(height: 12),
-        _buildActionButton(
-          'Hapus Kegiatan',
-          Icons.delete_outline,
-          Colors.red,
-          () {
-            _showDeleteDialog(context);
-          },
-          fullWidth: true,
-        ),
+        _buildActionButton('Hapus Kegiatan', Icons.delete_outline, Colors.red, () {
+          _showDeleteDialog(context);
+        }, fullWidth: true),
       ],
     );
   }
@@ -449,9 +414,9 @@ class KegiatanDetailPage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -460,11 +425,7 @@ class KegiatanDetailPage extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
             ),
           ],
         ),
@@ -477,22 +438,16 @@ class KegiatanDetailPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
-                  Icons.warning_outlined,
-                  color: Colors.red,
-                  size: 24,
-                ),
+                child: const Icon(Icons.warning_outlined, color: Colors.red, size: 24),
               ),
               const SizedBox(width: 12),
               const Text('Hapus Kegiatan', style: TextStyle(fontSize: 18)),
@@ -506,10 +461,7 @@ class KegiatanDetailPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Batal',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600),
               ),
             ),
             ElevatedButton(
@@ -520,20 +472,12 @@ class KegiatanDetailPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: const Text(
                 'Hapus',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
             ),
           ],
