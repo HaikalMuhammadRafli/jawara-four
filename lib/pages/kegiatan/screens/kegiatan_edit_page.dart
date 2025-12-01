@@ -5,26 +5,28 @@ import 'package:jawara_four/colors/app_colors.dart';
 import '../../../data/models/kegiatan_model.dart';
 import '../../../data/repositories/kegiatan_repository.dart';
 
-class KegiatanFormPage extends StatefulWidget {
-  const KegiatanFormPage({super.key});
+class KegiatanEditPage extends StatefulWidget {
+  final Kegiatan kegiatan;
+
+  const KegiatanEditPage({super.key, required this.kegiatan});
 
   @override
-  State<KegiatanFormPage> createState() => _KegiatanFormPageState();
+  State<KegiatanEditPage> createState() => _KegiatanEditPageState();
 }
 
-class _KegiatanFormPageState extends State<KegiatanFormPage> {
+class _KegiatanEditPageState extends State<KegiatanEditPage> {
   final KegiatanRepository _repository = KegiatanRepository();
   final _formKey = GlobalKey<FormState>();
-  final _namaController = TextEditingController();
-  final _penanggungJawabController = TextEditingController();
-  final _deskripsiController = TextEditingController();
-  final _lokasiController = TextEditingController();
-  final _pesertaController = TextEditingController();
+  late final TextEditingController _namaController;
+  late final TextEditingController _penanggungJawabController;
+  late final TextEditingController _deskripsiController;
+  late final TextEditingController _lokasiController;
+  late final TextEditingController _pesertaController;
 
   String? _selectedKategori;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  bool _isSubmitting = false;
+  bool _isUpdating = false;
 
   final List<String> _kategoriList = [
     'Keamanan',
@@ -36,6 +38,19 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     'Pendidikan',
     'Lainnya',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _namaController = TextEditingController(text: widget.kegiatan.nama);
+    _penanggungJawabController = TextEditingController(text: widget.kegiatan.penanggungJawab);
+    _deskripsiController = TextEditingController(text: widget.kegiatan.deskripsi);
+    _lokasiController = TextEditingController(text: widget.kegiatan.lokasi);
+    _pesertaController = TextEditingController(text: widget.kegiatan.peserta.toString());
+    _selectedKategori = widget.kegiatan.kategori;
+    _selectedDate = widget.kegiatan.tanggal;
+    _selectedTime = TimeOfDay.fromDateTime(widget.kegiatan.tanggal);
+  }
 
   @override
   void dispose() {
@@ -50,7 +65,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2026),
       builder: (context, child) {
@@ -76,7 +91,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: _selectedTime ?? TimeOfDay.now(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -153,10 +168,9 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         return;
       }
 
-      setState(() => _isSubmitting = true);
+      setState(() => _isUpdating = true);
 
       try {
-        final now = DateTime.now();
         final kegiatanDateTime = DateTime(
           _selectedDate!.year,
           _selectedDate!.month,
@@ -165,8 +179,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           _selectedTime!.minute,
         );
 
-        final kegiatan = Kegiatan(
-          id: '',
+        final updatedKegiatan = widget.kegiatan.copyWith(
           nama: _namaController.text.trim(),
           deskripsi: _deskripsiController.text.trim(),
           kategori: _selectedKategori!,
@@ -174,10 +187,10 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           lokasi: _lokasiController.text.trim(),
           peserta: int.tryParse(_pesertaController.text.trim()) ?? 0,
           tanggal: kegiatanDateTime,
-          createdAt: now,
+          updatedAt: DateTime.now(),
         );
 
-        await _repository.addKegiatan(kegiatan.toMap());
+        await _repository.updateKegiatan(updatedKegiatan.id, updatedKegiatan.toMap());
 
         if (!mounted) return;
 
@@ -187,7 +200,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               children: [
                 Icon(Icons.check_circle_outline, color: Colors.white),
                 SizedBox(width: 12),
-                Expanded(child: Text('Kegiatan berhasil ditambahkan!')),
+                Expanded(child: Text('Kegiatan berhasil diperbarui!')),
               ],
             ),
             backgroundColor: AppColors.success,
@@ -207,7 +220,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Gagal menambahkan kegiatan: ${e.toString()}')),
+                Expanded(child: Text('Gagal memperbarui kegiatan: ${e.toString()}')),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -218,7 +231,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         );
       } finally {
         if (mounted) {
-          setState(() => _isSubmitting = false);
+          setState(() => _isUpdating = false);
         }
       }
     }
@@ -236,7 +249,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Tambah Kegiatan',
+          'Edit Kegiatan',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -246,8 +259,8 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: _isSubmitting ? null : _submitForm,
-            icon: _isSubmitting
+            onPressed: _isUpdating ? null : _submitForm,
+            icon: _isUpdating
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -258,7 +271,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                   )
                 : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
             label: Text(
-              _isSubmitting ? 'Menyimpan...' : 'Simpan',
+              _isUpdating ? 'Menyimpan...' : 'Simpan',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -300,7 +313,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.event_note_rounded, color: Colors.white, size: 32),
+                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -308,7 +321,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Buat Kegiatan Baru',
+                          'Edit Kegiatan',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -318,7 +331,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Lengkapi informasi kegiatan di bawah ini',
+                          'Perbarui informasi kegiatan',
                           style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
@@ -501,7 +514,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
                         Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
                         SizedBox(width: 12),
                         Text(
-                          'Simpan Kegiatan',
+                          'Simpan Perubahan',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
