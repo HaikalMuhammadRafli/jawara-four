@@ -33,7 +33,6 @@ class Rumah {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'alamat': alamat,
       'status': status.value,
       'pemilik': pemilik,
