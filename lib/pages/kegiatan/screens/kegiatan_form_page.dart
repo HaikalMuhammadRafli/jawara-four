@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
+import '../../../data/models/kegiatan_model.dart';
+import '../../../data/repositories/kegiatan_repository.dart';
+
 class KegiatanFormPage extends StatefulWidget {
   const KegiatanFormPage({super.key});
 
@@ -10,15 +13,18 @@ class KegiatanFormPage extends StatefulWidget {
 }
 
 class _KegiatanFormPageState extends State<KegiatanFormPage> {
+  final KegiatanRepository _repository = KegiatanRepository();
   final _formKey = GlobalKey<FormState>();
   final _namaController = TextEditingController();
   final _penanggungJawabController = TextEditingController();
   final _deskripsiController = TextEditingController();
+  final _lokasiController = TextEditingController();
+  final _pesertaController = TextEditingController();
 
   String? _selectedKategori;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-  String? _selectedPrioritas = 'Sedang';
+  bool _isSubmitting = false;
 
   final List<String> _kategoriList = [
     'Keamanan',
@@ -31,13 +37,13 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     'Lainnya',
   ];
 
-  final List<String> _prioritasList = ['Rendah', 'Sedang', 'Tinggi', 'Urgent'];
-
   @override
   void dispose() {
     _namaController.dispose();
     _penanggungJawabController.dispose();
     _deskripsiController.dispose();
+    _lokasiController.dispose();
+    _pesertaController.dispose();
     super.dispose();
   }
 
@@ -91,7 +97,7 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
     }
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedDate == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -129,23 +135,92 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         return;
       }
 
-      // TODO: Simpan data kegiatan
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Kegiatan berhasil ditambahkan!'),
-            ],
+      if (_selectedKategori == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Silakan pilih kategori kegiatan'),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+        );
+        return;
+      }
 
-      context.pop();
+      setState(() => _isSubmitting = true);
+
+      try {
+        final now = DateTime.now();
+        final kegiatanDateTime = DateTime(
+          _selectedDate!.year,
+          _selectedDate!.month,
+          _selectedDate!.day,
+          _selectedTime!.hour,
+          _selectedTime!.minute,
+        );
+
+        final kegiatan = Kegiatan(
+          id: '',
+          nama: _namaController.text.trim(),
+          deskripsi: _deskripsiController.text.trim(),
+          kategori: _selectedKategori!,
+          penanggungJawab: _penanggungJawabController.text.trim(),
+          lokasi: _lokasiController.text.trim(),
+          peserta: int.tryParse(_pesertaController.text.trim()) ?? 0,
+          tanggal: kegiatanDateTime,
+          createdAt: now,
+        );
+
+        await _repository.addKegiatan(kegiatan.toMap());
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Expanded(child: Text('Kegiatan berhasil ditambahkan!')),
+              ],
+            ),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+
+        context.pop();
+      } catch (e) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(child: Text('Gagal menambahkan kegiatan: ${e.toString()}')),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+        }
+      }
     }
   }
 
@@ -171,11 +246,24 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: _submitForm,
-            icon: const Icon(Icons.check_rounded, color: Colors.white, size: 20),
-            label: const Text(
-              'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+            onPressed: _isSubmitting ? null : _submitForm,
+            icon: _isSubmitting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            label: Text(
+              _isSubmitting ? 'Menyimpan...' : 'Simpan',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -343,68 +431,40 @@ class _KegiatanFormPageState extends State<KegiatanFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Prioritas Section
-            _buildSectionTitle('Prioritas', Icons.flag_outlined),
+            // Lokasi & Peserta Section
+            _buildSectionTitle('Lokasi & Peserta', Icons.location_on_outlined),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Tingkat Prioritas',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _prioritasList.map((prioritas) {
-                      final isSelected = _selectedPrioritas == prioritas;
-                      Color chipColor;
-                      switch (prioritas) {
-                        case 'Rendah':
-                          chipColor = const Color(0xFF4CAF50);
-                          break;
-                        case 'Sedang':
-                          chipColor = const Color(0xFFFFA726);
-                          break;
-                        case 'Tinggi':
-                          chipColor = const Color(0xFFFF7043);
-                          break;
-                        case 'Urgent':
-                          chipColor = AppColors.error;
-                          break;
-                        default:
-                          chipColor = AppColors.textSecondary;
+                  _buildTextField(
+                    controller: _lokasiController,
+                    label: 'Lokasi',
+                    hint: 'Contoh: Balai RT 01',
+                    icon: Icons.place_rounded,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lokasi harus diisi';
                       }
-                      return FilterChip(
-                        label: Text(prioritas),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedPrioritas = prioritas;
-                          });
-                        },
-                        backgroundColor: chipColor.withValues(alpha: 0.08),
-                        selectedColor: chipColor.withValues(alpha: 0.15),
-                        checkmarkColor: chipColor,
-                        labelStyle: TextStyle(
-                          color: isSelected ? chipColor : AppColors.textSecondary,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          fontSize: 13,
-                        ),
-                        side: BorderSide(
-                          color: isSelected ? chipColor : AppColors.divider,
-                          width: isSelected ? 2 : 1,
-                        ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      );
-                    }).toList(),
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _pesertaController,
+                    label: 'Jumlah Peserta',
+                    hint: 'Contoh: 50',
+                    icon: Icons.people_rounded,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Jumlah peserta harus diisi';
+                      }
+                      final peserta = int.tryParse(value);
+                      if (peserta == null || peserta <= 0) {
+                        return 'Jumlah peserta harus angka positif';
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),

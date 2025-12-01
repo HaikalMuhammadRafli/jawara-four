@@ -1,60 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
-import 'package:jawara_four/data/models/penerimaan_warga_model.dart';
-import 'package:jawara_four/data/repositories/penerimaan_warga_repository.dart';
 
-class PenerimaanWargaFormPage extends StatefulWidget {
-  const PenerimaanWargaFormPage({super.key});
+import '../../../data/models/broadcast_model.dart';
+import '../../../data/repositories/broadcast_repository.dart';
+
+class BroadcastEditPage extends StatefulWidget {
+  final Broadcast broadcast;
+
+  const BroadcastEditPage({super.key, required this.broadcast});
 
   @override
-  State<PenerimaanWargaFormPage> createState() => _PenerimaanWargaFormPageState();
+  State<BroadcastEditPage> createState() => _BroadcastEditPageState();
 }
 
-class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
+class _BroadcastEditPageState extends State<BroadcastEditPage> {
+  final BroadcastRepository _repository = BroadcastRepository();
   final _formKey = GlobalKey<FormState>();
-  final _namaController = TextEditingController();
-  final _nikController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _repository = PenerimaanWargaRepository();
-  bool _isSubmitting = false;
+  late final TextEditingController _namaController;
+  late final TextEditingController _judulController;
+  late final TextEditingController _isiController;
+  late final TextEditingController _pengirimController;
 
-  String? _selectedJenisKelamin;
-  String _fotoIdentitas = ''; // Placeholder for photo upload
+  String? _selectedKategori;
+  String _selectedPrioritas = 'Rendah';
+  bool _isUpdating = false;
 
-  final List<String> _jenisKelaminList = ['Laki-laki', 'Perempuan'];
+  final List<String> _kategoriList = [
+    'Pengumuman',
+    'Informasi',
+    'Keagamaan',
+    'Kebersihan',
+    'Keuangan',
+    'Keamanan',
+    'Lainnya',
+  ];
+
+  final List<String> _prioritasList = ['Rendah', 'Sedang', 'Tinggi'];
+
+  @override
+  void initState() {
+    super.initState();
+    _namaController = TextEditingController(text: widget.broadcast.nama);
+    _judulController = TextEditingController(text: widget.broadcast.judul);
+    _isiController = TextEditingController(text: widget.broadcast.isi);
+    _pengirimController = TextEditingController(text: widget.broadcast.pengirim);
+    _selectedKategori = widget.broadcast.kategori;
+    _selectedPrioritas = widget.broadcast.prioritas;
+  }
 
   @override
   void dispose() {
     _namaController.dispose();
-    _nikController.dispose();
-    _emailController.dispose();
+    _judulController.dispose();
+    _isiController.dispose();
+    _pengirimController.dispose();
     super.dispose();
   }
 
-  Future<void> _submitForm() async {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isSubmitting = true;
-      });
+      if (_selectedKategori == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.warning_amber_rounded, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Silakan pilih kategori broadcast'),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+        return;
+      }
+
+      setState(() => _isUpdating = true);
 
       try {
-        final jenisKelamin = _selectedJenisKelamin == 'Laki-laki'
-            ? JenisKelamin.lakiLaki
-            : JenisKelamin.perempuan;
-
-        final penerimaanWarga = PenerimaanWarga(
-          id: '',
-          fotoIdentitas: _fotoIdentitas.isEmpty ? 'placeholder.jpg' : _fotoIdentitas,
+        final updatedBroadcast = widget.broadcast.copyWith(
           nama: _namaController.text.trim(),
-          nik: _nikController.text.trim(),
-          email: _emailController.text.trim(),
-          jenisKelamin: jenisKelamin,
-          statusRegistrasi: StatusRegistrasi.pending,
-          createdAt: DateTime.now(),
+          pengirim: _pengirimController.text.trim(),
+          judul: _judulController.text.trim(),
+          isi: _isiController.text.trim(),
+          kategori: _selectedKategori!,
+          prioritas: _selectedPrioritas,
+          updatedAt: DateTime.now(),
         );
 
-        await _repository.addPenerimaanWarga(penerimaanWarga);
+        await _repository.updateBroadcast(updatedBroadcast.id, updatedBroadcast.toMap());
 
         if (!mounted) return;
 
@@ -64,13 +101,13 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
               children: [
                 Icon(Icons.check_circle_outline, color: Colors.white),
                 SizedBox(width: 12),
-                Text('Pendaftaran warga berhasil diajukan!'),
+                Expanded(child: Text('Broadcast berhasil diperbarui!')),
               ],
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 3),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 3),
           ),
         );
 
@@ -84,20 +121,18 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Gagal mengajukan pendaftaran: $e')),
+                Expanded(child: Text('Gagal memperbarui broadcast: ${e.toString()}')),
               ],
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 4),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 4),
           ),
         );
       } finally {
         if (mounted) {
-          setState(() {
-            _isSubmitting = false;
-          });
+          setState(() => _isUpdating = false);
         }
       }
     }
@@ -115,7 +150,7 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Pendaftaran Warga Baru',
+          'Edit Broadcast',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -125,8 +160,8 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: _isSubmitting ? null : _submitForm,
-            icon: _isSubmitting
+            onPressed: _isUpdating ? null : _submitForm,
+            icon: _isUpdating
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -136,9 +171,13 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
                     ),
                   )
                 : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
-            label: const Text(
-              'Simpan',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+            label: Text(
+              _isUpdating ? 'Menyimpan...' : 'Simpan',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -149,124 +188,123 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            // Data Pribadi Section
-            _buildSectionTitle('Data Pribadi', Icons.badge_outlined),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
+            // Header Card
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
                 children: [
-                  // Photo upload placeholder
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.05),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
                     ),
-                    child: Row(
+                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 32),
+                  ),
+                  const SizedBox(width: 16),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.upload_file, color: AppColors.primary, size: 24),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Upload Foto Identitas',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _fotoIdentitas.isEmpty
-                                    ? 'Belum ada file dipilih'
-                                    : 'File: $_fotoIdentitas',
-                                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                              ),
-                            ],
+                        Text(
+                          'Edit Broadcast',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: -0.3,
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // TODO: Implement file picker
-                            setState(() {
-                              _fotoIdentitas = 'sample_id.jpg';
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: const Text('Pilih File'),
+                        SizedBox(height: 4),
+                        Text(
+                          'Perbarui informasi broadcast',
+                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Informasi Pesan Section
+            _buildSectionTitle('Informasi Pesan', Icons.message_outlined),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: Column(
+                children: [
                   _buildTextField(
                     controller: _namaController,
-                    label: 'Nama Lengkap',
-                    hint: 'Masukkan nama lengkap',
-                    icon: Icons.person_outline,
+                    label: 'Nama Broadcast',
+                    hint: 'Contoh: Pengumuman Penting',
+                    icon: Icons.campaign_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Nama lengkap harus diisi';
+                        return 'Nama broadcast harus diisi';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    controller: _nikController,
-                    label: 'NIK',
-                    hint: 'Nomor Induk Kependudukan (16 digit)',
-                    icon: Icons.credit_card_rounded,
-                    keyboardType: TextInputType.number,
+                    controller: _judulController,
+                    label: 'Judul Broadcast',
+                    hint: 'Contoh: Pengumuman Iuran Bulan Ini',
+                    icon: Icons.title_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'NIK harus diisi';
+                        return 'Judul harus diisi';
                       }
-                      if (value.length != 16) {
-                        return 'NIK harus 16 digit';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _emailController,
-                    label: 'Email',
-                    hint: 'email@example.com',
-                    icon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Email harus diisi';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Format email tidak valid';
+                      if (value.length < 5) {
+                        return 'Judul minimal 5 karakter';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   _buildDropdown(
-                    value: _selectedJenisKelamin,
-                    label: 'Jenis Kelamin',
-                    hint: 'Pilih jenis kelamin',
-                    icon: Icons.wc_rounded,
-                    items: _jenisKelaminList,
+                    value: _selectedKategori,
+                    label: 'Kategori',
+                    hint: 'Pilih kategori broadcast',
+                    icon: Icons.category_rounded,
+                    items: _kategoriList,
                     onChanged: (value) {
                       setState(() {
-                        _selectedJenisKelamin = value;
+                        _selectedKategori = value;
                       });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _isiController,
+                    label: 'Isi Pesan',
+                    hint: 'Tulis isi pesan broadcast di sini...',
+                    icon: Icons.description_outlined,
+                    maxLines: 8,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Isi pesan harus diisi';
+                      }
+                      if (value.length < 20) {
+                        return 'Isi pesan minimal 20 karakter';
+                      }
+                      return null;
                     },
                   ),
                 ],
@@ -274,45 +312,40 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Info Box
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1.5),
+            // Pengirim Section
+            _buildSectionTitle('Pengirim', Icons.person_outline_rounded),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: _buildTextField(
+                controller: _pengirimController,
+                label: 'Nama Pengirim',
+                hint: 'Contoh: Ketua RT',
+                icon: Icons.person_rounded,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama pengirim harus diisi';
+                  }
+                  return null;
+                },
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 22),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Informasi Penting',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Pendaftaran Anda akan diverifikasi oleh pengurus RT dalam waktu 1x24 jam.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.primary.withValues(alpha: 0.8),
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            ),
+            const SizedBox(height: 24),
+
+            // Prioritas Section
+            _buildSectionTitle('Prioritas', Icons.flag_outlined),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: _buildDropdown(
+                value: _selectedPrioritas,
+                label: 'Tingkat Prioritas',
+                hint: 'Pilih prioritas broadcast',
+                icon: Icons.flag_rounded,
+                items: _prioritasList,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPrioritas = value!;
+                  });
+                },
               ),
             ),
             const SizedBox(height: 32),
@@ -322,10 +355,8 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
               height: 52,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  colors: _isSubmitting
-                      ? [AppColors.textSecondary, AppColors.textSecondary]
-                      : [AppColors.primary, const Color(0xFF1976D2)],
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, Color(0xFF1976D2)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
@@ -340,34 +371,25 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: _isSubmitting ? null : _submitForm,
+                  onTap: _submitForm,
                   borderRadius: BorderRadius.circular(12),
-                  child: Center(
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
-                              SizedBox(width: 12),
-                              Text(
-                                'Ajukan Pendaftaran',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                            ],
+                  child: const Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
+                        SizedBox(width: 12),
+                        Text(
+                          'Simpan Perubahan',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.3,
                           ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -430,7 +452,6 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
     required IconData icon,
     String? Function(String?)? validator,
     int maxLines = 1,
-    TextInputType? keyboardType,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,7 +470,6 @@ class _PenerimaanWargaFormPageState extends State<PenerimaanWargaFormPage> {
           controller: controller,
           validator: validator,
           maxLines: maxLines,
-          keyboardType: keyboardType,
           style: const TextStyle(
             fontSize: 14,
             color: AppColors.textPrimary,

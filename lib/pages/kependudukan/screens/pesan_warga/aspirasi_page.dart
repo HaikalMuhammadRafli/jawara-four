@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../../data/models/penerimaan_warga_model.dart';
-import '../../../../data/repositories/penerimaan_warga_repository.dart';
+import '../../../../data/models/aspirasi_model.dart';
+import '../../../../data/repositories/aspirasi_repository.dart';
+import '../../../../utils/date_helpers.dart';
 
-class PenerimaanWargaPage extends StatefulWidget {
-  const PenerimaanWargaPage({super.key});
+class AspirasiPage extends StatefulWidget {
+  const AspirasiPage({super.key});
 
   @override
-  State<PenerimaanWargaPage> createState() => _PenerimaanWargaPageState();
+  State<AspirasiPage> createState() => _AspirasiPageState();
 }
 
-class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
-  final PenerimaanWargaRepository _repository = PenerimaanWargaRepository();
+class _AspirasiPageState extends State<AspirasiPage> {
+  final AspirasiRepository _aspirasiRepository = AspirasiRepository();
   String _searchQuery = '';
   String _selectedStatus = 'Semua';
 
@@ -23,14 +24,14 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
       color: AppColors.background,
       child: Column(
         children: [
-          _buildSearchAndFilter(),
-          Expanded(child: _buildPenerimaanList()),
+          _buildSearchAndFilters(),
+          Expanded(child: _buildList()),
         ],
       ),
     );
   }
 
-  Widget _buildSearchAndFilter() {
+  Widget _buildSearchAndFilters() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -44,7 +45,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           TextField(
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
-              hintText: 'Cari nama atau NIK...',
+              hintText: 'Cari pengirim atau judul...',
               hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
               prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
               filled: true,
@@ -67,9 +68,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
               children: [
                 _buildFilterChip('Semua'),
                 const SizedBox(width: 10),
-                _buildFilterChip('Diterima'),
-                const SizedBox(width: 10),
                 _buildFilterChip('Pending'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Diproses'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Selesai'),
                 const SizedBox(width: 10),
                 _buildFilterChip('Ditolak'),
               ],
@@ -107,50 +110,72 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 
-  Widget _buildPenerimaanList() {
-    return StreamBuilder<List<PenerimaanWarga>>(
-      stream: _repository.getPenerimaanWargaStream(),
+  Widget _buildList() {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: _aspirasiRepository.getAspirasiStream(),
       builder: (context, snapshot) {
+        // Loading state
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Memuat data...',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
 
+        // Error state
         if (snapshot.hasError) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, size: 64, color: AppColors.error),
-                const SizedBox(height: 16),
-                Text(
-                  'Terjadi kesalahan: ${snapshot.error}',
-                  style: TextStyle(color: AppColors.error),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          );
-        }
-
-        final wargaList = snapshot.data ?? [];
-
-        if (wargaList.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
                 Icon(
-                  Icons.person_add_disabled_rounded,
+                  Icons.error_outline_rounded,
                   size: 80,
-                  color: AppColors.textSecondary.withValues(alpha: 0.3),
+                  color: AppColors.error.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Belum ada data pendaftar',
+                  'Terjadi Kesalahan',
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Text(
+                    snapshot.error.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () => setState(() {}),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('Coba Lagi'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ],
@@ -158,43 +183,54 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           );
         }
 
-        // Filter data
-        final filteredList = wargaList.where((warga) {
-          final matchesSearch =
+        // Parse data
+        final List<Aspirasi> allData = (snapshot.data ?? [])
+            .map((map) => Aspirasi.fromMap(map))
+            .toList();
+
+        // Apply filters
+        final List<Aspirasi> filteredData = allData.where((i) {
+          final matchesQuery =
               _searchQuery.isEmpty ||
-              warga.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              warga.nik.toLowerCase().contains(_searchQuery.toLowerCase());
-
-          final matchesStatus =
-              _selectedStatus == 'Semua' ||
-              (_selectedStatus == 'Diterima' &&
-                  warga.statusRegistrasi == StatusRegistrasi.disetujui) ||
-              (_selectedStatus == 'Pending' &&
-                  warga.statusRegistrasi == StatusRegistrasi.pending) ||
-              (_selectedStatus == 'Ditolak' && warga.statusRegistrasi == StatusRegistrasi.ditolak);
-
-          return matchesSearch && matchesStatus;
+              i.pengirim.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              i.judul.toLowerCase().contains(_searchQuery.toLowerCase());
+          final matchesStatus = _selectedStatus == 'Semua' || i.status.value == _selectedStatus;
+          return matchesQuery && matchesStatus;
         }).toList();
 
-        if (filteredList.isEmpty) {
+        // Sort by date (newest first)
+        filteredData.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+        // Empty state
+        if (filteredData.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.person_add_disabled_rounded,
+                  Icons.inbox_rounded,
                   size: 80,
                   color: AppColors.textSecondary.withValues(alpha: 0.3),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Tidak ada data yang sesuai',
+                  allData.isEmpty ? 'Belum ada data aspirasi' : 'Tidak ada data yang sesuai',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                if (_searchQuery.isNotEmpty || _selectedStatus != 'Semua') ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Coba ubah filter pencarian',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
               ],
             ),
           );
@@ -202,24 +238,27 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
 
         return ListView.builder(
           padding: const EdgeInsets.all(20),
-          itemCount: filteredList.length,
-          itemBuilder: (context, index) => _buildPenerimaanCard(filteredList[index]),
+          itemCount: filteredData.length,
+          itemBuilder: (context, index) => _buildCard(filteredData[index]),
         );
       },
     );
   }
 
-  Widget _buildPenerimaanCard(PenerimaanWarga w) {
+  Widget _buildCard(Aspirasi item) {
     Color statusColor;
-    switch (w.statusRegistrasi.value.toLowerCase()) {
-      case 'diterima':
+    switch (item.status.value.toLowerCase()) {
+      case 'selesai':
         statusColor = const Color(0xFF43A047);
         break;
-      case 'pending':
+      case 'diproses':
         statusColor = const Color(0xFFFB8C00);
         break;
       case 'ditolak':
         statusColor = const Color(0xFFE53935);
+        break;
+      case 'pending':
+        statusColor = const Color(0xFF757575);
         break;
       default:
         statusColor = AppColors.textSecondary;
@@ -240,95 +279,126 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 90,
-                height: 110,
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
-                ),
-                child: ClipRRect(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.softPurple.withValues(alpha: 0.2),
+                      AppColors.softPurple.withValues(alpha: 0.1),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(14),
-                  child: Image.network(
-                    w.fotoIdentitas,
-                    fit: BoxFit.cover,
-                    errorBuilder: (c, e, s) => Container(
-                      color: AppColors.divider.withValues(alpha: 0.2),
-                      child: Icon(Icons.person_rounded, size: 48, color: AppColors.textSecondary),
-                    ),
+                  border: Border.all(
+                    color: AppColors.softPurple.withValues(alpha: 0.25),
+                    width: 1.5,
                   ),
                 ),
+                child: Icon(Icons.mail_outline_rounded, color: AppColors.softPurple, size: 24),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      w.nama,
+                      item.judul,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                         letterSpacing: -0.3,
                         height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildInfoRow(Icons.badge_outlined, 'NIK: ${w.nik}'),
                     const SizedBox(height: 6),
-                    _buildInfoRow(Icons.email_outlined, w.email),
-                    const SizedBox(height: 6),
-                    _buildInfoRow(
-                      w.jenisKelamin == 'Laki-laki' ? Icons.male_rounded : Icons.female_rounded,
-                      w.jenisKelamin.value,
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: statusColor.withValues(alpha: 0.2), width: 1),
-                      ),
-                      child: Text(
-                        w.statusRegistrasi.value,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: statusColor,
-                          letterSpacing: 0.2,
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person_outline_rounded,
+                          size: 16,
+                          color: AppColors.textSecondary,
                         ),
-                      ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            item.pengirim,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.2), width: 1),
+                ),
+                child: Text(
+                  item.status.value,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Divider(height: 1, thickness: 1, color: AppColors.divider),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.divider.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
+                const SizedBox(width: 6),
+                Text(
+                  DateHelpers.formatDate(item.tanggalDibuat),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
           Row(
             children: [
+              Expanded(
+                child: _buildActionButton('Edit', Icons.edit_outlined, AppColors.primary, item),
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: _buildActionButton(
                   'Detail',
                   Icons.visibility_outlined,
                   AppColors.textSecondary,
-                  w,
+                  item,
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _buildActionButton('Edit', Icons.edit_outlined, AppColors.primary, w),
-              ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: _buildActionButton(
                   'Hapus',
                   Icons.delete_outline_rounded,
                   const Color(0xFFE53935),
-                  w,
+                  item,
                 ),
               ),
             ],
@@ -338,38 +408,17 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: AppColors.textSecondary),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 13,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButton(String label, IconData icon, Color color, PenerimaanWarga warga) {
+  Widget _buildActionButton(String label, IconData icon, Color color, Aspirasi item) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
           if (label == 'Detail') {
-            context.pushNamed('penerimaan-warga-detail', extra: warga);
+            context.pushNamed('informasi-aspirasi-detail', extra: item);
           } else if (label == 'Edit') {
-            context.pushNamed('penerimaan-warga-edit', extra: warga);
+            context.pushNamed('aspirasi-edit', extra: item);
           } else if (label == 'Hapus') {
-            _showDeleteDialog(warga);
+            _showDeleteDialog(item);
           }
         },
         borderRadius: BorderRadius.circular(10),
@@ -402,7 +451,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
     );
   }
 
-  void _showDeleteDialog(PenerimaanWarga warga) {
+  void _showDeleteDialog(Aspirasi item) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -412,7 +461,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
             const SizedBox(width: 12),
             const Text(
-              'Hapus Pendaftar',
+              'Hapus Aspirasi',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -425,7 +474,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Yakin ingin menghapus pendaftar "${warga.nama}"?',
+              'Yakin ingin menghapus aspirasi "${item.judul}"?',
               style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 12),
@@ -464,11 +513,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             onPressed: () async {
               Navigator.pop(context);
               try {
-                await _repository.deletePenerimaanWarga(warga.id);
+                await AspirasiRepository().deleteAspirasi(item.id);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Pendaftar berhasil dihapus'),
+                      content: Text('Aspirasi berhasil dihapus'),
                       backgroundColor: AppColors.success,
                     ),
                   );
@@ -477,7 +526,7 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Gagal menghapus pendaftar: $e'),
+                      content: Text('Gagal menghapus aspirasi: $e'),
                       backgroundColor: AppColors.error,
                     ),
                   );

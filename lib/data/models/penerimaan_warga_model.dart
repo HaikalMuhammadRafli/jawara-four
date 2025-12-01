@@ -54,7 +54,6 @@ class PenerimaanWarga {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'fotoIdentitas': fotoIdentitas,
       'nama': nama,
       'nik': nik,
