@@ -1,13 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../data/mocks/pemasukan_mocks.dart';
+import '../../../data/../../data/repositories/pemasukan_repository.dart';
 import '../../../data/models/pemasukan_model.dart';
 import '../../../utils/date_helpers.dart';
 import '../../../utils/number_helpers.dart';
 import 'pemasukan_lain_detail_page.dart';
+import 'pemasukan_lain_form_page.dart';
 
-class PemasukanLainPage extends StatelessWidget {
+class PemasukanLainPage extends StatefulWidget {
   const PemasukanLainPage({super.key});
+
+  @override
+  State<PemasukanLainPage> createState() => _PemasukanLainPageState();
+}
+
+class _PemasukanLainPageState extends State<PemasukanLainPage> {
+  final PemasukanRepository _repository = PemasukanRepository();
+
+  void _navigateToForm({Pemasukan? pemasukan}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PemasukanLainFormPage(pemasukan: pemasukan),
+      ),
+    );
+  }
+
+  Future<void> _deletePemasukan(String id) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Hapus Pemasukan'),
+        content: const Text('Apakah Anda yakin ingin menghapus data ini?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        await _repository.deletePemasukan(id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Pemasukan berhasil dihapus'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Gagal menghapus: $e'),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,17 +77,145 @@ class PemasukanLainPage extends StatelessWidget {
       color: const Color(0xFFFFFFFF),
       child: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-            child: _buildPemasukanList(),
+          Column(
+            children: [
+              _buildHeader(),
+              Expanded(
+                child: StreamBuilder<List<Pemasukan>>(
+                  stream: _repository.getPemasukanStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Terjadi kesalahan: ${snapshot.error}'),
+                      );
+                    }
+
+                    final pemasukanList = snapshot.data ?? [];
+
+                    if (pemasukanList.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Belum ada data pemasukan',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      );
+                    }
+
+                    return _buildPemasukanList(pemasukanList);
+                  },
+                ),
+              ),
+            ],
           ),
           Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              onPressed: () {},
-              backgroundColor: Colors.blue,
-              child: const Icon(Icons.add, color: Colors.white),
+            right: 24,
+            bottom: 24,
+            child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(18))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 28),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [AppColors.primary, AppColors.primaryDark],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 2),
+                  ),
+                  child: const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 28),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Total Pemasukan',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Rp 0',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: -1.5,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.backgroundGray,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.divider.withValues(alpha: 0.3), width: 1),
+            ),
+            child: TextField(
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Cari pemasukan...',
+                hintStyle: TextStyle(
+                  color: AppColors.textSecondary.withValues(alpha: 0.6),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 12),
+                  child: Icon(
+                    Icons.search_rounded,
+                    color: AppColors.textSecondary.withValues(alpha: 0.5),
+                    size: 22,
+                  ),
+                ),
+                prefixIconConstraints: const BoxConstraints(minWidth: 50, minHeight: 50),
+                border: InputBorder.none,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(
+                    color: AppColors.primary.withValues(alpha: 0.5),
+                    width: 1.5,
+                  ),
+                ),
+                enabledBorder: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              ),
             ),
           ),
         ],
@@ -33,157 +223,244 @@ class PemasukanLainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPemasukanList() {
+  Widget _buildPemasukanList(List<Pemasukan> pemasukanList) {
     return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: pemasukanMock.length,
-      itemBuilder: (context, index) => _buildPemasukanCard(pemasukanMock[index]),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 100),
+      itemCount: pemasukanList.length,
+      itemBuilder: (context, index) {
+        final pemasukan = pemasukanList[index];
+        return _buildPemasukanCard(pemasukan);
+      },
     );
   }
 
   Widget _buildPemasukanCard(Pemasukan pemasukan) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPemasukanHeader(pemasukan),
-            const SizedBox(height: 12),
-            _buildPemasukanInfo(pemasukan),
-            const SizedBox(height: 12),
-            _buildPemasukanActions(pemasukan),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPemasukanHeader(Pemasukan pemasukan) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                pemasukan.judul,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(22),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(13),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary.withValues(alpha: 0.1),
+                        AppColors.primary.withValues(alpha: 0.05),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.15), width: 1),
+                  ),
+                  child: const Icon(Icons.account_balance_wallet_rounded, color: AppColors.primary, size: 24),
                 ),
+                const SizedBox(width: 18),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        pemasukan.judul,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          letterSpacing: -0.4,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryLight.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              pemasukan.kategori,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.primaryDark,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      NumberHelpers.formatCurrency(pemasukan.jumlah),
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                        letterSpacing: -0.5,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today_rounded,
+                          size: 11,
+                          color: AppColors.textHint.withValues(alpha: 0.7),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          DateHelpers.formatDateShort(pemasukan.tanggal),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textHint.withValues(alpha: 0.8),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 22),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  AppColors.divider.withValues(alpha: 0.3),
+                  Colors.transparent,
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(pemasukan.kategori, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-            ],
+            ),
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.green.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(16),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildActionButton(
+                    icon: Icons.edit_outlined,
+                    label: 'Edit',
+                    color: AppColors.textSecondary,
+                    onPressed: () => _navigateToForm(pemasukan: pemasukan),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 20,
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        AppColors.divider.withValues(alpha: 0.5),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: _buildActionButton(
+                    icon: Icons.visibility_outlined,
+                    label: 'Detail',
+                    color: AppColors.textSecondary,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PemasukanLainDetailPage(pemasukan: pemasukan),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 20,
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        AppColors.divider.withValues(alpha: 0.5),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: _buildActionButton(
+                    icon: Icons.delete_outline_rounded,
+                    label: 'Hapus',
+                    color: AppColors.primary,
+                    onPressed: () => _deletePemasukan(pemasukan.id),
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: Text(
-            'Masuk',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green[700]),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildPemasukanInfo(Pemasukan pemasukan) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildInfoItem('Jumlah', NumberHelpers.formatCurrency(pemasukan.jumlah)),
-        _buildInfoItem('Tanggal', DateHelpers.formatDateShort(pemasukan.tanggal)),
-      ],
-    );
-  }
-
-  Widget _buildPemasukanActions(Pemasukan pemasukan) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildSimpleActionButton(
-            Icons.visibility_outlined,
-            'Lihat',
-            Colors.grey,
-            pemasukan,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildSimpleActionButton(Icons.edit_outlined, 'Edit', Colors.blue, pemasukan),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildSimpleActionButton(Icons.delete_outline, 'Hapus', Colors.red, pemasukan),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSimpleActionButton(IconData icon, String label, Color color, Pemasukan pemasukan) {
-    return Builder(
-      builder: (context) => GestureDetector(
-        onTap: () {
-          if (label == 'Lihat') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PemasukanLainDetailPage(pemasukan: pemasukan),
-              ),
-            );
-          }
-        },
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(10),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: color, size: 18),
-              const SizedBox(height: 4),
+              Icon(icon, size: 17, color: color),
+              const SizedBox(width: 6),
               Text(
                 label,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color),
+                style: TextStyle(
+                  color: color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.2,
+                ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w600),
-        ),
-      ],
     );
   }
 }

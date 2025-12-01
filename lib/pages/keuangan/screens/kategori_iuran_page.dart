@@ -1,33 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:jawara_four/data/repositories/kategori_iuran_repository.dart';
+import 'package:jawara_four/data/models/kategori_iuran_model.dart';
+import '../screens/kategori_iuran_form_page.dart';
 
-import '../../../data/mocks/kategori_iuran_mocks.dart';
-import '../../../data/models/kategori_iuran_model.dart';
-
-class KategoriIuranPage extends StatelessWidget {
+class KategoriIuranPage extends StatefulWidget {
   const KategoriIuranPage({super.key});
+
+  @override
+  State<KategoriIuranPage> createState() => _KategoriIuranPageState();
+}
+
+class _KategoriIuranPageState extends State<KategoriIuranPage> {
+  final KategoriIuranRepository _repository = KategoriIuranRepository();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFFFFFFFF),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
-        child: _buildKategoriList(),
+      child: StreamBuilder<List<KategoriIuran>>(
+        stream: _repository.getKategoriStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final kategoriList = snapshot.data ?? [];
+
+          if (kategoriList.isEmpty) {
+            return const Center(child: Text('Belum ada kategori iuran'));
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+            child: _buildKategoriList(kategoriList),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildKategoriList() {
+  Widget _buildKategoriList(List<KategoriIuran> kategoriList) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: kategoriIuranMock.length,
-      itemBuilder: (context, index) => _buildKategoriCard(kategoriIuranMock[index]),
+      itemCount: kategoriList.length,
+      itemBuilder: (context, index) => _buildKategoriCard(kategoriList[index]),
     );
   }
 
   Widget _buildKategoriCard(KategoriIuran kategori) {
-    final statusColor = kategori.status == 'Aktif' ? Colors.green : Colors.orange;
+    final statusColor = kategori.status == 'Aktif'
+        ? Colors.green
+        : Colors.orange;
     final categoryColor = _getCategoryColor(kategori.warna);
 
     return Container(
@@ -51,7 +79,7 @@ class KategoriIuranPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 _buildKategoriInfo(kategori),
                 const SizedBox(height: 8),
-                _buildKategoriActions(),
+                _buildKategoriActions(kategori),
               ],
             ),
           ),
@@ -60,7 +88,11 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-  Widget _buildKategoriHeader(KategoriIuran kategori, Color statusColor, Color categoryColor) {
+  Widget _buildKategoriHeader(
+    KategoriIuran kategori,
+    Color statusColor,
+    Color categoryColor,
+  ) {
     return Row(
       children: [
         Container(
@@ -68,7 +100,10 @@ class KategoriIuranPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: categoryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: categoryColor.withValues(alpha: 0.3), width: 1),
+            border: Border.all(
+              color: categoryColor.withValues(alpha: 0.3),
+              width: 1,
+            ),
           ),
           child: Icon(Icons.category_rounded, color: categoryColor, size: 20),
         ),
@@ -86,7 +121,10 @@ class KategoriIuranPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(kategori.deskripsi, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(
+                kategori.deskripsi,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             ],
           ),
         ),
@@ -95,11 +133,18 @@ class KategoriIuranPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: statusColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
+            border: Border.all(
+              color: statusColor.withValues(alpha: 0.3),
+              width: 1,
+            ),
           ),
           child: Text(
             kategori.status.value,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: statusColor),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: statusColor,
+            ),
           ),
         ),
       ],
@@ -152,26 +197,66 @@ class KategoriIuranPage extends StatelessWidget {
     );
   }
 
-  Widget _buildKategoriActions() {
+  Widget _buildKategoriActions(KategoriIuran kategori) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.visibility_outlined, size: 18, color: Colors.blue),
-          tooltip: 'Lihat Detail',
-        ),
-        IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => KategoriIuranFormPage(kategori: kategori),
+              ),
+            );
+          },
           icon: const Icon(Icons.edit_outlined, size: 18, color: Colors.orange),
           tooltip: 'Edit',
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () => _showDeleteConfirmation(kategori),
           icon: const Icon(Icons.delete_outline, size: 18, color: Colors.red),
           tooltip: 'Hapus',
         ),
       ],
+    );
+  }
+
+  void _showDeleteConfirmation(KategoriIuran kategori) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Hapus Kategori'),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus kategori "${kategori.nama}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                await _repository.deleteKategori(kategori.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Kategori berhasil dihapus')),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Gagal menghapus: $e')),
+                  );
+                }
+              }
+            },
+            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 

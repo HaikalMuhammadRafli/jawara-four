@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum StatusTagihan {
   pending('Pending'),
   lunas('Lunas'),
@@ -74,23 +76,42 @@ class Tagihan {
 
   factory Tagihan.fromMap(Map<String, dynamic> map) {
     return Tagihan(
-      id: map['id'] as String,
-      judul: map['judul'] as String,
-      kategori: map['kategori'] as String,
-      total: map['total'] as int,
-      status: StatusTagihan.fromString(map['status'] as String),
-      tanggal: DateTime.parse(map['tanggal'] as String),
-      warga: map['warga'] as String,
-      kodeTagihan: map['kodeTagihan'] as String,
-      namaKeluarga: map['namaKeluarga'] as String,
-      statusKeluarga: map['statusKeluarga'] as String,
-      periode: map['periode'] as String,
-      alamat: map['alamat'] as String,
-      metodePembayaran: map['metodePembayaran'] as String,
-      bukti: map['bukti'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      id: map['id'] as String? ?? '',
+      judul: map['judul'] as String? ?? '',
+      kategori: map['kategori'] as String? ?? '',
+      total: map['total'] is int
+          ? map['total'] as int
+          : int.tryParse(map['total'].toString()) ?? 0,
+      status: StatusTagihan.fromString(map['status'] as String? ?? ''),
+      tanggal: _parseDate(map['tanggal']),
+      warga: map['warga'] as String? ?? '',
+      kodeTagihan: map['kodeTagihan'] as String? ?? '',
+      namaKeluarga: map['namaKeluarga'] as String? ?? '',
+      statusKeluarga: map['statusKeluarga'] as String? ?? '',
+      periode: map['periode'] as String? ?? '',
+      alamat: map['alamat'] as String? ?? '',
+      metodePembayaran: map['metodePembayaran'] as String? ?? '',
+      bukti: map['bukti'] as String? ?? '',
+      createdAt: _parseDate(map['createdAt']),
+      updatedAt: map['updatedAt'] != null ? _parseDate(map['updatedAt']) : null,
     );
+  }
+
+  static DateTime _parseDate(dynamic date) {
+    if (date == null) return DateTime.now();
+    if (date is DateTime) return date;
+    if (date is String) {
+      try {
+        return DateTime.parse(date);
+      } catch (e) {
+        try {
+          return DateFormat('dd/MM/yyyy').parse(date);
+        } catch (e) {
+          return DateTime.now();
+        }
+      }
+    }
+    return DateTime.now();
   }
 
   Tagihan copyWith({
