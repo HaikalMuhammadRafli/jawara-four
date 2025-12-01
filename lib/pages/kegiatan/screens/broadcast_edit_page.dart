@@ -5,24 +5,26 @@ import 'package:jawara_four/colors/app_colors.dart';
 import '../../../data/models/broadcast_model.dart';
 import '../../../data/repositories/broadcast_repository.dart';
 
-class BroadcastFormPage extends StatefulWidget {
-  const BroadcastFormPage({super.key});
+class BroadcastEditPage extends StatefulWidget {
+  final Broadcast broadcast;
+
+  const BroadcastEditPage({super.key, required this.broadcast});
 
   @override
-  State<BroadcastFormPage> createState() => _BroadcastFormPageState();
+  State<BroadcastEditPage> createState() => _BroadcastEditPageState();
 }
 
-class _BroadcastFormPageState extends State<BroadcastFormPage> {
+class _BroadcastEditPageState extends State<BroadcastEditPage> {
   final BroadcastRepository _repository = BroadcastRepository();
   final _formKey = GlobalKey<FormState>();
-  final _namaController = TextEditingController();
-  final _judulController = TextEditingController();
-  final _isiController = TextEditingController();
-  final _pengirimController = TextEditingController();
+  late final TextEditingController _namaController;
+  late final TextEditingController _judulController;
+  late final TextEditingController _isiController;
+  late final TextEditingController _pengirimController;
 
   String? _selectedKategori;
   String _selectedPrioritas = 'Rendah';
-  bool _isSubmitting = false;
+  bool _isUpdating = false;
 
   final List<String> _kategoriList = [
     'Pengumuman',
@@ -35,6 +37,17 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
   ];
 
   final List<String> _prioritasList = ['Rendah', 'Sedang', 'Tinggi'];
+
+  @override
+  void initState() {
+    super.initState();
+    _namaController = TextEditingController(text: widget.broadcast.nama);
+    _judulController = TextEditingController(text: widget.broadcast.judul);
+    _isiController = TextEditingController(text: widget.broadcast.isi);
+    _pengirimController = TextEditingController(text: widget.broadcast.pengirim);
+    _selectedKategori = widget.broadcast.kategori;
+    _selectedPrioritas = widget.broadcast.prioritas;
+  }
 
   @override
   void dispose() {
@@ -65,23 +78,20 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         return;
       }
 
-      setState(() => _isSubmitting = true);
+      setState(() => _isUpdating = true);
 
       try {
-        final now = DateTime.now();
-        final broadcast = Broadcast(
-          id: '',
+        final updatedBroadcast = widget.broadcast.copyWith(
           nama: _namaController.text.trim(),
           pengirim: _pengirimController.text.trim(),
           judul: _judulController.text.trim(),
           isi: _isiController.text.trim(),
           kategori: _selectedKategori!,
           prioritas: _selectedPrioritas,
-          tanggal: now,
-          createdAt: now,
+          updatedAt: DateTime.now(),
         );
 
-        await _repository.addBroadcast(broadcast.toMap());
+        await _repository.updateBroadcast(updatedBroadcast.id, updatedBroadcast.toMap());
 
         if (!mounted) return;
 
@@ -91,7 +101,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               children: [
                 Icon(Icons.check_circle_outline, color: Colors.white),
                 SizedBox(width: 12),
-                Expanded(child: Text('Broadcast berhasil dikirim!')),
+                Expanded(child: Text('Broadcast berhasil diperbarui!')),
               ],
             ),
             backgroundColor: AppColors.success,
@@ -111,7 +121,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Gagal mengirim broadcast: ${e.toString()}')),
+                Expanded(child: Text('Gagal memperbarui broadcast: ${e.toString()}')),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -122,7 +132,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         );
       } finally {
         if (mounted) {
-          setState(() => _isSubmitting = false);
+          setState(() => _isUpdating = false);
         }
       }
     }
@@ -140,7 +150,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Kirim Broadcast',
+          'Edit Broadcast',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -150,8 +160,8 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: _isSubmitting ? null : _submitForm,
-            icon: _isSubmitting
+            onPressed: _isUpdating ? null : _submitForm,
+            icon: _isUpdating
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -160,9 +170,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
-                : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
             label: Text(
-              _isSubmitting ? 'Mengirim...' : 'Kirim',
+              _isUpdating ? 'Menyimpan...' : 'Simpan',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -204,7 +214,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.campaign_rounded, color: Colors.white, size: 32),
+                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -212,7 +222,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Broadcast Pesan',
+                          'Edit Broadcast',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -222,7 +232,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Kirim pesan ke seluruh warga RT',
+                          'Perbarui informasi broadcast',
                           style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
@@ -239,6 +249,19 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             _buildCard(
               child: Column(
                 children: [
+                  _buildTextField(
+                    controller: _namaController,
+                    label: 'Nama Broadcast',
+                    hint: 'Contoh: Pengumuman Penting',
+                    icon: Icons.campaign_rounded,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nama broadcast harus diisi';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _judulController,
                     label: 'Judul Broadcast',
@@ -289,6 +312,25 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             ),
             const SizedBox(height: 24),
 
+            // Pengirim Section
+            _buildSectionTitle('Pengirim', Icons.person_outline_rounded),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: _buildTextField(
+                controller: _pengirimController,
+                label: 'Nama Pengirim',
+                hint: 'Contoh: Ketua RT',
+                icon: Icons.person_rounded,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama pengirim harus diisi';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(height: 24),
+
             // Prioritas Section
             _buildSectionTitle('Prioritas', Icons.flag_outlined),
             const SizedBox(height: 12),
@@ -335,10 +377,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.send_rounded, color: Colors.white, size: 22),
+                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
                         SizedBox(width: 12),
                         Text(
-                          'Kirim Broadcast',
+                          'Simpan Perubahan',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
