@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../../data/mocks/penerimaan_warga_mocks.dart';
 import '../../../../data/models/penerimaan_warga_model.dart';
+import '../../../../data/repositories/penerimaan_warga_repository.dart';
 
 class PenerimaanWargaPage extends StatefulWidget {
   const PenerimaanWargaPage({super.key});
@@ -13,6 +13,7 @@ class PenerimaanWargaPage extends StatefulWidget {
 }
 
 class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
+  final PenerimaanWargaRepository _repository = PenerimaanWargaRepository();
   String _searchQuery = '';
   String _selectedStatus = 'Semua';
 
@@ -107,43 +108,104 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
   }
 
   Widget _buildPenerimaanList() {
-    final List<PenerimaanWarga> data = penerimaanWargaMock.where((p) {
-      final matchesQuery =
-          _searchQuery.isEmpty ||
-          p.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          p.nik.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesStatus = _selectedStatus == 'Semua' || p.statusRegistrasi == _selectedStatus;
-      return matchesQuery && matchesStatus;
-    }).toList();
+    return StreamBuilder<List<PenerimaanWarga>>(
+      stream: _repository.getPenerimaanWargaStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (data.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.person_add_disabled_rounded,
-              size: 80,
-              color: AppColors.textSecondary.withValues(alpha: 0.3),
+        if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 64, color: AppColors.error),
+                const SizedBox(height: 16),
+                Text(
+                  'Terjadi kesalahan: ${snapshot.error}',
+                  style: TextStyle(color: AppColors.error),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Tidak ada data pendaftar',
-              style: TextStyle(
-                fontSize: 16,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+          );
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(20),
-      itemCount: data.length,
-      itemBuilder: (context, index) => _buildPenerimaanCard(data[index]),
+        final wargaList = snapshot.data ?? [];
+
+        if (wargaList.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person_add_disabled_rounded,
+                  size: 80,
+                  color: AppColors.textSecondary.withValues(alpha: 0.3),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Belum ada data pendaftar',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Filter data
+        final filteredList = wargaList.where((warga) {
+          final matchesSearch =
+              _searchQuery.isEmpty ||
+              warga.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              warga.nik.toLowerCase().contains(_searchQuery.toLowerCase());
+
+          final matchesStatus =
+              _selectedStatus == 'Semua' ||
+              (_selectedStatus == 'Diterima' &&
+                  warga.statusRegistrasi == StatusRegistrasi.disetujui) ||
+              (_selectedStatus == 'Pending' &&
+                  warga.statusRegistrasi == StatusRegistrasi.pending) ||
+              (_selectedStatus == 'Ditolak' && warga.statusRegistrasi == StatusRegistrasi.ditolak);
+
+          return matchesSearch && matchesStatus;
+        }).toList();
+
+        if (filteredList.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person_add_disabled_rounded,
+                  size: 80,
+                  color: AppColors.textSecondary.withValues(alpha: 0.3),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Tidak ada data yang sesuai',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(20),
+          itemCount: filteredList.length,
+          itemBuilder: (context, index) => _buildPenerimaanCard(filteredList[index]),
+        );
+      },
     );
   }
 
@@ -252,24 +314,19 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
                 child: _buildActionButton(
                   'Detail',
                   Icons.visibility_outlined,
-                  AppColors.primary,
+                  AppColors.textSecondary,
                   w,
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: _buildActionButton(
-                  'Terima',
-                  Icons.check_circle_outline,
-                  AppColors.success,
-                  w,
-                ),
+                child: _buildActionButton('Edit', Icons.edit_outlined, AppColors.primary, w),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _buildActionButton(
-                  'Tolak',
-                  Icons.cancel_outlined,
+                  'Hapus',
+                  Icons.delete_outline_rounded,
                   const Color(0xFFE53935),
                   w,
                 ),
@@ -309,8 +366,11 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
         onTap: () {
           if (label == 'Detail') {
             context.pushNamed('penerimaan-warga-detail', extra: warga);
+          } else if (label == 'Edit') {
+            context.pushNamed('penerimaan-warga-edit', extra: warga);
+          } else if (label == 'Hapus') {
+            _showDeleteDialog(warga);
           }
-          // Handle other actions
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(
@@ -338,6 +398,96 @@ class _PenerimaanWargaPageState extends State<PenerimaanWargaPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showDeleteDialog(PenerimaanWarga warga) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
+            const SizedBox(width: 12),
+            const Text(
+              'Hapus Pendaftar',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Yakin ingin menghapus pendaftar "${warga.nama}"?',
+              style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE53935).withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFE53935).withValues(alpha: 0.2), width: 1),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline_rounded, color: const Color(0xFFE53935), size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Tindakan ini tidak dapat dibatalkan',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: const Color(0xFFE53935),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                await _repository.deletePenerimaanWarga(warga.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Pendaftar berhasil dihapus'),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Gagal menghapus pendaftar: $e'),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
+              }
+            },
+            style: FilledButton.styleFrom(backgroundColor: const Color(0xFFE53935)),
+            child: const Text('Hapus'),
+          ),
+        ],
       ),
     );
   }

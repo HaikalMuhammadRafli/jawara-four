@@ -1,316 +1,225 @@
 import 'package:flutter/material.dart';
 
+import '../../../../colors/app_colors.dart';
 import '../../../../data/models/penerimaan_warga_model.dart';
+import '../../../../data/repositories/penerimaan_warga_repository.dart';
+import '../../../../utils/date_helpers.dart';
 
-class PenerimaanWargaDetailPage extends StatelessWidget {
+class PenerimaanWargaDetailPage extends StatefulWidget {
   final PenerimaanWarga warga;
 
   const PenerimaanWargaDetailPage({super.key, required this.warga});
 
+  @override
+  State<PenerimaanWargaDetailPage> createState() => _PenerimaanWargaDetailPageState();
+}
+
+class _PenerimaanWargaDetailPageState extends State<PenerimaanWargaDetailPage> {
+  final _repository = PenerimaanWargaRepository();
+  bool _isUpdating = false;
+
   Color _getStatusColor() {
-    switch (warga.statusRegistrasi.value.toLowerCase()) {
-      case 'diterima':
-        return const Color(0xFF43A047);
-      case 'pending':
-        return const Color(0xFFFB8C00);
-      case 'ditolak':
-        return const Color(0xFFE53935);
-      default:
-        return Colors.grey;
+    switch (widget.warga.statusRegistrasi) {
+      case StatusRegistrasi.disetujui:
+        return Colors.green;
+      case StatusRegistrasi.pending:
+        return Colors.orange;
+      case StatusRegistrasi.ditolak:
+        return Colors.red;
+    }
+  }
+
+  String _getStatusText() {
+    switch (widget.warga.statusRegistrasi) {
+      case StatusRegistrasi.disetujui:
+        return 'Disetujui';
+      case StatusRegistrasi.pending:
+        return 'Pending';
+      case StatusRegistrasi.ditolak:
+        return 'Ditolak';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = _getStatusColor();
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      body: CustomScrollView(
-        slivers: [
-          _buildSliverAppBar(context, statusColor),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildPhotoCard(),
-                  const SizedBox(height: 16),
-                  _buildPersonalInfoCard(),
-                  const SizedBox(height: 16),
-                  _buildStatusCard(statusColor),
-                  const SizedBox(height: 16),
-                  _buildActionButtons(context, statusColor),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
+      backgroundColor: const Color(0xFFFFFFFF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+        ),
+        title: const Text(
+          'Detail Pendaftaran',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
-        ],
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeaderCard(),
+            const SizedBox(height: 16),
+            _buildInfoCard(),
+            const SizedBox(height: 16),
+            _buildStatusCard(),
+            const SizedBox(height: 16),
+            if (widget.warga.statusRegistrasi == StatusRegistrasi.pending)
+              _buildActionButtons(context),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSliverAppBar(BuildContext context, Color statusColor) {
-    return SliverAppBar(
-      expandedHeight: 200,
-      floating: false,
-      pinned: true,
-      backgroundColor: statusColor,
-      leading: Container(
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          padding: EdgeInsets.zero,
-        ),
+  Widget _buildHeaderCard() {
+    final statusColor = _getStatusColor();
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[300]!, width: 1),
       ),
-      flexibleSpace: FlexibleSpaceBar(
-        background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [statusColor, statusColor.withValues(alpha: 0.7)],
-            ),
-          ),
-          child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Positioned(
-                right: -50,
-                top: -50,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Icon(
-                  Icons.person_add_alt_1_rounded,
-                  size: 200,
-                  color: Colors.white.withValues(alpha: 0.1),
+                  Icons.person_add_rounded,
+                  color: statusColor,
+                  size: 24,
                 ),
               ),
-              Center(
+              const SizedBox(width: 16),
+              Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 3),
-                      ),
-                      child: const Icon(
-                        Icons.person_add_alt_1_rounded,
-                        size: 52,
-                        color: Colors.white,
+                    Text(
+                      widget.warga.nama,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        'PENERIMAAN WARGA',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.warga.nik,
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPhotoCard() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Foto Identitas',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: Container(
-              width: double.infinity,
-              height: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey[300]!, width: 2),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: Image.network(
-                  warga.fotoIdentitas,
-                  fit: BoxFit.cover,
-                  errorBuilder: (c, e, s) => Container(
-                    color: Colors.grey[100],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.person_rounded, size: 80, color: Colors.grey[400]),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Foto tidak tersedia',
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPersonalInfoCard() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Informasi Pendaftar',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
-          ),
-          const SizedBox(height: 20),
-          _buildInfoItem(Icons.person_outline, 'Nama Lengkap', warga.nama, Colors.blue),
-          const SizedBox(height: 16),
-          _buildInfoItem(Icons.badge_outlined, 'NIK', warga.nik, Colors.purple),
-          const SizedBox(height: 16),
-          _buildInfoItem(Icons.email_outlined, 'Email', warga.email, Colors.orange),
-          const SizedBox(height: 16),
-          _buildInfoItem(
-            warga.jenisKelamin == 'Laki-laki' ? Icons.male_rounded : Icons.female_rounded,
-            'Jenis Kelamin',
-            warga.jenisKelamin.value,
-            warga.jenisKelamin == 'Laki-laki' ? Colors.blue : Colors.pink,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoItem(IconData icon, String label, String value, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.1), width: 1),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
+                child: Text(
+                  _getStatusText(),
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: statusColor,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildStatusCard(Color statusColor) {
+  Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Informasi Pendaftaran',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow('Nama Lengkap', widget.warga.nama),
+          const SizedBox(height: 12),
+          _buildInfoRow('NIK', widget.warga.nik),
+          const SizedBox(height: 12),
+          _buildInfoRow('Email', widget.warga.email),
+          const SizedBox(height: 12),
+          _buildInfoRow('Jenis Kelamin', widget.warga.jenisKelamin.value),
+          const SizedBox(height: 12),
+          _buildInfoRow('Tanggal Daftar', DateHelpers.formatDate(widget.warga.createdAt)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusCard() {
+    final statusColor = _getStatusColor();
+    String statusMessage;
+    IconData statusIcon;
+
+    switch (widget.warga.statusRegistrasi) {
+      case StatusRegistrasi.disetujui:
+        statusMessage = 'Pendaftaran telah disetujui';
+        statusIcon = Icons.check_circle;
+        break;
+      case StatusRegistrasi.pending:
+        statusMessage = 'Menunggu persetujuan admin';
+        statusIcon = Icons.schedule;
+        break;
+      case StatusRegistrasi.ditolak:
+        statusMessage = 'Pendaftaran ditolak';
+        statusIcon = Icons.cancel;
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: statusColor.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: statusColor.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: statusColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(_getStatusIcon(), color: statusColor, size: 32),
-          ),
+          Icon(statusIcon, color: statusColor, size: 24),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Status Registrasi',
+                Text(
+                  'Status Pendaftaran',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -319,13 +228,8 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  warga.statusRegistrasi.value,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: statusColor),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  _getStatusDescription(),
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  statusMessage,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
@@ -335,102 +239,92 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
     );
   }
 
-  IconData _getStatusIcon() {
-    switch (warga.statusRegistrasi.value.toLowerCase()) {
-      case 'diterima':
-        return Icons.check_circle;
-      case 'pending':
-        return Icons.hourglass_empty;
-      case 'ditolak':
-        return Icons.cancel;
-      default:
-        return Icons.help_outline;
-    }
-  }
-
-  String _getStatusDescription() {
-    switch (warga.statusRegistrasi.value.toLowerCase()) {
-      case 'diterima':
-        return 'Pendaftaran telah disetujui';
-      case 'pending':
-        return 'Menunggu verifikasi';
-      case 'ditolak':
-        return 'Pendaftaran tidak disetujui';
-      default:
-        return 'Status tidak diketahui';
-    }
-  }
-
-  Widget _buildActionButtons(BuildContext context, Color statusColor) {
-    if (warga.statusRegistrasi.value.toLowerCase() == 'pending') {
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: _buildActionButton(
-                  'Terima Pendaftaran',
-                  Icons.check_circle_outline,
-                  const Color(0xFF43A047),
-                  () {
-                    _showConfirmDialog(
-                      context,
-                      'Terima Pendaftaran',
-                      'Apakah Anda yakin ingin menerima pendaftaran warga ini?',
-                      const Color(0xFF43A047),
-                    );
-                  },
-                ),
-              ),
-            ],
+  Widget _buildActionButtons(BuildContext context) {
+    if (_isUpdating) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: AppColors.textSecondary.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+            ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildActionButton(
-                  'Tolak Pendaftaran',
-                  Icons.cancel_outlined,
-                  const Color(0xFFE53935),
-                  () {
-                    _showConfirmDialog(
-                      context,
-                      'Tolak Pendaftaran',
-                      'Apakah Anda yakin ingin menolak pendaftaran warga ini?',
-                      const Color(0xFFE53935),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
+        ),
       );
-    } else {
-      return _buildActionButton('Ubah Status', Icons.edit_outlined, Colors.blue, () {
-        // TODO: Navigate to edit status page
-      });
     }
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildActionButton(
+            context,
+            'Terima',
+            Icons.check_circle_outline,
+            Colors.green,
+            () => _showConfirmDialog(
+              context,
+              'Terima Pendaftaran',
+              'Apakah Anda yakin ingin menerima pendaftaran ini?',
+              Colors.green,
+              StatusRegistrasi.disetujui,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildActionButton(
+            context,
+            'Tolak',
+            Icons.cancel_outlined,
+            Colors.red,
+            () => _showConfirmDialog(
+              context,
+              'Tolak Pendaftaran',
+              'Apakah Anda yakin ingin menolak pendaftaran ini?',
+              Colors.red,
+              StatusRegistrasi.ditolak,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
           children: [
-            Icon(icon, color: color, size: 22),
-            const SizedBox(width: 12),
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -438,50 +332,123 @@ class PenerimaanWargaDetailPage extends StatelessWidget {
     );
   }
 
-  void _showConfirmDialog(BuildContext context, String title, String message, Color color) {
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+            textAlign: TextAlign.end,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showConfirmDialog(
+    BuildContext context,
+    String title,
+    String message,
+    Color color,
+    StatusRegistrasi newStatus,
+  ) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.help_outline, color: color, size: 24),
-              ),
-              const SizedBox(width: 12),
-              Expanded(child: Text(title, style: const TextStyle(fontSize: 18))),
-            ],
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(title),
           content: Text(message),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Batal',
-                style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w600),
-              ),
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Batal'),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Return to previous page
-                // TODO: Implement accept/reject functionality
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+
+                setState(() {
+                  _isUpdating = true;
+                });
+
+                try {
+                  await _repository.updateStatusPenerimaanWarga(
+                    widget.warga.id,
+                    newStatus.value,
+                  );
+
+                  if (!mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          const Icon(Icons.check_circle_outline, color: Colors.white),
+                          const SizedBox(width: 12),
+                          Text('Status berhasil diperbarui menjadi ${newStatus.value}'),
+                        ],
+                      ),
+                      backgroundColor: AppColors.success,
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  );
+
+                  Navigator.of(context).pop();
+                } catch (e) {
+                  if (!mounted) return;
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.white),
+                          const SizedBox(width: 12),
+                          Expanded(child: Text('Gagal memperbarui status: $e')),
+                        ],
+                      ),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  );
+                } finally {
+                  if (mounted) {
+                    setState(() {
+                      _isUpdating = false;
+                    });
+                  }
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: color,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              child: const Text(
-                'Ya, Lanjutkan',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-              ),
+              child: const Text('Ya, Lanjutkan'),
             ),
           ],
         );
