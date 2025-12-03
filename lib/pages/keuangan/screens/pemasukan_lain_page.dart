@@ -21,9 +21,7 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
   void _navigateToForm({Pemasukan? pemasukan}) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => PemasukanLainFormPage(pemasukan: pemasukan),
-      ),
+      MaterialPageRoute(builder: (context) => PemasukanLainFormPage(pemasukan: pemasukan)),
     );
   }
 
@@ -34,10 +32,7 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
         title: const Text('Hapus Pemasukan'),
         content: const Text('Apakah Anda yakin ingin menghapus data ini?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Batal'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -61,10 +56,7 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Gagal menghapus: $e'),
-              backgroundColor: AppColors.error,
-            ),
+            SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: AppColors.error),
           );
         }
       }
@@ -89,9 +81,7 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
                     }
 
                     if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Terjadi kesalahan: ${snapshot.error}'),
-                      );
+                      return Center(child: Text('Terjadi kesalahan: ${snapshot.error}'));
                     }
 
                     final pemasukanList = snapshot.data ?? [];
@@ -114,7 +104,25 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
           Positioned(
             right: 24,
             bottom: 24,
-            child: Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(18))),
+            child: Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
+              child: FloatingActionButton.extended(
+                heroTag: null,
+                onPressed: _navigateToForm,
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+                icon: const Icon(Icons.add_rounded, color: Colors.white, size: 24),
+                label: const Text(
+                  'Tambah',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -130,51 +138,61 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
       ),
       child: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 28),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primary, AppColors.primaryDark],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 2),
+          StreamBuilder<List<Pemasukan>>(
+            stream: _repository.getPemasukanStream(),
+            builder: (context, snapshot) {
+              int totalPemasukan = 0;
+              if (snapshot.hasData && snapshot.data != null) {
+                totalPemasukan = snapshot.data!.fold(0, (sum, item) => sum + item.jumlah);
+              }
+
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 28),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, AppColors.primaryDark],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 28),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Total Pemasukan',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 1.2,
-                  ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 2),
+                      ),
+                      child: const Icon(Icons.arrow_upward_rounded, color: Colors.white, size: 28),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Total Pemasukan',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      NumberHelpers.formatCurrency(totalPemasukan),
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: -1.5,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Rp 0',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    letterSpacing: -1.5,
-                    height: 1.2,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
           const SizedBox(height: 24),
           Container(
@@ -262,7 +280,11 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: AppColors.primary.withValues(alpha: 0.15), width: 1),
                   ),
-                  child: const Icon(Icons.account_balance_wallet_rounded, color: AppColors.primary, size: 24),
+                  child: const Icon(
+                    Icons.account_balance_wallet_rounded,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 18),
                 Expanded(
@@ -391,8 +413,7 @@ class _PemasukanLainPageState extends State<PemasukanLainPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              PemasukanLainDetailPage(pemasukan: pemasukan),
+                          builder: (context) => PemasukanLainDetailPage(pemasukan: pemasukan),
                         ),
                       );
                     },
