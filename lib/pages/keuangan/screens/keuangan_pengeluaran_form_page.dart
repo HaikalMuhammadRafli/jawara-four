@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
+import 'package:jawara_four/data/models/pengeluaran_model.dart';
+import 'package:jawara_four/data/repositories/pengeluaran_repository.dart';
 
 class KeuanganPengeluaranFormPage extends StatefulWidget {
-  const KeuanganPengeluaranFormPage({super.key});
+  final Pengeluaran? pengeluaran;
+  
+  const KeuanganPengeluaranFormPage({super.key, this.pengeluaran});
 
   @override
   State<KeuanganPengeluaranFormPage> createState() =>
@@ -17,6 +21,7 @@ class _KeuanganPengeluaranFormPageState
   final _nominalController = TextEditingController();
   final _penerimaPembayaranController = TextEditingController();
   final _keteranganController = TextEditingController();
+  final _repository = PengeluaranRepository();
 
   String? _selectedKategori;
   DateTime? _selectedTanggal;
@@ -41,6 +46,17 @@ class _KeuanganPengeluaranFormPageState
     'E-Wallet',
     'Cek',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pengeluaran != null) {
+      _judulController.text = widget.pengeluaran!.nama;
+      _nominalController.text = widget.pengeluaran!.nominal.toString();
+      _selectedKategori = widget.pengeluaran!.jenis;
+      _selectedTanggal = widget.pengeluaran!.tanggal;
+    }
+  }
 
   @override
   void dispose() {
@@ -77,7 +93,7 @@ class _KeuanganPengeluaranFormPageState
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedTanggal == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -99,25 +115,91 @@ class _KeuanganPengeluaranFormPageState
         return;
       }
 
-      // TODO: Simpan data pengeluaran
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Pengeluaran berhasil ditambahkan!'),
-            ],
+      if (_selectedKategori == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Silakan pilih kategori pengeluaran'),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
+        );
+        return;
+      }
 
-      context.pop();
+      try {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) =>
+              const Center(child: CircularProgressIndicator()),
+        );
+
+        final pengeluaran = Pengeluaran(
+          id: widget.pengeluaran?.id ?? '',
+          nama: _judulController.text.trim(),
+          jenis: _selectedKategori!,
+          nominal: int.parse(_nominalController.text.trim()),
+          tanggal: _selectedTanggal!,
+          createdAt: widget.pengeluaran?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        if (widget.pengeluaran != null) {
+          await _repository.updatePengeluaran(pengeluaran);
+        } else {
+          await _repository.addPengeluaran(pengeluaran);
+        }
+
+        if (mounted) {
+          Navigator.pop(context); // Close loading dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Text(
+                    widget.pengeluaran != null
+                        ? 'Pengeluaran berhasil diperbarui!'
+                        : 'Pengeluaran berhasil ditambahkan!',
+                  ),
+                ],
+              ),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context); // Close loading dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text('Gagal menyimpan: $e')),
+                ],
+              ),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -132,9 +214,9 @@ class _KeuanganPengeluaranFormPageState
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
-          'Tambah Pengeluaran',
-          style: TextStyle(
+        title: Text(
+          widget.pengeluaran != null ? 'Edit Pengeluaran' : 'Tambah Pengeluaran',
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: Colors.white,
