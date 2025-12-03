@@ -162,12 +162,6 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => CustomScaffold(
         state: state,
         appBar: CustomPushAppbar(title: 'Pengeluaran'),
-        floatingActionButton: const CustomFab(
-          label: 'Tambah Pengeluaran',
-          icon: Icons.trending_down_rounded,
-          routeName: 'keuangan-pengeluaran-form',
-          backgroundColor: Color(0xFFE53935),
-        ),
         child: KeuanganPengeluaranPage(),
       ),
     ),
