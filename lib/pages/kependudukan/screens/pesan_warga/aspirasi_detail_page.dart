@@ -1,38 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../colors/app_colors.dart';
-import '../../../data/models/kegiatan_model.dart';
-import '../../../data/repositories/kegiatan_repository.dart';
-import '../../../utils/date_helpers.dart';
+import '../../../../colors/app_colors.dart';
+import '../../../../data/models/aspirasi_model.dart';
+import '../../../../data/repositories/aspirasi_repository.dart';
+import '../../../../utils/date_helpers.dart';
 
-class KegiatanDetailPage extends StatefulWidget {
-  final Kegiatan kegiatan;
+class AspirasiDetailPage extends StatefulWidget {
+  final Aspirasi aspirasi;
 
-  const KegiatanDetailPage({super.key, required this.kegiatan});
+  const AspirasiDetailPage({super.key, required this.aspirasi});
 
   @override
-  State<KegiatanDetailPage> createState() => _KegiatanDetailPageState();
+  State<AspirasiDetailPage> createState() => _AspirasiDetailPageState();
 }
 
-class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
-  final _repository = KegiatanRepository();
-  bool _isDeleting = false;
+class _AspirasiDetailPageState extends State<AspirasiDetailPage> {
+  final AspirasiRepository _repository = AspirasiRepository();
+  bool _isUpdating = false;
 
-  Color _getKategoriColor() {
-    switch (widget.kegiatan.kategori.toLowerCase()) {
-      case 'sosial':
-        return Colors.blue;
-      case 'keamanan':
-        return Colors.red;
-      case 'kebersihan':
+  Color _getStatusColor() {
+    switch (widget.aspirasi.status) {
+      case StatusAspirasi.selesai:
         return Colors.green;
-      case 'olahraga':
+      case StatusAspirasi.diproses:
+        return Colors.blue;
+      case StatusAspirasi.ditolak:
+        return Colors.red;
+      case StatusAspirasi.pending:
         return Colors.orange;
-      case 'keagamaan':
-        return Colors.purple;
-      default:
-        return AppColors.primary;
+    }
+  }
+
+  String _getStatusText() {
+    switch (widget.aspirasi.status) {
+      case StatusAspirasi.selesai:
+        return 'Selesai';
+      case StatusAspirasi.diproses:
+        return 'Diproses';
+      case StatusAspirasi.ditolak:
+        return 'Ditolak';
+      case StatusAspirasi.pending:
+        return 'Pending';
     }
   }
 
@@ -48,7 +56,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
         ),
         title: const Text(
-          'Detail Kegiatan',
+          'Detail Aspirasi',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87),
         ),
         centerTitle: true,
@@ -62,9 +70,11 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
             const SizedBox(height: 16),
             _buildInfoCard(),
             const SizedBox(height: 16),
-            _buildDescriptionCard(),
+            _buildContentCard(),
             const SizedBox(height: 16),
-            _buildActionButtons(context),
+            _buildStatusCard(),
+            const SizedBox(height: 16),
+            if (widget.aspirasi.status == StatusAspirasi.pending) _buildActionButtons(context),
           ],
         ),
       ),
@@ -72,7 +82,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
   }
 
   Widget _buildHeaderCard() {
-    final kategoriColor = _getKategoriColor();
+    final statusColor = _getStatusColor();
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -88,10 +98,10 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: kategoriColor.withValues(alpha: 0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.event, color: kategoriColor, size: 24),
+                child: Icon(Icons.campaign, color: statusColor, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -99,7 +109,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.kegiatan.nama,
+                      widget.aspirasi.judul,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -108,7 +118,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      widget.kegiatan.kategori,
+                      widget.aspirasi.kategori,
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
@@ -117,12 +127,12 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: kategoriColor.withValues(alpha: 0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  widget.kegiatan.kategori,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kategoriColor),
+                  _getStatusText(),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),
             ],
@@ -144,27 +154,23 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Informasi Kegiatan',
+            'Informasi Pengaju',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Nama Kegiatan', widget.kegiatan.nama),
+          _buildInfoRow('Pengirim', widget.aspirasi.isAnonim ? 'Anonim' : widget.aspirasi.pengirim),
           const SizedBox(height: 12),
-          _buildInfoRow('Kategori', widget.kegiatan.kategori),
+          _buildInfoRow('Kategori', widget.aspirasi.kategori),
           const SizedBox(height: 12),
-          _buildInfoRow('Penanggung Jawab', widget.kegiatan.penanggungJawab),
+          _buildInfoRow('Kontak', widget.aspirasi.kontak),
           const SizedBox(height: 12),
-          _buildInfoRow('Lokasi', widget.kegiatan.lokasi),
-          const SizedBox(height: 12),
-          _buildInfoRow('Jumlah Peserta', '${widget.kegiatan.peserta} orang'),
-          const SizedBox(height: 12),
-          _buildInfoRow('Tanggal', DateHelpers.formatDate(widget.kegiatan.tanggal)),
+          _buildInfoRow('Tanggal', DateHelpers.formatDate(widget.aspirasi.tanggalDibuat)),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionCard() {
+  Widget _buildContentCard() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -176,12 +182,12 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Deskripsi Kegiatan',
+            'Isi Aspirasi',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 12),
           Text(
-            widget.kegiatan.deskripsi,
+            widget.aspirasi.isi,
             style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.5),
           ),
         ],
@@ -189,8 +195,65 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
     );
   }
 
+  Widget _buildStatusCard() {
+    final statusColor = _getStatusColor();
+    String statusMessage;
+    IconData statusIcon;
+
+    switch (widget.aspirasi.status) {
+      case StatusAspirasi.selesai:
+        statusMessage = 'Aspirasi telah selesai ditangani';
+        statusIcon = Icons.check_circle;
+        break;
+      case StatusAspirasi.diproses:
+        statusMessage = 'Aspirasi sedang diproses';
+        statusIcon = Icons.settings;
+        break;
+      case StatusAspirasi.ditolak:
+        statusMessage = 'Aspirasi ditolak';
+        statusIcon = Icons.cancel;
+        break;
+      case StatusAspirasi.pending:
+        statusMessage = 'Menunggu review admin';
+        statusIcon = Icons.schedule;
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Row(
+        children: [
+          Icon(statusIcon, color: statusColor, size: 24),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Status Aspirasi',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(statusMessage, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildActionButtons(BuildContext context) {
-    if (_isDeleting) {
+    if (_isUpdating) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
@@ -213,18 +276,22 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
     return Row(
       children: [
         Expanded(
-          child: _buildActionButton(context, 'Edit Kegiatan', Icons.edit_outlined, Colors.blue, () {
-            context.pushNamed('kegiatan-edit', extra: widget.kegiatan);
-          }),
+          child: _buildActionButton(
+            context,
+            'Proses',
+            Icons.settings,
+            Colors.blue,
+            () => _updateStatus(StatusAspirasi.diproses),
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildActionButton(
             context,
-            'Hapus Kegiatan',
-            Icons.delete_outline,
+            'Tolak',
+            Icons.cancel_outlined,
             Colors.red,
-            () => _showDeleteDialog(context),
+            () => _updateStatus(StatusAspirasi.ditolak),
           ),
         ),
       ],
@@ -285,85 +352,57 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
     );
   }
 
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Hapus Kegiatan'),
-          content: const Text('Apakah Anda yakin ingin menghapus kegiatan ini?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Batal'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(dialogContext).pop();
+  Future<void> _updateStatus(StatusAspirasi newStatus) async {
+    setState(() {
+      _isUpdating = true;
+    });
 
-                setState(() {
-                  _isDeleting = true;
-                });
+    try {
+      await _repository.updateStatusAspirasi(widget.aspirasi.id, newStatus.value);
 
-                try {
-                  await _repository.deleteKegiatan(widget.kegiatan.id);
+      if (!mounted) return;
 
-                  if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Text('Status berhasil diperbarui menjadi ${newStatus.value}'),
+            ],
+          ),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Row(
-                        children: [
-                          Icon(Icons.check_circle_outline, color: Colors.white),
-                          SizedBox(width: 12),
-                          Text('Kegiatan berhasil dihapus'),
-                        ],
-                      ),
-                      backgroundColor: AppColors.success,
-                      behavior: SnackBarBehavior.floating,
-                      duration: const Duration(seconds: 3),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  );
+      Navigator.of(context).pop();
+    } catch (e) {
+      if (!mounted) return;
 
-                  Navigator.of(context).pop();
-                } catch (e) {
-                  if (!mounted) return;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Row(
-                        children: [
-                          const Icon(Icons.error_outline, color: Colors.white),
-                          const SizedBox(width: 12),
-                          Expanded(child: Text('Gagal menghapus: $e')),
-                        ],
-                      ),
-                      backgroundColor: AppColors.error,
-                      behavior: SnackBarBehavior.floating,
-                      duration: const Duration(seconds: 4),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  );
-                } finally {
-                  if (mounted) {
-                    setState(() {
-                      _isDeleting = false;
-                    });
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Hapus'),
-            ),
-          ],
-        );
-      },
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(child: Text('Gagal memperbarui status: $e')),
+            ],
+          ),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUpdating = false;
+        });
+      }
+    }
   }
 }

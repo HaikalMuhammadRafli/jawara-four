@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
+import '../../../data/repositories/pemasukan_repository.dart';
+import '../../../data/models/pemasukan_model.dart';
+
 class PemasukanLainFormPage extends StatefulWidget {
-  const PemasukanLainFormPage({super.key});
+  final Pemasukan? pemasukan;
+  const PemasukanLainFormPage({super.key, this.pemasukan});
 
   @override
   State<PemasukanLainFormPage> createState() => _PemasukanLainFormPageState();
 }
 
 class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
+  final _repository = PemasukanRepository();
   final _formKey = GlobalKey<FormState>();
   final _sumberController = TextEditingController();
   final _nominalController = TextEditingController();
@@ -27,6 +32,18 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
     'Denda',
     'Lainnya',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pemasukan != null) {
+      _sumberController.text = widget.pemasukan!.judul;
+      _nominalController.text = widget.pemasukan!.jumlah.toString();
+      _keteranganController.text = widget.pemasukan!.keterangan;
+      _selectedKategori = widget.pemasukan!.kategori;
+      _selectedTanggal = widget.pemasukan!.tanggal;
+    }
+  }
 
   @override
   void dispose() {
@@ -62,7 +79,7 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedTanggal == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -84,34 +101,83 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
         return;
       }
 
-      // TODO: Simpan data pemasukan
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Pemasukan berhasil ditambahkan!'),
-            ],
-          ),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
+      try {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) =>
+              const Center(child: CircularProgressIndicator()),
+        );
 
-      context.pop();
+        final pemasukan = Pemasukan(
+          id: widget.pemasukan?.id ?? '',
+          judul: _sumberController.text,
+          kategori: _selectedKategori!,
+          jumlah: int.parse(_nominalController.text),
+          tanggal: _selectedTanggal!,
+          keterangan: _keteranganController.text,
+          nama: 'Admin', // Default user
+          jenisPemasukan: 'Lainnya',
+          createdAt: widget.pemasukan?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+        if (widget.pemasukan != null) {
+          await _repository.updatePemasukan(pemasukan);
+        } else {
+          await _repository.addPemasukan(pemasukan);
+        }
+
+        if (mounted) {
+          Navigator.pop(context); // Close loading dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Text(
+                    widget.pemasukan != null
+                        ? 'Pemasukan berhasil diperbarui!'
+                        : 'Pemasukan berhasil ditambahkan!',
+                  ),
+                ],
+              ),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          );
+          context.pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.pop(context); // Close loading dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text('Gagal menyimpan: $e')),
+                ],
+              ),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        }
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.success,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
@@ -155,31 +221,21 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.success, AppColors.success.withValues(alpha: 0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.success.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                border: Border.all(color: AppColors.divider, width: 1),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: AppColors.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.account_balance_wallet_rounded,
-                      color: Colors.white,
+                      color: AppColors.success,
                       size: 32,
                     ),
                   ),
@@ -193,7 +249,7 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             letterSpacing: -0.3,
                           ),
                         ),
@@ -202,7 +258,7 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
                           'Catat pemasukan di luar iuran rutin',
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.white70,
+                            color: AppColors.textSecondary,
                             letterSpacing: 0.2,
                           ),
                         ),
@@ -298,19 +354,8 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             Container(
               height: 52,
               decoration: BoxDecoration(
+                color: AppColors.success,
                 borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  colors: [AppColors.success, AppColors.success.withValues(alpha: 0.8)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.success.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
               child: Material(
                 color: Colors.transparent,
@@ -380,14 +425,7 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: child,
     );
@@ -436,11 +474,15 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -499,11 +541,15 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -535,7 +581,10 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.success),
+          icon: const Icon(
+            Icons.arrow_drop_down_rounded,
+            color: AppColors.success,
+          ),
           dropdownColor: AppColors.background,
         ),
       ],
@@ -572,7 +621,9 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
+                border: Border.all(
+                  color: AppColors.divider.withValues(alpha: 0.6),
+                ),
               ),
               child: Row(
                 children: [
@@ -606,4 +657,3 @@ class _PemasukanLainFormPageState extends State<PemasukanLainFormPage> {
     );
   }
 }
-

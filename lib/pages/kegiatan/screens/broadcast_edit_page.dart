@@ -2,122 +2,137 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../data/repositories/kategori_iuran_repository.dart';
-import 'package:jawara_four/data/models/kategori_iuran_model.dart';
+import '../../../data/models/broadcast_model.dart';
+import '../../../data/repositories/broadcast_repository.dart';
 
-class KategoriIuranFormPage extends StatefulWidget {
-  final KategoriIuran? kategori;
-  const KategoriIuranFormPage({super.key, this.kategori});
+class BroadcastEditPage extends StatefulWidget {
+  final Broadcast broadcast;
+
+  const BroadcastEditPage({super.key, required this.broadcast});
 
   @override
-  State<KategoriIuranFormPage> createState() => _KategoriIuranFormPageState();
+  State<BroadcastEditPage> createState() => _BroadcastEditPageState();
 }
 
-class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
-  final _repository = KategoriIuranRepository();
+class _BroadcastEditPageState extends State<BroadcastEditPage> {
+  final BroadcastRepository _repository = BroadcastRepository();
   final _formKey = GlobalKey<FormState>();
-  final _namaKategoriController = TextEditingController();
-  final _nominalController = TextEditingController();
-  final _keteranganController = TextEditingController();
+  late final TextEditingController _namaController;
+  late final TextEditingController _judulController;
+  late final TextEditingController _isiController;
+  late final TextEditingController _pengirimController;
 
-  String? _selectedPeriode;
-  bool _isActive = true;
+  String? _selectedKategori;
+  String _selectedPrioritas = 'Rendah';
+  bool _isUpdating = false;
 
-  final List<String> _periodeList = [
-    'Bulanan',
-    'Triwulan',
-    'Semesteran',
-    'Tahunan',
-    'Insidental',
+  final List<String> _kategoriList = [
+    'Pengumuman',
+    'Informasi',
+    'Keagamaan',
+    'Kebersihan',
+    'Keuangan',
+    'Keamanan',
+    'Lainnya',
   ];
+
+  final List<String> _prioritasList = ['Rendah', 'Sedang', 'Tinggi'];
 
   @override
   void initState() {
     super.initState();
-    if (widget.kategori != null) {
-      _namaKategoriController.text = widget.kategori!.nama;
-      _nominalController.text = widget.kategori!.nominal;
-      _keteranganController.text = widget.kategori!.deskripsi;
-      _selectedPeriode = widget.kategori!.periode;
-      _isActive = widget.kategori!.status == StatusKategori.aktif;
-    }
+    _namaController = TextEditingController(text: widget.broadcast.nama);
+    _judulController = TextEditingController(text: widget.broadcast.judul);
+    _isiController = TextEditingController(text: widget.broadcast.isi);
+    _pengirimController = TextEditingController(text: widget.broadcast.pengirim);
+    _selectedKategori = widget.broadcast.kategori;
+    _selectedPrioritas = widget.broadcast.prioritas;
   }
 
   @override
   void dispose() {
-    _namaKategoriController.dispose();
-    _nominalController.dispose();
-    _keteranganController.dispose();
+    _namaController.dispose();
+    _judulController.dispose();
+    _isiController.dispose();
+    _pengirimController.dispose();
     super.dispose();
   }
 
-  Future<void> _submitForm() async {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      try {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) =>
-              const Center(child: CircularProgressIndicator()),
+      if (_selectedKategori == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.warning_amber_rounded, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Silakan pilih kategori broadcast'),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         );
+        return;
+      }
 
-        final kategori = KategoriIuran(
-          id: widget.kategori?.id ?? '',
-          nama: _namaKategoriController.text,
-          deskripsi: _keteranganController.text,
-          nominal: _nominalController.text,
-          periode: _selectedPeriode!,
-          status: _isActive ? StatusKategori.aktif : StatusKategori.nonaktif,
-          warna: 'blue', // Default color
-          createdAt: widget.kategori?.createdAt ?? DateTime.now(),
+      setState(() => _isUpdating = true);
+
+      try {
+        final updatedBroadcast = widget.broadcast.copyWith(
+          nama: _namaController.text.trim(),
+          pengirim: _pengirimController.text.trim(),
+          judul: _judulController.text.trim(),
+          isi: _isiController.text.trim(),
+          kategori: _selectedKategori!,
+          prioritas: _selectedPrioritas,
           updatedAt: DateTime.now(),
         );
 
-        if (widget.kategori != null) {
-          await _repository.updateKategori(kategori);
-        } else {
-          await _repository.addKategori(kategori);
-        }
+        await _repository.updateBroadcast(updatedBroadcast.id, updatedBroadcast.toMap());
 
-        if (mounted) {
-          Navigator.pop(context); // Close loading dialog
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle_outline, color: Colors.white),
-                  const SizedBox(width: 12),
-                  Text(
-                    widget.kategori != null
-                        ? 'Kategori iuran berhasil diperbarui!'
-                        : 'Kategori iuran berhasil ditambahkan!',
-                  ),
-                ],
-              ),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Expanded(child: Text('Broadcast berhasil diperbarui!')),
+              ],
             ),
-          );
-          context.pop();
-        }
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+
+        context.pop();
       } catch (e) {
-        if (mounted) {
-          Navigator.pop(context); // Close loading dialog
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.error_outline, color: Colors.white),
-                  const SizedBox(width: 12),
-                  Expanded(child: Text('Gagal menyimpan: $e')),
-                ],
-              ),
-              backgroundColor: AppColors.error,
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error_outline, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(child: Text('Gagal memperbarui broadcast: ${e.toString()}')),
+              ],
             ),
-          );
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isUpdating = false);
         }
       }
     }
@@ -126,7 +141,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -135,7 +150,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Tambah Kategori Iuran',
+          'Edit Broadcast',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -145,15 +160,20 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: _submitForm,
-            icon: const Icon(
-              Icons.check_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-            label: const Text(
-              'Simpan',
-              style: TextStyle(
+            onPressed: _isUpdating ? null : _submitForm,
+            icon: _isUpdating
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+            label: Text(
+              _isUpdating ? 'Menyimpan...' : 'Simpan',
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
@@ -172,23 +192,29 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                gradient: LinearGradient(
+                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.divider, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.category_rounded,
-                      color: AppColors.primary,
-                      size: 32,
-                    ),
+                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -196,22 +222,18 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Kategori Iuran',
+                          'Edit Broadcast',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: Colors.white,
                             letterSpacing: -0.3,
                           ),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Buat kategori iuran baru untuk RT',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                            letterSpacing: 0.2,
-                          ),
+                          'Perbarui informasi broadcast',
+                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
                     ),
@@ -221,70 +243,66 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Informasi Kategori Section
-            _buildSectionTitle(
-              'Informasi Kategori',
-              Icons.info_outline_rounded,
-            ),
+            // Informasi Pesan Section
+            _buildSectionTitle('Informasi Pesan', Icons.message_outlined),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
                 children: [
                   _buildTextField(
-                    controller: _namaKategoriController,
-                    label: 'Nama Kategori',
-                    hint: 'Contoh: Iuran Keamanan',
-                    icon: Icons.label_rounded,
+                    controller: _namaController,
+                    label: 'Nama Broadcast',
+                    hint: 'Contoh: Pengumuman Penting',
+                    icon: Icons.campaign_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Nama kategori harus diisi';
-                      }
-                      if (value.length < 3) {
-                        return 'Nama kategori minimal 3 karakter';
+                        return 'Nama broadcast harus diisi';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    controller: _nominalController,
-                    label: 'Nominal Default (Rp)',
-                    hint: 'Contoh: 50000',
-                    icon: Icons.attach_money_rounded,
-                    keyboardType: TextInputType.number,
+                    controller: _judulController,
+                    label: 'Judul Broadcast',
+                    hint: 'Contoh: Pengumuman Iuran Bulan Ini',
+                    icon: Icons.title_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Nominal harus diisi';
+                        return 'Judul harus diisi';
                       }
-                      if (int.tryParse(value) == null) {
-                        return 'Nominal harus berupa angka';
+                      if (value.length < 5) {
+                        return 'Judul minimal 5 karakter';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   _buildDropdown(
-                    value: _selectedPeriode,
-                    label: 'Periode',
-                    hint: 'Pilih periode iuran',
-                    icon: Icons.calendar_today_rounded,
-                    items: _periodeList,
+                    value: _selectedKategori,
+                    label: 'Kategori',
+                    hint: 'Pilih kategori broadcast',
+                    icon: Icons.category_rounded,
+                    items: _kategoriList,
                     onChanged: (value) {
                       setState(() {
-                        _selectedPeriode = value;
+                        _selectedKategori = value;
                       });
                     },
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    controller: _keteranganController,
-                    label: 'Keterangan',
-                    hint: 'Jelaskan untuk apa iuran ini...',
+                    controller: _isiController,
+                    label: 'Isi Pesan',
+                    hint: 'Tulis isi pesan broadcast di sini...',
                     icon: Icons.description_outlined,
-                    maxLines: 4,
+                    maxLines: 8,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Keterangan harus diisi';
+                        return 'Isi pesan harus diisi';
+                      }
+                      if (value.length < 20) {
+                        return 'Isi pesan minimal 20 karakter';
                       }
                       return null;
                     },
@@ -292,64 +310,42 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            // Pengaturan Section
-            _buildSectionTitle('Pengaturan', Icons.settings_rounded),
+            // Pengirim Section
+            _buildSectionTitle('Pengirim', Icons.person_outline_rounded),
             const SizedBox(height: 12),
             _buildCard(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.check_circle_outline_rounded,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Status Aktif',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Status kategori ini aktif',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: _isActive,
-                        onChanged: (value) {
-                          setState(() {
-                            _isActive = value;
-                          });
-                        },
-                        activeThumbColor: AppColors.primary,
-                      ),
-                    ],
-                  ),
-                ],
+              child: _buildTextField(
+                controller: _pengirimController,
+                label: 'Nama Pengirim',
+                hint: 'Contoh: Ketua RT',
+                icon: Icons.person_rounded,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama pengirim harus diisi';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Prioritas Section
+            _buildSectionTitle('Prioritas', Icons.flag_outlined),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: _buildDropdown(
+                value: _selectedPrioritas,
+                label: 'Tingkat Prioritas',
+                hint: 'Pilih prioritas broadcast',
+                icon: Icons.flag_rounded,
+                items: _prioritasList,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPrioritas = value!;
+                  });
+                },
               ),
             ),
             const SizedBox(height: 32),
@@ -358,8 +354,19 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             Container(
               height: 52,
               decoration: BoxDecoration(
-                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(12),
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, Color(0xFF1976D2)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Material(
                 color: Colors.transparent,
@@ -370,14 +377,10 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.add_circle_rounded,
-                          color: Colors.white,
-                          size: 22,
-                        ),
+                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
                         SizedBox(width: 12),
                         Text(
-                          'Tambah Kategori',
+                          'Simpan Perubahan',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -429,7 +432,14 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider, width: 1),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: child,
     );
@@ -442,7 +452,6 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
     required IconData icon,
     String? Function(String?)? validator,
     int maxLines = 1,
-    TextInputType? keyboardType,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +470,6 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
           controller: controller,
           validator: validator,
           maxLines: maxLines,
-          keyboardType: keyboardType,
           style: const TextStyle(
             fontSize: 14,
             color: AppColors.textPrimary,
@@ -478,15 +486,11 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.divider.withValues(alpha: 0.6),
-              ),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.divider.withValues(alpha: 0.6),
-              ),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -500,10 +504,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
         ),
       ],
@@ -545,24 +546,17 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.divider.withValues(alpha: 0.6),
-              ),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.divider.withValues(alpha: 0.6),
-              ),
+              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -585,10 +579,7 @@ class _KategoriIuranFormPageState extends State<KategoriIuranFormPage> {
             }
             return null;
           },
-          icon: const Icon(
-            Icons.arrow_drop_down_rounded,
-            color: AppColors.primary,
-          ),
+          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
           dropdownColor: AppColors.background,
         ),
       ],

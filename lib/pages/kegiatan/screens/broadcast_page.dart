@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../data/mocks/broadcast_mocks.dart';
 import '../../../data/models/broadcast_model.dart';
+import '../../../data/repositories/broadcast_repository.dart';
 import '../../../utils/date_helpers.dart';
 import '../../../utils/ui_helpers.dart';
 
@@ -15,6 +15,7 @@ class BroadcastPage extends StatefulWidget {
 }
 
 class _BroadcastPageState extends State<BroadcastPage> {
+  final BroadcastRepository _broadcastRepository = BroadcastRepository();
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -60,21 +61,104 @@ class _BroadcastPageState extends State<BroadcastPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Broadcast> broadcasts = broadcastMock;
-
     return Container(
       color: AppColors.background,
-      child: broadcasts.isEmpty
-          ? _buildEmptyState()
-          : ListView.separated(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              itemCount: broadcasts.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 14),
-              itemBuilder: (context, index) {
-                final item = broadcasts[index];
-                return _buildBroadcastCard(item);
-              },
-            ),
+      child: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _broadcastRepository.getBroadcastStream(),
+        builder: (context, snapshot) {
+          // Loading state
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Memuat data broadcast...',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // Error state
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 80,
+                    color: AppColors.error.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Terjadi Kesalahan',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Text(
+                      snapshot.error.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => setState(() {}),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('Coba Lagi'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // Parse data
+          final List<Broadcast> broadcasts = (snapshot.data ?? [])
+              .map((map) => Broadcast.fromMap(map))
+              .toList();
+
+          // Sort by date (newest first)
+          broadcasts.sort((a, b) => b.tanggal.compareTo(a.tanggal));
+
+          // Empty state
+          if (broadcasts.isEmpty) {
+            return _buildEmptyState();
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            itemCount: broadcasts.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 14),
+            itemBuilder: (context, index) {
+              final item = broadcasts[index];
+              return _buildBroadcastCard(item);
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -98,8 +182,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        UIHelpers.getBroadcastColor(item.judul).withValues(alpha: 0.15),
-                        UIHelpers.getBroadcastColor(item.judul).withValues(alpha: 0.05),
+                        UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.15),
+                        UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -153,6 +237,60 @@ class _BroadcastPageState extends State<BroadcastPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Judul
+                Text(
+                  item.judul,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Kategori dan Prioritas
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.3),
+                          width: 1,
+                        ),
+                      ),
+                      child: Text(
+                        item.kategori,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: UIHelpers.getBroadcastColor(item.kategori),
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.textSecondary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        item.prioritas,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Icon(Icons.person_outline_rounded, size: 16, color: AppColors.textSecondary),
@@ -181,7 +319,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  item.judul,
+                  item.isi,
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
@@ -271,84 +409,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
   }
 
   void _showEditDialog(Broadcast item) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.edit_rounded, color: AppColors.primary, size: 24),
-            const SizedBox(width: 12),
-            const Text(
-              'Edit Broadcast',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Fitur edit untuk:',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              item.nama,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Fitur ini akan segera tersedia',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            style: TextButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: const Text(
-              'Tutup',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
+    context.pushNamed('broadcast-edit', extra: item);
   }
 
   void _showDeleteDialog(Broadcast item) {
@@ -413,14 +474,67 @@ class _BroadcastPageState extends State<BroadcastPage> {
             ),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
+
+              // Show loading
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('${item.nama} telah dihapus'),
-                  backgroundColor: const Color(0xFF43A047),
+                  content: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text('Menghapus broadcast...'),
+                    ],
+                  ),
+                  duration: const Duration(seconds: 2),
                 ),
               );
+
+              try {
+                await _broadcastRepository.deleteBroadcast(item.id);
+
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        const Icon(Icons.check_circle_outline, color: Colors.white),
+                        const SizedBox(width: 12),
+                        Expanded(child: Text('${item.nama} telah dihapus')),
+                      ],
+                    ),
+                    backgroundColor: const Color(0xFF43A047),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.white),
+                        const SizedBox(width: 12),
+                        Expanded(child: Text('Gagal menghapus: ${e.toString()}')),
+                      ],
+                    ),
+                    backgroundColor: const Color(0xFFE53935),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                );
+              }
             },
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFFE53935),

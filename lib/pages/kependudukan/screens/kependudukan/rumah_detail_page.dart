@@ -1,38 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../colors/app_colors.dart';
-import '../../../data/models/kegiatan_model.dart';
-import '../../../data/repositories/kegiatan_repository.dart';
-import '../../../utils/date_helpers.dart';
+import '../../../../colors/app_colors.dart';
+import '../../../../data/models/rumah_model.dart';
+import '../../../../data/repositories/rumah_repository.dart';
+import '../../../../utils/date_helpers.dart';
 
-class KegiatanDetailPage extends StatefulWidget {
-  final Kegiatan kegiatan;
+class RumahDetailPage extends StatefulWidget {
+  final Rumah rumah;
 
-  const KegiatanDetailPage({super.key, required this.kegiatan});
+  const RumahDetailPage({super.key, required this.rumah});
 
   @override
-  State<KegiatanDetailPage> createState() => _KegiatanDetailPageState();
+  State<RumahDetailPage> createState() => _RumahDetailPageState();
 }
 
-class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
-  final _repository = KegiatanRepository();
+class _RumahDetailPageState extends State<RumahDetailPage> {
+  final _repository = RumahRepository();
   bool _isDeleting = false;
 
-  Color _getKategoriColor() {
-    switch (widget.kegiatan.kategori.toLowerCase()) {
-      case 'sosial':
-        return Colors.blue;
-      case 'keamanan':
-        return Colors.red;
-      case 'kebersihan':
+  Color _getStatusColor() {
+    switch (widget.rumah.status) {
+      case StatusRumah.ditempati:
         return Colors.green;
-      case 'olahraga':
+      case StatusRumah.kosong:
         return Colors.orange;
-      case 'keagamaan':
-        return Colors.purple;
-      default:
-        return AppColors.primary;
+      case StatusRumah.disewakan:
+        return Colors.blue;
+    }
+  }
+
+  String _getStatusText() {
+    switch (widget.rumah.status) {
+      case StatusRumah.ditempati:
+        return 'Ditempati';
+      case StatusRumah.kosong:
+        return 'Kosong';
+      case StatusRumah.disewakan:
+        return 'Disewakan';
     }
   }
 
@@ -44,11 +49,11 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         backgroundColor: const Color(0xFFFFFFFF),
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
         ),
         title: const Text(
-          'Detail Kegiatan',
+          'Detail Rumah',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87),
         ),
         centerTitle: true,
@@ -62,7 +67,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
             const SizedBox(height: 16),
             _buildInfoCard(),
             const SizedBox(height: 16),
-            _buildDescriptionCard(),
+            _buildStatusCard(),
             const SizedBox(height: 16),
             _buildActionButtons(context),
           ],
@@ -72,7 +77,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
   }
 
   Widget _buildHeaderCard() {
-    final kategoriColor = _getKategoriColor();
+    final statusColor = _getStatusColor();
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -88,10 +93,10 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: kategoriColor.withValues(alpha: 0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.event, color: kategoriColor, size: 24),
+                child: Icon(Icons.home_rounded, color: statusColor, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -99,7 +104,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.kegiatan.nama,
+                      widget.rumah.alamat,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -108,7 +113,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      widget.kegiatan.kategori,
+                      widget.rumah.pemilik,
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
@@ -117,12 +122,12 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: kategoriColor.withValues(alpha: 0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  widget.kegiatan.kategori,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kategoriColor),
+                  _getStatusText(),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
                 ),
               ),
             ],
@@ -144,45 +149,69 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Informasi Kegiatan',
+            'Informasi Rumah',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Nama Kegiatan', widget.kegiatan.nama),
+          _buildInfoRow('Alamat', widget.rumah.alamat),
           const SizedBox(height: 12),
-          _buildInfoRow('Kategori', widget.kegiatan.kategori),
+          _buildInfoRow('Pemilik', widget.rumah.pemilik),
           const SizedBox(height: 12),
-          _buildInfoRow('Penanggung Jawab', widget.kegiatan.penanggungJawab),
+          _buildInfoRow('Status', _getStatusText()),
           const SizedBox(height: 12),
-          _buildInfoRow('Lokasi', widget.kegiatan.lokasi),
-          const SizedBox(height: 12),
-          _buildInfoRow('Jumlah Peserta', '${widget.kegiatan.peserta} orang'),
-          const SizedBox(height: 12),
-          _buildInfoRow('Tanggal', DateHelpers.formatDate(widget.kegiatan.tanggal)),
+          _buildInfoRow('Tanggal Terdaftar', DateHelpers.formatDate(widget.rumah.createdAt)),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionCard() {
+  Widget _buildStatusCard() {
+    final statusColor = _getStatusColor();
+    String statusMessage;
+    IconData statusIcon;
+
+    switch (widget.rumah.status) {
+      case StatusRumah.ditempati:
+        statusMessage = 'Rumah sedang ditempati';
+        statusIcon = Icons.check_circle;
+        break;
+      case StatusRumah.kosong:
+        statusMessage = 'Rumah dalam keadaan kosong';
+        statusIcon = Icons.home_work;
+        break;
+      case StatusRumah.disewakan:
+        statusMessage = 'Rumah sedang disewakan';
+        statusIcon = Icons.key;
+        break;
+    }
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
+        color: statusColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          const Text(
-            'Deskripsi Kegiatan',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            widget.kegiatan.deskripsi,
-            style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.5),
+          Icon(statusIcon, color: statusColor, size: 24),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Status Rumah',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(statusMessage, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
           ),
         ],
       ),
@@ -213,15 +242,15 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
     return Row(
       children: [
         Expanded(
-          child: _buildActionButton(context, 'Edit Kegiatan', Icons.edit_outlined, Colors.blue, () {
-            context.pushNamed('kegiatan-edit', extra: widget.kegiatan);
+          child: _buildActionButton(context, 'Edit Rumah', Icons.edit_outlined, Colors.blue, () {
+            // TODO: Navigate to edit page
           }),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildActionButton(
             context,
-            'Hapus Kegiatan',
+            'Hapus Rumah',
             Icons.delete_outline,
             Colors.red,
             () => _showDeleteDialog(context),
@@ -291,8 +320,8 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Hapus Kegiatan'),
-          content: const Text('Apakah Anda yakin ingin menghapus kegiatan ini?'),
+          title: const Text('Hapus Rumah'),
+          content: const Text('Apakah Anda yakin ingin menghapus data rumah ini?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
@@ -307,7 +336,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                 });
 
                 try {
-                  await _repository.deleteKegiatan(widget.kegiatan.id);
+                  await _repository.deleteRumah(widget.rumah.id);
 
                   if (!mounted) return;
 
@@ -317,7 +346,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                         children: [
                           Icon(Icons.check_circle_outline, color: Colors.white),
                           SizedBox(width: 12),
-                          Text('Kegiatan berhasil dihapus'),
+                          Text('Data rumah berhasil dihapus'),
                         ],
                       ),
                       backgroundColor: AppColors.success,
@@ -327,7 +356,7 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                     ),
                   );
 
-                  Navigator.of(context).pop();
+                  context.pop();
                 } catch (e) {
                   if (!mounted) return;
 

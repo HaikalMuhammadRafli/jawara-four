@@ -2,59 +2,126 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../data/models/broadcast_model.dart';
-import '../../../data/repositories/broadcast_repository.dart';
+import '../../../data/models/kegiatan_model.dart';
+import '../../../data/repositories/kegiatan_repository.dart';
 
-class BroadcastFormPage extends StatefulWidget {
-  const BroadcastFormPage({super.key});
+class KegiatanEditPage extends StatefulWidget {
+  final Kegiatan kegiatan;
+
+  const KegiatanEditPage({super.key, required this.kegiatan});
 
   @override
-  State<BroadcastFormPage> createState() => _BroadcastFormPageState();
+  State<KegiatanEditPage> createState() => _KegiatanEditPageState();
 }
 
-class _BroadcastFormPageState extends State<BroadcastFormPage> {
-  final BroadcastRepository _repository = BroadcastRepository();
+class _KegiatanEditPageState extends State<KegiatanEditPage> {
+  final KegiatanRepository _repository = KegiatanRepository();
   final _formKey = GlobalKey<FormState>();
-  final _namaController = TextEditingController();
-  final _judulController = TextEditingController();
-  final _isiController = TextEditingController();
-  final _pengirimController = TextEditingController();
+  late final TextEditingController _namaController;
+  late final TextEditingController _penanggungJawabController;
+  late final TextEditingController _deskripsiController;
+  late final TextEditingController _lokasiController;
+  late final TextEditingController _pesertaController;
 
   String? _selectedKategori;
-  String _selectedPrioritas = 'Rendah';
-  bool _isSubmitting = false;
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
+  bool _isUpdating = false;
 
   final List<String> _kategoriList = [
-    'Pengumuman',
-    'Informasi',
-    'Keagamaan',
-    'Kebersihan',
-    'Keuangan',
     'Keamanan',
+    'Kebersihan',
+    'Sosial',
+    'Kesehatan',
+    'Olahraga',
+    'Keagamaan',
+    'Pendidikan',
     'Lainnya',
   ];
 
-  final List<String> _prioritasList = ['Rendah', 'Sedang', 'Tinggi'];
+  @override
+  void initState() {
+    super.initState();
+    _namaController = TextEditingController(text: widget.kegiatan.nama);
+    _penanggungJawabController = TextEditingController(text: widget.kegiatan.penanggungJawab);
+    _deskripsiController = TextEditingController(text: widget.kegiatan.deskripsi);
+    _lokasiController = TextEditingController(text: widget.kegiatan.lokasi);
+    _pesertaController = TextEditingController(text: widget.kegiatan.peserta.toString());
+    _selectedKategori = widget.kegiatan.kategori;
+    _selectedDate = widget.kegiatan.tanggal;
+    _selectedTime = TimeOfDay.fromDateTime(widget.kegiatan.tanggal);
+  }
 
   @override
   void dispose() {
     _namaController.dispose();
-    _judulController.dispose();
-    _isiController.dispose();
-    _pengirimController.dispose();
+    _penanggungJawabController.dispose();
+    _deskripsiController.dispose();
+    _lokasiController.dispose();
+    _pesertaController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2026),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              surface: AppColors.background,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime ?? TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              surface: AppColors.background,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
   }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_selectedKategori == null) {
+      if (_selectedDate == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
               children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.white),
+                Icon(Icons.error_outline, color: Colors.white),
                 SizedBox(width: 12),
-                Text('Silakan pilih kategori broadcast'),
+                Text('Silakan pilih tanggal kegiatan'),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -65,23 +132,65 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         return;
       }
 
-      setState(() => _isSubmitting = true);
+      if (_selectedTime == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Silakan pilih waktu kegiatan'),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+        return;
+      }
+
+      if (_selectedKategori == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Silakan pilih kategori kegiatan'),
+              ],
+            ),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+        return;
+      }
+
+      setState(() => _isUpdating = true);
 
       try {
-        final now = DateTime.now();
-        final broadcast = Broadcast(
-          id: '',
-          nama: _namaController.text.trim(),
-          pengirim: _pengirimController.text.trim(),
-          judul: _judulController.text.trim(),
-          isi: _isiController.text.trim(),
-          kategori: _selectedKategori!,
-          prioritas: _selectedPrioritas,
-          tanggal: now,
-          createdAt: now,
+        final kegiatanDateTime = DateTime(
+          _selectedDate!.year,
+          _selectedDate!.month,
+          _selectedDate!.day,
+          _selectedTime!.hour,
+          _selectedTime!.minute,
         );
 
-        await _repository.addBroadcast(broadcast.toMap());
+        final updatedKegiatan = widget.kegiatan.copyWith(
+          nama: _namaController.text.trim(),
+          deskripsi: _deskripsiController.text.trim(),
+          kategori: _selectedKategori!,
+          penanggungJawab: _penanggungJawabController.text.trim(),
+          lokasi: _lokasiController.text.trim(),
+          peserta: int.tryParse(_pesertaController.text.trim()) ?? 0,
+          tanggal: kegiatanDateTime,
+          updatedAt: DateTime.now(),
+        );
+
+        await _repository.updateKegiatan(updatedKegiatan.id, updatedKegiatan.toMap());
 
         if (!mounted) return;
 
@@ -91,7 +200,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               children: [
                 Icon(Icons.check_circle_outline, color: Colors.white),
                 SizedBox(width: 12),
-                Expanded(child: Text('Broadcast berhasil dikirim!')),
+                Expanded(child: Text('Kegiatan berhasil diperbarui!')),
               ],
             ),
             backgroundColor: AppColors.success,
@@ -111,7 +220,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Gagal mengirim broadcast: ${e.toString()}')),
+                Expanded(child: Text('Gagal memperbarui kegiatan: ${e.toString()}')),
               ],
             ),
             backgroundColor: AppColors.error,
@@ -122,7 +231,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         );
       } finally {
         if (mounted) {
-          setState(() => _isSubmitting = false);
+          setState(() => _isUpdating = false);
         }
       }
     }
@@ -140,7 +249,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Kirim Broadcast',
+          'Edit Kegiatan',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -150,8 +259,8 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
         ),
         actions: [
           TextButton.icon(
-            onPressed: _isSubmitting ? null : _submitForm,
-            icon: _isSubmitting
+            onPressed: _isUpdating ? null : _submitForm,
+            icon: _isUpdating
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -160,9 +269,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
-                : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
             label: Text(
-              _isSubmitting ? 'Mengirim...' : 'Kirim',
+              _isUpdating ? 'Menyimpan...' : 'Simpan',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -204,7 +313,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.campaign_rounded, color: Colors.white, size: 32),
+                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -212,7 +321,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Broadcast Pesan',
+                          'Edit Kegiatan',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -222,7 +331,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Kirim pesan ke seluruh warga RT',
+                          'Perbarui informasi kegiatan',
                           style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
                         ),
                       ],
@@ -233,23 +342,23 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Informasi Pesan Section
-            _buildSectionTitle('Informasi Pesan', Icons.message_outlined),
+            // Informasi Dasar Section
+            _buildSectionTitle('Informasi Dasar', Icons.info_outline_rounded),
             const SizedBox(height: 12),
             _buildCard(
               child: Column(
                 children: [
                   _buildTextField(
-                    controller: _judulController,
-                    label: 'Judul Broadcast',
-                    hint: 'Contoh: Pengumuman Iuran Bulan Ini',
+                    controller: _namaController,
+                    label: 'Nama Kegiatan',
+                    hint: 'Contoh: Gotong Royong RT 01',
                     icon: Icons.title_rounded,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Judul harus diisi';
+                        return 'Nama kegiatan harus diisi';
                       }
                       if (value.length < 5) {
-                        return 'Judul minimal 5 karakter';
+                        return 'Nama kegiatan minimal 5 karakter';
                       }
                       return null;
                     },
@@ -258,7 +367,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                   _buildDropdown(
                     value: _selectedKategori,
                     label: 'Kategori',
-                    hint: 'Pilih kategori broadcast',
+                    hint: 'Pilih kategori kegiatan',
                     icon: Icons.category_rounded,
                     items: _kategoriList,
                     onChanged: (value) {
@@ -269,17 +378,14 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                   ),
                   const SizedBox(height: 16),
                   _buildTextField(
-                    controller: _isiController,
-                    label: 'Isi Pesan',
-                    hint: 'Tulis isi pesan broadcast di sini...',
+                    controller: _deskripsiController,
+                    label: 'Deskripsi',
+                    hint: 'Jelaskan detail kegiatan...',
                     icon: Icons.description_outlined,
-                    maxLines: 8,
+                    maxLines: 4,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Isi pesan harus diisi';
-                      }
-                      if (value.length < 20) {
-                        return 'Isi pesan minimal 20 karakter';
+                        return 'Deskripsi harus diisi';
                       }
                       return null;
                     },
@@ -289,21 +395,91 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             ),
             const SizedBox(height: 24),
 
-            // Prioritas Section
-            _buildSectionTitle('Prioritas', Icons.flag_outlined),
+            // Penanggung Jawab Section
+            _buildSectionTitle('Penanggung Jawab', Icons.person_outline_rounded),
             const SizedBox(height: 12),
             _buildCard(
-              child: _buildDropdown(
-                value: _selectedPrioritas,
-                label: 'Tingkat Prioritas',
-                hint: 'Pilih prioritas broadcast',
-                icon: Icons.flag_rounded,
-                items: _prioritasList,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedPrioritas = value!;
-                  });
+              child: _buildTextField(
+                controller: _penanggungJawabController,
+                label: 'Nama Penanggung Jawab',
+                hint: 'Contoh: Bapak Ahmad',
+                icon: Icons.person_rounded,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Penanggung jawab harus diisi';
+                  }
+                  return null;
                 },
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Jadwal Section
+            _buildSectionTitle('Jadwal Kegiatan', Icons.schedule_rounded),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: Column(
+                children: [
+                  _buildDateTimePicker(
+                    label: 'Tanggal',
+                    icon: Icons.calendar_today_rounded,
+                    value: _selectedDate != null
+                        ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
+                        : null,
+                    hint: 'Pilih tanggal kegiatan',
+                    onTap: () => _selectDate(context),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDateTimePicker(
+                    label: 'Waktu',
+                    icon: Icons.access_time_rounded,
+                    value: _selectedTime != null
+                        ? '${_selectedTime!.hour.toString().padLeft(2, '0')}:${_selectedTime!.minute.toString().padLeft(2, '0')}'
+                        : null,
+                    hint: 'Pilih waktu kegiatan',
+                    onTap: () => _selectTime(context),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Lokasi & Peserta Section
+            _buildSectionTitle('Lokasi & Peserta', Icons.location_on_outlined),
+            const SizedBox(height: 12),
+            _buildCard(
+              child: Column(
+                children: [
+                  _buildTextField(
+                    controller: _lokasiController,
+                    label: 'Lokasi',
+                    hint: 'Contoh: Balai RT 01',
+                    icon: Icons.place_rounded,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Lokasi harus diisi';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _pesertaController,
+                    label: 'Jumlah Peserta',
+                    hint: 'Contoh: 50',
+                    icon: Icons.people_rounded,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Jumlah peserta harus diisi';
+                      }
+                      final peserta = int.tryParse(value);
+                      if (peserta == null || peserta <= 0) {
+                        return 'Jumlah peserta harus angka positif';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 32),
@@ -335,10 +511,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.send_rounded, color: Colors.white, size: 22),
+                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
                         SizedBox(width: 12),
                         Text(
-                          'Kirim Broadcast',
+                          'Simpan Perubahan',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -533,12 +709,74 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           onChanged: onChanged,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Silakan pilih $label';
+              return 'Silakan pilih kategori';
             }
             return null;
           },
           icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
           dropdownColor: AppColors.background,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateTimePicker({
+    required String label,
+    required IconData icon,
+    required String? value,
+    required String hint,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+            letterSpacing: 0.2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Material(
+          color: AppColors.divider.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(12),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
+              ),
+              child: Row(
+                children: [
+                  Icon(icon, size: 20, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      value ?? hint,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: value != null
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary.withValues(alpha: 0.6),
+                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: AppColors.textSecondary.withValues(alpha: 0.6),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );

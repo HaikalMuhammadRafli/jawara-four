@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Pemasukan {
   final String id;
   final String judul;
@@ -40,17 +42,36 @@ class Pemasukan {
 
   factory Pemasukan.fromMap(Map<String, dynamic> map) {
     return Pemasukan(
-      id: map['id'] as String,
-      judul: map['judul'] as String,
-      kategori: map['kategori'] as String,
-      jumlah: map['jumlah'] as int,
-      tanggal: DateTime.parse(map['tanggal'] as String),
-      keterangan: map['keterangan'] as String,
-      nama: map['nama'] as String,
-      jenisPemasukan: map['jenisPemasukan'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      id: map['id'] as String? ?? '',
+      judul: map['judul'] as String? ?? '',
+      kategori: map['kategori'] as String? ?? '',
+      jumlah: map['jumlah'] is int
+          ? map['jumlah'] as int
+          : int.tryParse(map['jumlah'].toString()) ?? 0,
+      tanggal: _parseDate(map['tanggal']),
+      keterangan: map['keterangan'] as String? ?? '',
+      nama: map['nama'] as String? ?? '',
+      jenisPemasukan: map['jenisPemasukan'] as String? ?? '',
+      createdAt: _parseDate(map['createdAt']),
+      updatedAt: map['updatedAt'] != null ? _parseDate(map['updatedAt']) : null,
     );
+  }
+
+  static DateTime _parseDate(dynamic date) {
+    if (date == null) return DateTime.now();
+    if (date is DateTime) return date;
+    if (date is String) {
+      try {
+        return DateTime.parse(date);
+      } catch (e) {
+        try {
+          return DateFormat('dd/MM/yyyy').parse(date);
+        } catch (e) {
+          return DateTime.now();
+        }
+      }
+    }
+    return DateTime.now();
   }
 
   Pemasukan copyWith({
