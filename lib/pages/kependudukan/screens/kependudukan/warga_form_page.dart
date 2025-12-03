@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
+import '../../../../data/models/warga_model.dart';
+import '../../../../data/repositories/warga_repository.dart';
+
 class WargaFormPage extends StatefulWidget {
-  const WargaFormPage({super.key});
+  final Warga? warga;
+
+  const WargaFormPage({super.key, this.warga});
 
   @override
   State<WargaFormPage> createState() => _WargaFormPageState();
@@ -11,109 +16,75 @@ class WargaFormPage extends StatefulWidget {
 
 class _WargaFormPageState extends State<WargaFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nikController = TextEditingController();
-  final _namaController = TextEditingController();
-  final _tempatLahirController = TextEditingController();
-  final _noTeleponController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _pekerjaanController = TextEditingController();
-  final _alamatController = TextEditingController();
+  final WargaRepository _repository = WargaRepository();
+  bool _isLoading = false;
 
-  String? _selectedJenisKelamin;
-  String? _selectedAgama;
-  String? _selectedStatusPerkawinan;
-  String? _selectedPendidikan;
-  DateTime? _selectedTanggalLahir;
+  final TextEditingController _nikController = TextEditingController();
+  final TextEditingController _namaController = TextEditingController();
+  JenisKelamin _selectedJenisKelamin = JenisKelamin.lakiLaki;
 
-  final List<String> _jenisKelaminList = ['Laki-laki', 'Perempuan'];
-  final List<String> _agamaList = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'];
-  final List<String> _statusPerkawinanList = ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati'];
-  final List<String> _pendidikanList = [
-    'Tidak/Belum Sekolah',
-    'SD',
-    'SMP',
-    'SMA',
-    'D1/D2/D3',
-    'S1',
-    'S2',
-    'S3',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    if (widget.warga != null) {
+      _nikController.text = widget.warga!.nik;
+      _namaController.text = widget.warga!.nama;
+      _selectedJenisKelamin = widget.warga!.jenisKelamin;
+    }
+  }
 
   @override
   void dispose() {
     _nikController.dispose();
     _namaController.dispose();
-    _tempatLahirController.dispose();
-    _noTeleponController.dispose();
-    _emailController.dispose();
-    _pekerjaanController.dispose();
-    _alamatController.dispose();
     super.dispose();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(1990),
-      firstDate: DateTime(1940),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-              onPrimary: Colors.white,
-              surface: AppColors.background,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedTanggalLahir) {
-      setState(() {
-        _selectedTanggalLahir = picked;
-      });
-    }
-  }
-
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_selectedTanggalLahir == null) {
+      setState(() => _isLoading = true);
+
+      try {
+        final warga = Warga(
+          id: widget.warga?.id ?? '',
+          nik: _nikController.text,
+          nama: _namaController.text,
+          jenisKelamin: _selectedJenisKelamin,
+          createdAt: widget.warga?.createdAt ?? DateTime.now(),
+          updatedAt: widget.warga != null ? DateTime.now() : null,
+        );
+
+        if (widget.warga == null) {
+          await _repository.addWarga(warga);
+        } else {
+          await _repository.updateWarga(warga);
+        }
+
+        if (!mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.error_outline, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Silakan pilih tanggal lahir'),
-              ],
+            content: Text(
+              widget.warga == null
+                  ? 'Data warga berhasil ditambahkan!'
+                  : 'Data warga berhasil diupdate!',
             ),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            backgroundColor: AppColors.success,
           ),
         );
-        return;
+
+        context.pop();
+      } catch (e) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal menyimpan data: $e'), backgroundColor: AppColors.error),
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
       }
-
-      // TODO: Simpan data warga
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Data warga berhasil ditambahkan!'),
-            ],
-          ),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
-
-      context.pop();
     }
   }
 
@@ -134,13 +105,6 @@ class _WargaFormPageState extends State<WargaFormPage> {
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Row(
               children: [
@@ -150,26 +114,29 @@ class _WargaFormPageState extends State<WargaFormPage> {
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.person_add_rounded, color: Colors.white, size: 32),
+                  child: const Icon(Icons.person_add_rounded, color: Colors.white, size: 28),
                 ),
                 const SizedBox(width: 16),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Data Warga',
-                        style: TextStyle(
-                          fontSize: 18,
+                        widget.warga == null ? 'Tambah Warga' : 'Edit Warga',
+                        style: const TextStyle(
+                          fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
-                          letterSpacing: -0.3,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
-                        'Lengkapi data warga baru',
-                        style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                        widget.warga == null ? 'Lengkapi data warga baru' : 'Update data warga',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
@@ -179,21 +146,22 @@ class _WargaFormPageState extends State<WargaFormPage> {
           ),
           const SizedBox(height: 24),
 
-          // Data Identitas Section
-          _buildSectionTitle('Data Identitas', Icons.badge_rounded),
-          const SizedBox(height: 12),
+          // NIK
           _buildCard(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField(
+                _buildLabel('NIK'),
+                TextFormField(
                   controller: _nikController,
-                  label: 'NIK',
-                  hint: 'Nomor Induk Kependudukan (16 digit)',
-                  icon: Icons.credit_card_rounded,
                   keyboardType: TextInputType.number,
+                  decoration: _buildInputDecoration(
+                    hint: 'Masukkan NIK',
+                    icon: Icons.badge_outlined,
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'NIK harus diisi';
+                      return 'NIK wajib diisi';
                     }
                     if (value.length != 16) {
                       return 'NIK harus 16 digit';
@@ -201,469 +169,168 @@ class _WargaFormPageState extends State<WargaFormPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
-                _buildTextField(
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Nama
+          _buildCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLabel('Nama Lengkap'),
+                TextFormField(
                   controller: _namaController,
-                  label: 'Nama Lengkap',
-                  hint: 'Sesuai KTP',
-                  icon: Icons.person_rounded,
+                  decoration: _buildInputDecoration(
+                    hint: 'Masukkan nama lengkap',
+                    icon: Icons.person_outline,
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Nama harus diisi';
+                      return 'Nama wajib diisi';
                     }
                     return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildDropdown(
-                  value: _selectedJenisKelamin,
-                  label: 'Jenis Kelamin',
-                  hint: 'Pilih jenis kelamin',
-                  icon: Icons.wc_rounded,
-                  items: _jenisKelaminList,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedJenisKelamin = value;
-                    });
                   },
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
-          // Data Kelahiran Section
-          _buildSectionTitle('Data Kelahiran', Icons.cake_rounded),
-          const SizedBox(height: 12),
+          // Jenis Kelamin
           _buildCard(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField(
-                  controller: _tempatLahirController,
-                  label: 'Tempat Lahir',
-                  hint: 'Contoh: Jakarta',
-                  icon: Icons.location_city_rounded,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Tempat lahir harus diisi';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildDateTimePicker(
-                  label: 'Tanggal Lahir',
-                  icon: Icons.event_rounded,
-                  value: _selectedTanggalLahir != null
-                      ? '${_selectedTanggalLahir!.day}/${_selectedTanggalLahir!.month}/${_selectedTanggalLahir!.year}'
-                      : null,
-                  hint: 'Pilih tanggal lahir',
-                  onTap: () => _selectDate(context),
+                _buildLabel('Jenis Kelamin'),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildGenderOption(JenisKelamin.lakiLaki, 'Laki-laki', Icons.male),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildGenderOption(JenisKelamin.perempuan, 'Perempuan', Icons.female),
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Data Pribadi Section
-          _buildSectionTitle('Data Pribadi', Icons.info_outline_rounded),
-          const SizedBox(height: 12),
-          _buildCard(
-            child: Column(
-              children: [
-                _buildDropdown(
-                  value: _selectedAgama,
-                  label: 'Agama',
-                  hint: 'Pilih agama',
-                  icon: Icons.mosque_rounded,
-                  items: _agamaList,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedAgama = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildDropdown(
-                  value: _selectedPendidikan,
-                  label: 'Pendidikan Terakhir',
-                  hint: 'Pilih pendidikan',
-                  icon: Icons.school_rounded,
-                  items: _pendidikanList,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedPendidikan = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildDropdown(
-                  value: _selectedStatusPerkawinan,
-                  label: 'Status Perkawinan',
-                  hint: 'Pilih status',
-                  icon: Icons.people_rounded,
-                  items: _statusPerkawinanList,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedStatusPerkawinan = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  controller: _pekerjaanController,
-                  label: 'Pekerjaan',
-                  hint: 'Contoh: Wiraswasta',
-                  icon: Icons.work_rounded,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Pekerjaan harus diisi';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Kontak Section
-          _buildSectionTitle('Kontak', Icons.contact_phone_rounded),
-          const SizedBox(height: 12),
-          _buildCard(
-            child: Column(
-              children: [
-                _buildTextField(
-                  controller: _noTeleponController,
-                  label: 'No. Telepon',
-                  hint: '08xxxxxxxxxx',
-                  icon: Icons.phone_rounded,
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'No. telepon harus diisi';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  controller: _emailController,
-                  label: 'Email (Opsional)',
-                  hint: 'email@example.com',
-                  icon: Icons.email_rounded,
-                  keyboardType: TextInputType.emailAddress,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Alamat Section
-          _buildSectionTitle('Alamat', Icons.home_rounded),
-          const SizedBox(height: 12),
-          _buildCard(
-            child: _buildTextField(
-              controller: _alamatController,
-              label: 'Alamat Lengkap',
-              hint: 'Masukkan alamat lengkap...',
-              icon: Icons.location_on_rounded,
-              maxLines: 3,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Alamat harus diisi';
-                }
-                return null;
-              },
             ),
           ),
           const SizedBox(height: 32),
 
           // Submit Button
-          Container(
+          SizedBox(
             height: 52,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: LinearGradient(
-                colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+            child: ElevatedButton(
+              onPressed: _isLoading ? null : _submitForm,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 0,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: _submitForm,
-                borderRadius: BorderRadius.circular(12),
-                child: const Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add_circle_rounded, color: Colors.white, size: 22),
-                      SizedBox(width: 12),
-                      Text(
-                        'Tambah Warga',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 0.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              child: _isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    )
+                  : Text(
+                      widget.warga == null ? 'Tambah Warga' : 'Update Warga',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
             ),
           ),
-          const SizedBox(height: 20),
         ],
       ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, IconData icon) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, size: 18, color: AppColors.primary),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-            letterSpacing: -0.3,
-          ),
-        ),
-      ],
     );
   }
 
   Widget _buildCard({required Widget child}) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: child,
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    String? Function(String?)? validator,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-            letterSpacing: 0.2,
-          ),
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
         ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          validator: validator,
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary.withValues(alpha: 0.6)),
-            prefixIcon: Icon(icon, size: 20, color: AppColors.primary),
-            filled: true,
-            fillColor: AppColors.divider.withValues(alpha: 0.2),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.error, width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildDropdown({
-    required String? value,
-    required String label,
-    required String hint,
-    required IconData icon,
-    required List<String> items,
-    required void Function(String?) onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-            letterSpacing: 0.2,
-          ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          initialValue: value,
-          isExpanded: true,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary.withValues(alpha: 0.6)),
-            prefixIcon: Icon(icon, size: 20, color: AppColors.primary),
-            filled: true,
-            fillColor: AppColors.divider.withValues(alpha: 0.2),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
-          items: items.map((String item) {
-            return DropdownMenuItem<String>(
-              value: item,
-              child: Text(
-                item,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            );
-          }).toList(),
-          onChanged: onChanged,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Silakan pilih $label';
-            }
-            return null;
-          },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
-          dropdownColor: AppColors.background,
-        ),
-      ],
+  InputDecoration _buildInputDecoration({required String hint, required IconData icon}) {
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: Icon(icon, color: AppColors.primary.withValues(alpha: 0.6)),
+      filled: true,
+      fillColor: AppColors.backgroundGray,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 
-  Widget _buildDateTimePicker({
-    required String label,
-    required IconData icon,
-    required String? value,
-    required String hint,
-    required VoidCallback onTap,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-            letterSpacing: 0.2,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Material(
-          color: AppColors.divider.withValues(alpha: 0.2),
+  Widget _buildGenderOption(JenisKelamin value, String label, IconData icon) {
+    final isSelected = _selectedJenisKelamin == value;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedJenisKelamin = value),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.backgroundGray,
           borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
-              ),
-              child: Row(
-                children: [
-                  Icon(icon, size: 20, color: AppColors.primary),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      value ?? hint,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: value != null ? AppColors.textPrimary : AppColors.textSecondary.withValues(alpha: 0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                    color: AppColors.textSecondary.withValues(alpha: 0.6),
-                  ),
-                ],
-              ),
-            ),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.3),
+            width: isSelected ? 2 : 1,
           ),
         ),
-      ],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: isSelected ? AppColors.primary : AppColors.textSecondary, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
-

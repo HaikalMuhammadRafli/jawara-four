@@ -1,16 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../../data/mocks/keluarga_mocks.dart';
 import '../../../../data/models/keluarga_model.dart';
+import '../../../../data/repositories/keluarga_repository.dart';
 
-class KeluargaPage extends StatelessWidget {
+class KeluargaPage extends StatefulWidget {
   const KeluargaPage({super.key});
+
+  @override
+  State<KeluargaPage> createState() => _KeluargaPageState();
+}
+
+class _KeluargaPageState extends State<KeluargaPage> {
+  final KeluargaRepository _repository = KeluargaRepository();
+  String _searchQuery = '';
+  String _selectedFilter = 'Semua';
+
+  Future<void> _deleteKeluarga(String id) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Hapus Keluarga'),
+        content: const Text('Apakah Anda yakin ingin menghapus data keluarga ini?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        await _repository.deleteKeluarga(id);
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Data keluarga berhasil dihapus')));
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Gagal menghapus data: $e')));
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.background, // Background putih untuk seluruh halaman
+      color: AppColors.background,
       child: Column(
         children: [
           _buildSearchAndFilter(),
@@ -33,6 +79,7 @@ class KeluargaPage extends StatelessWidget {
         children: [
           // Search field dengan design modern
           TextField(
+            onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
             decoration: InputDecoration(
               hintText: 'Cari keluarga...',
               hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
@@ -56,13 +103,13 @@ class KeluargaPage extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildFilterChip('Semua', true),
+                _buildFilterChip('Semua'),
                 const SizedBox(width: 10),
-                _buildFilterChip('Kepemilikan', false),
+                _buildFilterChip('Kepemilikan'),
                 const SizedBox(width: 10),
-                _buildFilterChip('Sewa', false),
+                _buildFilterChip('Sewa'),
                 const SizedBox(width: 10),
-                _buildFilterChip('Kontrak', false),
+                _buildFilterChip('Kontrak'),
               ],
             ),
           ),
@@ -71,38 +118,87 @@ class KeluargaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.primary : AppColors.background,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
-          width: 1.5,
+  Widget _buildFilterChip(String label) {
+    final isSelected = _selectedFilter == label;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedFilter = label),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : AppColors.background,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
         ),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? AppColors.background : AppColors.textSecondary,
-          fontSize: 13,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          letterSpacing: 0.2,
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? AppColors.background : AppColors.textSecondary,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            letterSpacing: 0.2,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildKeluargaList() {
-    final List<Keluarga> keluargaData = keluargaMock;
+    return StreamBuilder<List<Keluarga>>(
+      stream: _repository.getKeluargaStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(20),
-      itemCount: keluargaData.length,
-      itemBuilder: (context, index) {
-        final keluarga = keluargaData[index];
-        return _buildKeluargaCard(context, keluarga);
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final allData = snapshot.data ?? [];
+
+        // Filter berdasarkan search query dan filter kategori
+        final filteredData = allData.where((keluarga) {
+          final matchesSearch =
+              keluarga.kepalaKeluarga.toLowerCase().contains(_searchQuery) ||
+              keluarga.alamat.toLowerCase().contains(_searchQuery);
+
+          // Filter berdasarkan kategori (placeholder - bisa disesuaikan dengan field di model)
+          final matchesFilter = _selectedFilter == 'Semua';
+
+          return matchesSearch && matchesFilter;
+        }).toList();
+
+        if (filteredData.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.family_restroom_rounded,
+                  size: 64,
+                  color: AppColors.textSecondary.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  allData.isEmpty ? 'Belum ada data keluarga' : 'Tidak ada hasil pencarian',
+                  style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(20),
+          itemCount: filteredData.length,
+          itemBuilder: (context, index) {
+            final keluarga = filteredData[index];
+            return _buildKeluargaCard(context, keluarga);
+          },
+        );
       },
     );
   }
@@ -212,7 +308,7 @@ class KeluargaPage extends StatelessWidget {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    _showEditDialog(context, keluarga);
+                    context.pushNamed('keluarga-form', extra: keluarga);
                   },
                   icon: Icon(Icons.edit_rounded, size: 18, color: AppColors.textSecondary),
                   tooltip: 'Edit',
@@ -223,15 +319,13 @@ class KeluargaPage extends StatelessWidget {
               const SizedBox(width: 8),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: AppColors.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: IconButton(
-                  onPressed: () {
-                    _showDetailDialog(context, keluarga);
-                  },
-                  icon: Icon(Icons.visibility_rounded, size: 18, color: AppColors.primary),
-                  tooltip: 'Lihat Detail',
+                  onPressed: () => _deleteKeluarga(keluarga.id),
+                  icon: Icon(Icons.delete_rounded, size: 18, color: AppColors.error),
+                  tooltip: 'Hapus',
                   padding: const EdgeInsets.all(8),
                   constraints: const BoxConstraints(),
                 ),
@@ -240,185 +334,6 @@ class KeluargaPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // Dialog untuk edit keluarga (tampilan saja)
-  void _showEditDialog(BuildContext context, Keluarga keluarga) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.edit_rounded, color: AppColors.primary, size: 24),
-            const SizedBox(width: 12),
-            const Text(
-              'Edit Keluarga',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Fitur edit untuk:',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              keluarga.kepalaKeluarga,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${keluarga.jumlahAnggota} Anggota',
-              style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Fitur ini akan segera tersedia',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Tutup',
-              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Dialog untuk detail keluarga (tampilan saja)
-  void _showDetailDialog(BuildContext context, Keluarga keluarga) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.family_restroom_rounded, color: AppColors.primary, size: 24),
-            const SizedBox(width: 12),
-            const Text(
-              'Detail Keluarga',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow('Kepala Keluarga', keluarga.kepalaKeluarga),
-            const SizedBox(height: 12),
-            _buildDetailRow('Jumlah Anggota', '${keluarga.jumlahAnggota} Orang'),
-            const SizedBox(height: 12),
-            _buildDetailRow('Alamat', keluarga.alamat),
-            const SizedBox(height: 12),
-            _buildDetailRow('Status', 'Aktif'),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 18),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Detail lengkap akan ditampilkan di halaman khusus',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Tutup',
-              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper widget untuk menampilkan baris detail
-  Widget _buildDetailRow(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 15,
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
     );
   }
 }

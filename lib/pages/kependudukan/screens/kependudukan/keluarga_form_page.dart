@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
+import '../../../../data/models/keluarga_model.dart';
+import '../../../../data/repositories/keluarga_repository.dart';
+
 class KeluargaFormPage extends StatefulWidget {
-  const KeluargaFormPage({super.key});
+  final Keluarga? keluarga;
+
+  const KeluargaFormPage({super.key, this.keluarga});
 
   @override
   State<KeluargaFormPage> createState() => _KeluargaFormPageState();
@@ -11,63 +16,84 @@ class KeluargaFormPage extends StatefulWidget {
 
 class _KeluargaFormPageState extends State<KeluargaFormPage> {
   final _formKey = GlobalKey<FormState>();
+  final KeluargaRepository _repository = KeluargaRepository();
   bool _isLoading = false;
 
   // Controllers untuk input fields
-  final TextEditingController _noKKController = TextEditingController();
   final TextEditingController _kepalaKeluargaController = TextEditingController();
-  final TextEditingController _rtController = TextEditingController();
-  final TextEditingController _rwController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
   final TextEditingController _jumlahAnggotaController = TextEditingController();
-  final TextEditingController _catatanController = TextEditingController();
 
-  String? _selectedStatusKeluarga;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.keluarga != null) {
+      _kepalaKeluargaController.text = widget.keluarga!.kepalaKeluarga;
+      _alamatController.text = widget.keluarga!.alamat;
+      _jumlahAnggotaController.text = widget.keluarga!.jumlahAnggota.toString();
+    }
+  }
 
   @override
   void dispose() {
-    _noKKController.dispose();
     _kepalaKeluargaController.dispose();
-    _rtController.dispose();
-    _rwController.dispose();
     _alamatController.dispose();
     _jumlahAnggotaController.dispose();
-    _catatanController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+      setState(() => _isLoading = true);
 
-      // Simulasi submit ke backend
-      await Future.delayed(const Duration(seconds: 2));
+      try {
+        final keluarga = Keluarga(
+          id: widget.keluarga?.id ?? '',
+          kepalaKeluarga: _kepalaKeluargaController.text,
+          alamat: _alamatController.text,
+          jumlahAnggota: int.parse(_jumlahAnggotaController.text),
+          createdAt: widget.keluarga?.createdAt ?? DateTime.now(),
+          updatedAt: widget.keluarga != null ? DateTime.now() : null,
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
+        if (widget.keluarga == null) {
+          await _repository.addKeluarga(keluarga);
+        } else {
+          await _repository.updateKeluarga(keluarga);
+        }
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      // Tampilkan pesan sukses
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Data keluarga berhasil ditambahkan!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.keluarga == null
+                  ? 'Data keluarga berhasil ditambahkan!'
+                  : 'Data keluarga berhasil diupdate!',
+            ),
+            backgroundColor: AppColors.success,
+          ),
+        );
 
-      // Kembali ke halaman sebelumnya
-      context.pop();
+        context.pop();
+      } catch (e) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal menyimpan data: $e'), backgroundColor: AppColors.error),
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(20),
       child: Form(
         key: _formKey,
         child: Column(
@@ -75,6 +101,7 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
           children: [
             // Header Card
             Container(
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
@@ -82,42 +109,40 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
               ),
-              padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.group_add_rounded, color: Colors.white, size: 32),
+                    child: const Icon(Icons.family_restroom_rounded, color: Colors.white, size: 28),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tambah Keluarga Baru',
-                          style: TextStyle(
-                            color: Colors.white,
+                          widget.keluarga == null ? 'Tambah Keluarga' : 'Edit Keluarga',
+                          style: const TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
-                          'Masukkan data keluarga baru',
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 14),
+                          widget.keluarga == null
+                              ? 'Lengkapi data keluarga baru'
+                              : 'Update data keluarga',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -125,65 +150,23 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-            // Section: Data Kartu Keluarga
-            _buildSectionTitle(Icons.credit_card_rounded, 'Data Kartu Keluarga'),
+            // Kepala Keluarga
             _buildCard(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTextField(
-                    controller: _noKKController,
-                    label: 'Nomor Kartu Keluarga (KK)',
-                    hint: 'Masukkan 16 digit nomor KK',
-                    icon: Icons.badge_rounded,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nomor KK harus diisi';
-                      }
-                      if (value.length != 16) {
-                        return 'Nomor KK harus 16 digit';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
+                  _buildLabel('Nama Kepala Keluarga'),
+                  TextFormField(
                     controller: _kepalaKeluargaController,
-                    label: 'Nama Kepala Keluarga',
-                    hint: 'Masukkan nama lengkap kepala keluarga',
-                    icon: Icons.person_rounded,
+                    decoration: _buildInputDecoration(
+                      hint: 'Masukkan nama kepala keluarga',
+                      icon: Icons.person_outline,
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Nama kepala keluarga harus diisi';
-                      }
-                      if (value.length < 3) {
-                        return 'Nama harus minimal 3 karakter';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildDropdown(
-                    value: _selectedStatusKeluarga,
-                    label: 'Status Keluarga',
-                    hint: 'Pilih status keluarga',
-                    icon: Icons.family_restroom_rounded,
-                    items: [
-                      'Keluarga Inti',
-                      'Keluarga Besar',
-                      'Keluarga Tidak Lengkap',
-                      'Single Parent',
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedStatusKeluarga = value;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Status keluarga harus dipilih';
+                        return 'Nama kepala keluarga wajib diisi';
                       }
                       return null;
                     },
@@ -191,61 +174,24 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // Section: Data Alamat
-            _buildSectionTitle(Icons.location_on_rounded, 'Data Alamat'),
+            // Alamat
             _buildCard(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _rtController,
-                          label: 'RT',
-                          hint: 'RT',
-                          icon: Icons.home_work_rounded,
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'RT harus diisi';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: _buildTextField(
-                          controller: _rwController,
-                          label: 'RW',
-                          hint: 'RW',
-                          icon: Icons.location_city_rounded,
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'RW harus diisi';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
+                  _buildLabel('Alamat Lengkap'),
+                  TextFormField(
                     controller: _alamatController,
-                    label: 'Alamat Lengkap',
-                    hint: 'Masukkan alamat lengkap keluarga',
-                    icon: Icons.map_rounded,
                     maxLines: 3,
+                    decoration: _buildInputDecoration(
+                      hint: 'Masukkan alamat lengkap',
+                      icon: Icons.location_on,
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Alamat harus diisi';
-                      }
-                      if (value.length < 10) {
-                        return 'Alamat harus minimal 10 karakter';
+                        return 'Alamat wajib diisi';
                       }
                       return null;
                     },
@@ -253,22 +199,24 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // Section: Informasi Tambahan
-            _buildSectionTitle(Icons.info_rounded, 'Informasi Tambahan'),
+            // Jumlah Anggota
             _buildCard(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTextField(
+                  _buildLabel('Jumlah Anggota Keluarga'),
+                  TextFormField(
                     controller: _jumlahAnggotaController,
-                    label: 'Jumlah Anggota Keluarga',
-                    hint: 'Masukkan jumlah anggota keluarga',
-                    icon: Icons.people_rounded,
                     keyboardType: TextInputType.number,
+                    decoration: _buildInputDecoration(
+                      hint: 'Masukkan jumlah anggota',
+                      icon: Icons.people_outline,
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Jumlah anggota keluarga harus diisi';
+                        return 'Jumlah anggota wajib diisi';
                       }
                       final intValue = int.tryParse(value);
                       if (intValue == null || intValue < 1) {
@@ -277,208 +225,89 @@ class _KeluargaFormPageState extends State<KeluargaFormPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _catatanController,
-                    label: 'Catatan (Opsional)',
-                    hint: 'Masukkan catatan tambahan jika ada',
-                    icon: Icons.note_rounded,
-                    maxLines: 3,
-                  ),
                 ],
               ),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
 
             // Submit Button
-            Container(
+            SizedBox(
               height: 52,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
                 ),
                 child: _isLoading
-                    ? SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.save_rounded, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            'Simpan Data Keluarga',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                    : Text(
+                        widget.keluarga == null ? 'Tambah Keluarga' : 'Update Keluarga',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                       ),
               ),
             ),
-            SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  // Helper Widgets
-
-  Widget _buildSectionTitle(IconData icon, String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.primary, size: 24),
-          SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCard({required Widget child}) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2)),
-        ],
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: child,
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.primary),
-        filled: true,
-        fillColor: AppColors.backgroundGray,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error, width: 2),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-      validator: validator,
     );
   }
 
-  Widget _buildDropdown({
-    required String? value,
-    required String label,
-    required String hint,
-    required IconData icon,
-    required List<String> items,
-    required void Function(String?) onChanged,
-    String? Function(String?)? validator,
-  }) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.primary),
-        filled: true,
-        fillColor: AppColors.backgroundGray,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error, width: 2),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+  InputDecoration _buildInputDecoration({required String hint, required IconData icon}) {
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: Icon(icon, color: AppColors.primary.withValues(alpha: 0.6)),
+      filled: true,
+      fillColor: AppColors.backgroundGray,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
       ),
-      items: items.map((item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item, overflow: TextOverflow.ellipsis),
-        );
-      }).toList(),
-      onChanged: onChanged,
-      validator: validator,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 }
-
