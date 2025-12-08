@@ -4,7 +4,7 @@ import 'package:jawara_four/colors/app_colors.dart';
 
 import '../data/models/user_profile_model.dart';
 import '../data/repositories/user_repository.dart';
-import '../data/services/auth_service.dart';
+import '../services/auth_service.dart';
 
 class DashboardMenuPage extends StatelessWidget {
   const DashboardMenuPage({super.key});
