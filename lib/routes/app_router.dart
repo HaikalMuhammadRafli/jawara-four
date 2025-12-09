@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/data/models/aspirasi_model.dart';
 import 'package:jawara_four/data/models/broadcast_model.dart';
 import 'package:jawara_four/data/models/kegiatan_model.dart';
+import 'package:jawara_four/data/models/keluarga_model.dart';
 import 'package:jawara_four/data/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/data/models/rumah_model.dart';
+import 'package:jawara_four/data/models/warga_model.dart';
 import 'package:jawara_four/pages/dashboard_menu_page.dart';
 import 'package:jawara_four/pages/kegiatan/kegiatan_menu_page.dart';
 import 'package:jawara_four/pages/kegiatan/screens/broadcast_detail_page.dart';
@@ -58,9 +60,21 @@ import 'package:jawara_four/widgets/custom_scaffold.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/login',
   routes: [
-    GoRoute(path: '/login', name: 'login', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/register', name: 'register', builder: (context, state) => const RegisterPage()),
-    GoRoute(path: '/logout', name: 'logout', builder: (context, state) => const LoginPage()),
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/register',
+      name: 'register',
+      builder: (context, state) => const RegisterPage(),
+    ),
+    GoRoute(
+      path: '/logout',
+      name: 'logout',
+      builder: (context, state) => const LoginPage(),
+    ),
     ShellRoute(
       builder: (context, state, child) {
         return CustomScaffold(
@@ -195,11 +209,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/kependudukan/warga/form',
       name: 'warga-form',
-      builder: (context, state) => CustomScaffold(
-        state: state,
-        appBar: CustomPushAppbar(title: 'Tambah Warga Baru'),
-        child: WargaFormPage(),
-      ),
+      builder: (context, state) {
+        final warga = state.extra as Warga?;
+        return CustomScaffold(
+          state: state,
+          appBar: CustomPushAppbar(
+            title: warga == null ? 'Tambah Warga Baru' : 'Edit Data Warga',
+          ),
+          child: WargaFormPage(warga: warga),
+        );
+      },
     ),
     GoRoute(
       path: '/kependudukan/keluarga',
@@ -218,11 +237,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/kependudukan/keluarga/form',
       name: 'keluarga-form',
-      builder: (context, state) => CustomScaffold(
-        state: state,
-        appBar: CustomPushAppbar(title: 'Tambah Keluarga Baru'),
-        child: KeluargaFormPage(),
-      ),
+      builder: (context, state) {
+        final keluarga = state.extra as Keluarga?;
+        return CustomScaffold(
+          state: state,
+          appBar: CustomPushAppbar(
+            title: keluarga == null
+                ? 'Tambah Keluarga Baru'
+                : 'Edit Data Keluarga',
+          ),
+          child: KeluargaFormPage(keluarga: keluarga),
+        );
+      },
     ),
     GoRoute(
       path: '/kependudukan/rumah',
