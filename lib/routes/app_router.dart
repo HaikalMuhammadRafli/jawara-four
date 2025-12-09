@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/data/models/aspirasi_model.dart';
 import 'package:jawara_four/data/models/broadcast_model.dart';
 import 'package:jawara_four/data/models/kegiatan_model.dart';
+import 'package:jawara_four/data/models/keluarga_model.dart';
 import 'package:jawara_four/data/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/data/models/rumah_model.dart';
 import 'package:jawara_four/data/models/user_profile_model.dart';
+import 'package:jawara_four/data/models/warga_model.dart';
 import 'package:jawara_four/pages/admin/dashboard_menu_page.dart';
 import 'package:jawara_four/pages/admin/kegiatan/kegiatan_menu_page.dart';
 import 'package:jawara_four/pages/admin/kegiatan/screens/broadcast_detail_page.dart';
@@ -400,11 +402,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/admin/kependudukan/warga/form',
       name: 'admin-warga-form',
-      builder: (context, state) => CustomScaffold(
-        state: state,
-        appBar: CustomPushAppbar(title: 'Tambah Warga Baru'),
-        child: WargaFormPage(),
-      ),
+      builder: (context, state) {
+        final warga = state.extra as Warga?;
+        return CustomScaffold(
+          state: state,
+          appBar: CustomPushAppbar(title: warga == null ? 'Tambah Warga Baru' : 'Edit Data Warga'),
+          child: WargaFormPage(warga: warga),
+        );
+      },
     ),
     GoRoute(
       path: '/admin/kependudukan/keluarga',
@@ -423,11 +428,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/admin/kependudukan/keluarga/form',
       name: 'admin-keluarga-form',
-      builder: (context, state) => CustomScaffold(
-        state: state,
-        appBar: CustomPushAppbar(title: 'Tambah Keluarga Baru'),
-        child: KeluargaFormPage(),
-      ),
+      builder: (context, state) {
+        final keluarga = state.extra as Keluarga?;
+        return CustomScaffold(
+          state: state,
+          appBar: CustomPushAppbar(
+            title: keluarga == null ? 'Tambah Keluarga Baru' : 'Edit Data Keluarga',
+          ),
+          child: KeluargaFormPage(keluarga: keluarga),
+        );
+      },
     ),
     GoRoute(
       path: '/admin/kependudukan/rumah',
