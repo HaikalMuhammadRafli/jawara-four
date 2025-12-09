@@ -16,6 +16,9 @@ class BroadcastPage extends StatefulWidget {
 
 class _BroadcastPageState extends State<BroadcastPage> {
   final BroadcastRepository _broadcastRepository = BroadcastRepository();
+  String _searchQuery = '';
+  String _selectedKategori = 'Semua';
+
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -63,101 +66,233 @@ class _BroadcastPageState extends State<BroadcastPage> {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.background,
-      child: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: _broadcastRepository.getBroadcastStream(),
-        builder: (context, snapshot) {
-          // Loading state
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Memuat data broadcast...',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+      child: Column(
+        children: [
+          _buildSearchAndFilter(),
+          Expanded(
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: _broadcastRepository.getBroadcastStream(),
+              builder: (context, snapshot) {
+                // Loading state
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Memuat data broadcast...',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                }
+
+                // Error state
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline_rounded,
+                          size: 80,
+                          color: AppColors.error.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Terjadi Kesalahan',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Text(
+                            snapshot.error.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () => setState(() {}),
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('Coba Lagi'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // Parse data
+                final List<Broadcast> broadcasts = (snapshot.data ?? [])
+                    .map((map) => Broadcast.fromMap(map))
+                    .toList();
+
+                // Sort by date (newest first)
+                broadcasts.sort((a, b) => b.tanggal.compareTo(a.tanggal));
+
+                // Apply search and filter
+                final filteredList = broadcasts.where((item) {
+                  final matchesSearch =
+                      _searchQuery.isEmpty ||
+                      item.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                      item.judul.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                      item.isi.toLowerCase().contains(_searchQuery.toLowerCase());
+
+                  final matchesKategori =
+                      _selectedKategori == 'Semua' || item.kategori == _selectedKategori;
+
+                  return matchesSearch && matchesKategori;
+                }).toList();
+
+                // Empty state
+                if (broadcasts.isEmpty) {
+                  return _buildEmptyState();
+                }
+
+                if (filteredList.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 80,
+                          color: AppColors.textSecondary.withValues(alpha: 0.4),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Tidak ada broadcast yang sesuai',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Coba ubah pencarian atau filter',
+                          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  itemCount: filteredList.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  itemBuilder: (context, index) {
+                    final item = filteredList[index];
+                    return _buildBroadcastCard(item);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchAndFilter() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        border: Border(bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.3))),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Search TextField
+          TextField(
+            onChanged: (value) => setState(() => _searchQuery = value),
+            decoration: InputDecoration(
+              hintText: 'Cari broadcast...',
+              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary),
+              filled: true,
+              fillColor: AppColors.background.withValues(alpha: 0.5),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.5)),
               ),
-            );
-          }
-
-          // Error state
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 80,
-                    color: AppColors.error.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Terjadi Kesalahan',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
-                      snapshot.error.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () => setState(() {}),
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Coba Lagi'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                ],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.5)),
               ),
-            );
-          }
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Filter chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildFilterChip('Semua'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Informasi'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Pengumuman'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Peringatan'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Undangan'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-          // Parse data
-          final List<Broadcast> broadcasts = (snapshot.data ?? [])
-              .map((map) => Broadcast.fromMap(map))
-              .toList();
-
-          // Sort by date (newest first)
-          broadcasts.sort((a, b) => b.tanggal.compareTo(a.tanggal));
-
-          // Empty state
-          if (broadcasts.isEmpty) {
-            return _buildEmptyState();
-          }
-
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-            itemCount: broadcasts.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 14),
-            itemBuilder: (context, index) {
-              final item = broadcasts[index];
-              return _buildBroadcastCard(item);
-            },
-          );
-        },
+  Widget _buildFilterChip(String label) {
+    final isSelected = _selectedKategori == label;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedKategori = label),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : AppColors.background.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.5),
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textPrimary,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+          ),
+        ),
       ),
     );
   }

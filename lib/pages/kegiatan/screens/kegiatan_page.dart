@@ -16,6 +16,8 @@ class KegiatanPage extends StatefulWidget {
 
 class _KegiatanPageState extends State<KegiatanPage> {
   final KegiatanRepository _kegiatanRepository = KegiatanRepository();
+  String _searchQuery = '';
+  String _selectedKategori = 'Semua';
 
   Widget _buildEmptyState() {
     return Center(
@@ -64,101 +66,224 @@ class _KegiatanPageState extends State<KegiatanPage> {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.background,
-      child: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: _kegiatanRepository.getKegiatanStream(),
-        builder: (context, snapshot) {
-          // Loading state
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Memuat data kegiatan...',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
+      child: Column(
+        children: [
+          _buildSearchAndFilter(),
+          Expanded(
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: _kegiatanRepository.getKegiatanStream(),
+              builder: (context, snapshot) {
+                // Loading state
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Memuat data kegiatan...',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                }
+
+                // Error state
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline_rounded,
+                          size: 80,
+                          color: AppColors.error.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Terjadi Kesalahan',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Text(
+                            snapshot.error.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () => setState(() {}),
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('Coba Lagi'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                // Parse data
+                final List<Kegiatan> kegiatanList = (snapshot.data ?? [])
+                    .map((map) => Kegiatan.fromMap(map))
+                    .toList();
+
+                // Apply filters
+                final filteredList = kegiatanList.where((kegiatan) {
+                  final matchesSearch =
+                      _searchQuery.isEmpty ||
+                      kegiatan.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                      kegiatan.deskripsi.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                      kegiatan.lokasi.toLowerCase().contains(_searchQuery.toLowerCase());
+                  final matchesKategori =
+                      _selectedKategori == 'Semua' || kegiatan.kategori == _selectedKategori;
+                  return matchesSearch && matchesKategori;
+                }).toList();
+
+                // Sort by date (newest first)
+                filteredList.sort((a, b) => b.tanggal.compareTo(a.tanggal));
+
+                // Empty state
+                if (filteredList.isEmpty) {
+                  if (kegiatanList.isEmpty) {
+                    return _buildEmptyState();
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: AppColors.textSecondary.withValues(alpha: 0.3),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Tidak ada kegiatan yang sesuai',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  itemCount: filteredList.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  itemBuilder: (context, index) {
+                    final item = filteredList[index];
+                    return _buildKegiatanCard(item);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchAndFilter() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        border: Border(
+          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        ),
+      ),
+      child: Column(
+        children: [
+          TextField(
+            onChanged: (v) => setState(() => _searchQuery = v),
+            decoration: InputDecoration(
+              hintText: 'Cari kegiatan...',
+              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
+              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
+              filled: true,
+              fillColor: AppColors.divider.withValues(alpha: 0.15),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
               ),
-            );
-          }
-
-          // Error state
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    size: 80,
-                    color: AppColors.error.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Terjadi Kesalahan',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Text(
-                      snapshot.error.toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: () => setState(() {}),
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Coba Lagi'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                ],
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-            );
-          }
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildFilterChip('Semua'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Sosial'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Keamanan'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Kesehatan'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Pendidikan'),
+                const SizedBox(width: 10),
+                _buildFilterChip('Lingkungan'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-          // Parse data
-          final List<Kegiatan> kegiatanList = (snapshot.data ?? [])
-              .map((map) => Kegiatan.fromMap(map))
-              .toList();
-
-          // Sort by date (newest first)
-          kegiatanList.sort((a, b) => b.tanggal.compareTo(a.tanggal));
-
-          // Empty state
-          if (kegiatanList.isEmpty) {
-            return _buildEmptyState();
-          }
-
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-            itemCount: kegiatanList.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 14),
-            itemBuilder: (context, index) {
-              final item = kegiatanList[index];
-              return _buildKegiatanCard(item);
-            },
-          );
-        },
+  Widget _buildFilterChip(String label) {
+    final isSelected = _selectedKategori == label;
+    return GestureDetector(
+      onTap: () => setState(() => _selectedKategori = label),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : AppColors.background,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? AppColors.background : AppColors.textSecondary,
+            fontSize: 13,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            letterSpacing: 0.2,
+          ),
+        ),
       ),
     );
   }

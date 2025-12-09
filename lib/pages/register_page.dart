@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../data/models/user_profile_model.dart';
 import '../data/repositories/user_repository.dart';
-import '../data/services/auth_service.dart';
+import '../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
