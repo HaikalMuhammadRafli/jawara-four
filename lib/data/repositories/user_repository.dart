@@ -8,7 +8,10 @@ class UserRepository {
 
   Future<void> createUserProfile(UserProfile userProfile) async {
     try {
-      await _firestore.collection(_collection).doc(userProfile.uid).set(userProfile.toMap());
+      await _firestore
+          .collection(_collection)
+          .doc(userProfile.uid)
+          .set(userProfile.toMap());
     } catch (e) {
       throw 'Gagal menyimpan data pengguna: ${e.toString()}';
     }
@@ -53,7 +56,9 @@ class UserRepository {
 
   Future<bool> isEmailExists(String email, {String? excludeUid}) async {
     try {
-      Query query = _firestore.collection(_collection).where('email', isEqualTo: email);
+      Query query = _firestore
+          .collection(_collection)
+          .where('email', isEqualTo: email);
 
       final querySnapshot = await query.limit(1).get();
 
@@ -73,6 +78,14 @@ class UserRepository {
         return UserProfile.fromMap(doc.data()!);
       }
       return null;
+    });
+  }
+
+  Stream<List<UserProfile>> getUsersStream() {
+    return _firestore.collection(_collection).snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => UserProfile.fromMap(doc.data()))
+          .toList();
     });
   }
 }

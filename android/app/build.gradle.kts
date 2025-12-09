@@ -39,6 +39,12 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile::class.java) {
+            options.compilerArgs.add("-Xlint:deprecation")
+        }
+    }
 }
 
 flutter {
