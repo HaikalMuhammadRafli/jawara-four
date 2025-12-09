@@ -15,10 +15,48 @@ class MutasiKeluargaPage extends StatefulWidget {
 class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        _buildSearchAndFilter(),
-        Expanded(child: _buildMutasiKeluargaList()),
+        Column(
+          children: [
+            _buildSearchAndFilter(),
+            Expanded(child: _buildMutasiKeluargaList()),
+          ],
+        ),
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).primaryColor.withAlpha((0.3 * 255).round()),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: FloatingActionButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    title: const Text('Tambah Mutasi Keluarga'),
+                    content: const Text('Fitur ini belum bisa digunakan saat ini.'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup')),
+                    ],
+                  ),
+                );
+              },
+              backgroundColor: Theme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: const Icon(Icons.add, color: Colors.white),
+            ),
+          ),
+        ),
       ],
     );
   }
