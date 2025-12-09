@@ -1,0 +1,504 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:jawara_four/colors/app_colors.dart';
+
+import '../../../data/models/kegiatan_model.dart';
+import '../../../data/repositories/kegiatan_repository.dart';
+import '../../../utils/date_helpers.dart';
+import '../../../utils/ui_helpers.dart';
+
+class KegiatanMenuPage extends StatefulWidget {
+  const KegiatanMenuPage({super.key});
+
+  @override
+  State<KegiatanMenuPage> createState() => _KegiatanMenuPageState();
+}
+
+class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.background,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
+        child: Column(
+          children: [
+            _buildWelcomeCard(),
+            const SizedBox(height: 24),
+            _buildQuickStats(),
+            const SizedBox(height: 24),
+            _buildMenuGrid(context),
+            const SizedBox(height: 24),
+            _buildRecentActivities(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcomeCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.15),
+                      AppColors.primary.withValues(alpha: 0.05),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
+                ),
+                child: const Icon(Icons.event_rounded, color: AppColors.primary, size: 32),
+              ),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Manajemen Kegiatan',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Dashboard',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Kelola seluruh kegiatan dan broadcast informasi RT/RW dengan sistem yang terintegrasi dan efisien',
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w400,
+              height: 1.5,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickStats() {
+    final kegiatanRepo = KegiatanRepository();
+
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: kegiatanRepo.getKegiatanStream(),
+      builder: (context, snapshot) {
+        final kegiatanList = (snapshot.data ?? []).map((map) => Kegiatan.fromMap(map)).toList();
+        final totalKegiatan = kegiatanList.length;
+        final activeKegiatan = kegiatanList.where((k) => k.tanggal.isAfter(DateTime.now())).length;
+
+        return Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                'Total Kegiatan',
+                totalKegiatan.toString(),
+                Icons.event_note_rounded,
+                AppColors.primary,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'Aktif',
+                activeKegiatan.toString(),
+                Icons.pending_actions_rounded,
+                AppColors.softOrange,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'Broadcast',
+                '12',
+                Icons.campaign_rounded,
+                AppColors.softPurple,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
+            ),
+            child: Icon(icon, color: color, size: 26),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w900,
+              color: color,
+              letterSpacing: -0.8,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuGrid(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 5,
+              height: 28,
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+            const SizedBox(width: 14),
+            const Text(
+              'Menu Kegiatan',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.8,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        _buildMenuCard(
+          context,
+          'Kegiatan',
+          'Kelola dan pantau seluruh kegiatan RT/RW',
+          Icons.event_note_rounded,
+          AppColors.primary,
+          'admin-kegiatan',
+        ),
+        const SizedBox(height: 14),
+        _buildMenuCard(
+          context,
+          'Broadcast',
+          'Kirim informasi dan pengumuman ke warga',
+          Icons.campaign_rounded,
+          AppColors.softPurple,
+          'admin-broadcast',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    String routeName,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.pushNamed(routeName),
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: color),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentActivities() {
+    final kegiatanRepo = KegiatanRepository();
+
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: kegiatanRepo.getKegiatanStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            padding: const EdgeInsets.all(28),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final kegiatanList = (snapshot.data ?? []).map((map) => Kegiatan.fromMap(map)).toList();
+        final recentItems = kegiatanList.take(4).toList();
+
+        return Container(
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 5,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Text(
+                      'Kegiatan Terbaru',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.8,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1),
+                    ),
+                    child: Text(
+                      '${recentItems.length} Item',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              ...recentItems.map((item) => _buildActivityItem(item)),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildActivityItem(Kegiatan item) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.2),
+                width: 1.5,
+              ),
+            ),
+            child: Icon(
+              UIHelpers.getKegiatanIcon(item.kategori),
+              color: UIHelpers.getKegiatanColor(item.kategori),
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    item.kategori,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: UIHelpers.getKegiatanColor(item.kategori),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  item.nama,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'PJ: ${item.penanggungJawab}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: AppColors.textSecondary.withValues(alpha: 0.8),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      DateHelpers.formatDateShort(item.tanggal),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

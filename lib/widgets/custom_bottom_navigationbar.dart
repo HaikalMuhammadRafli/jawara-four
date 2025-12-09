@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jawara_four/data/models/user_profile_model.dart';
+import 'package:jawara_four/services/role_service.dart';
 
 class CustomBottomNavigationbar extends StatelessWidget {
   const CustomBottomNavigationbar({super.key});
@@ -41,12 +43,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
             context,
           ),
           _buildNavItem(Icons.event_outlined, Icons.event, 3, context),
-          _buildNavItem(
-            Icons.more_horiz_outlined,
-            Icons.more_horiz,
-            4,
-            context,
-          ),
+          _buildNavItem(Icons.more_horiz_outlined, Icons.more_horiz, 4, context),
         ],
       ),
     );
@@ -81,10 +78,19 @@ class CustomBottomNavigationbar extends StatelessWidget {
   int _getCurrentIndex(BuildContext context) {
     final location = GoRouterState.of(context).fullPath;
 
+    // Admin routes
     if (location == '/dashboard') return 0;
     if (location == '/kependudukan') return 1;
     if (location == '/keuangan') return 2;
     if (location == '/kegiatan-broadcast') return 3;
+
+    // Warga routes
+    if (location == '/warga/dashboard') return 0;
+    if (location == '/warga/kependudukan') return 1;
+    if (location == '/warga/keuangan') return 2;
+    if (location == '/warga/kegiatan') return 3;
+
+    // Lainnya routes
     if (location == '/informasi-aspirasi' ||
         location == '/penerimaan-warga' ||
         location == '/mutasi-keluarga' ||
@@ -96,27 +102,32 @@ class CustomBottomNavigationbar extends StatelessWidget {
     return 0;
   }
 
-  void _onTap(BuildContext context, int index) {
+  void _onTap(BuildContext context, int index) async {
+    // Get user role to determine routing
+    final roleService = RoleService();
+    final role = await roleService.getCurrentUserRole();
+    final isWarga = role == UserRole.warga;
+
     switch (index) {
       case 0:
-        context.goNamed('dashboard');
+        context.goNamed(isWarga ? 'warga-dashboard' : 'admin-dashboard');
         break;
       case 1:
-        context.goNamed('kependudukan');
+        context.goNamed(isWarga ? 'warga-kependudukan' : 'admin-kependudukan');
         break;
       case 2:
-        context.goNamed('keuangan');
+        context.goNamed(isWarga ? 'warga-keuangan' : 'admin-keuangan');
         break;
       case 3:
-        context.goNamed('kegiatan-broadcast');
+        context.goNamed(isWarga ? 'warga-kegiatan-broadcast' : 'admin-kegiatan-broadcast');
         break;
       case 4:
-        _showAllMenus(context);
+        _showAllMenus(context, isWarga);
         break;
     }
   }
 
-  void _showAllMenus(BuildContext context) {
+  void _showAllMenus(BuildContext context, bool isWarga) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -124,24 +135,19 @@ class CustomBottomNavigationbar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Semua Menu',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            const Text('Semua Menu', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            _buildMenuTile(context, Icons.history, 'Log Aktifitas', () {
-              Navigator.pop(context);
-              context.pushNamed('log-aktifitas');
-            }),
-            _buildMenuTile(
-              context,
-              Icons.supervised_user_circle,
-              'Daftar Pengguna',
-              () {
+            // Only show admin menus if not warga
+            if (!isWarga) ...[
+              _buildMenuTile(context, Icons.history, 'Log Aktifitas', () {
                 Navigator.pop(context);
-                context.pushNamed('daftar-pengguna');
-              },
-            ),
+                context.pushNamed('admin-log-aktifitas');
+              }),
+              _buildMenuTile(context, Icons.supervised_user_circle, 'Daftar Pengguna', () {
+                Navigator.pop(context);
+                context.pushNamed('admin-daftar-pengguna');
+              }),
+            ],
             _buildMenuTile(context, Icons.logout, 'Log Out', () {
               Navigator.pop(context);
               context.goNamed('logout');
@@ -152,13 +158,7 @@ class CustomBottomNavigationbar extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuTile(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-  ) {
+  Widget _buildMenuTile(BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return ListTile(leading: Icon(icon), title: Text(title), onTap: onTap);
   }
 }
-

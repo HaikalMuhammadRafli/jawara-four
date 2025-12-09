@@ -27,10 +27,7 @@ class RumahRepository {
       if (rumah.id.isEmpty) {
         throw Exception('ID tidak ditemukan');
       }
-      await _firestore
-          .collection('rumah')
-          .doc(rumah.id)
-          .update(rumah.toMap());
+      await _firestore.collection('rumah').doc(rumah.id).update(rumah.toMap());
     } catch (e) {
       throw Exception('Gagal memperbarui rumah: $e');
     }
