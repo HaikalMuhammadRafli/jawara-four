@@ -9,7 +9,7 @@ class LogRepository {
 
   LogRepository({FirebaseFirestore? firestore}) : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  String get _collection => 'logs';
+  String get _collection => 'logs'; 
 
   /// Tambah log dan kembalikan instance LogEntry dengan id dokumen yang dibuat.
   Future<LogEntry> createLog(LogEntry entry) async {

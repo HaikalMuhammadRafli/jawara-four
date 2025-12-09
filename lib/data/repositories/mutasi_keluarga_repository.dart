@@ -8,7 +8,7 @@ class MutasiKeluargaRepository {
 
   MutasiKeluargaRepository({FirebaseFirestore? firestore}) : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  String get _collection => 'mutasi_keluarga';
+  String get _collection => 'mutasi_keluarga'; 
 
   /// Tambah data mutasi keluarga dan kembalikan instance dengan id dokumen.
   Future<MutasiKeluarga> create(MutasiKeluarga entry) async {
