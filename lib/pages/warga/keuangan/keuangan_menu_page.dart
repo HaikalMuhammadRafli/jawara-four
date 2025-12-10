@@ -6,6 +6,7 @@ import 'package:jawara_four/data/models/pemasukan_model.dart';
 import 'package:jawara_four/data/models/pengeluaran_model.dart';
 import 'package:jawara_four/data/repositories/pemasukan_repository.dart';
 import 'package:jawara_four/data/repositories/pengeluaran_repository.dart';
+import 'package:jawara_four/utils/number_helpers.dart';
 
 class WargaKeuanganMenuPage extends StatefulWidget {
   const WargaKeuanganMenuPage({super.key});
@@ -17,11 +18,6 @@ class WargaKeuanganMenuPage extends StatefulWidget {
 class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
   final PemasukanRepository _pemasukanRepo = PemasukanRepository();
   final PengeluaranRepository _pengeluaranRepo = PengeluaranRepository();
-  final NumberFormat _currencyFormat = NumberFormat.currency(
-    locale: 'id_ID',
-    symbol: 'Rp ',
-    decimalDigits: 0,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +32,25 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
               final pemasukanList = pemasukanSnapshot.data ?? [];
               final pengeluaranList = pengeluaranSnapshot.data ?? [];
 
-              final totalPemasukan = pemasukanList.fold<int>(0, (sum, item) => sum + item.jumlah);
-              final totalPengeluaran = pengeluaranList.fold<int>(
+              final int totalPemasukan = pemasukanList.fold<int>(
+                0,
+                (sum, item) => sum + item.jumlah,
+              );
+              final int totalPengeluaran = pengeluaranList.fold<int>(
                 0,
                 (sum, item) => sum + item.nominal,
               );
-              final saldo = totalPemasukan - totalPengeluaran;
+              final int saldo = totalPemasukan - totalPengeluaran;
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
                 child: Column(
                   children: [
-                    _buildSummaryCard(totalPemasukan, totalPengeluaran, saldo),
+                    _buildQuickStats(totalPemasukan, totalPengeluaran, saldo),
                     const SizedBox(height: 20),
-                    _buildPemasukanSection(pemasukanList),
+                    _buildPemasukanSection(pemasukanList.take(5).toList()),
                     const SizedBox(height: 20),
-                    _buildPengeluaranSection(pengeluaranList),
+                    _buildPengeluaranSection(pengeluaranList.take(5).toList()),
                   ],
                 ),
               );
@@ -62,32 +61,36 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
     );
   }
 
-  Widget _buildSummaryCard(int totalPemasukan, int totalPengeluaran, int saldo) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withValues(alpha: 0.1),
-            AppColors.primary.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  Widget _buildQuickStats(int totalPemasukan, int totalPengeluaran, int saldo) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Ringkasan Keuangan',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.success.withValues(alpha: 0.1),
+                AppColors.success.withValues(alpha: 0.05),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.success.withValues(alpha: 0.3), width: 2),
+          ),
+          child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
+                    colors: [AppColors.success, AppColors.success.withValues(alpha: 0.8)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -95,133 +98,117 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                 ),
                 child: const Icon(Icons.account_balance_wallet, color: Colors.white, size: 32),
               ),
-              const SizedBox(width: 16),
-              const Expanded(
+              const SizedBox(width: 20),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Ringkasan Keuangan',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Total pemasukan dan pengeluaran',
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: _buildSummaryItem(
-                  'Total Pemasukan',
-                  _currencyFormat.format(totalPemasukan),
-                  AppColors.success,
-                  Icons.trending_up,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildSummaryItem(
-                  'Total Pengeluaran',
-                  _currencyFormat.format(totalPengeluaran),
-                  AppColors.error,
-                  Icons.trending_down,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: saldo >= 0
-                  ? AppColors.success.withValues(alpha: 0.1)
-                  : AppColors.error.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: saldo >= 0
-                    ? AppColors.success.withValues(alpha: 0.3)
-                    : AppColors.error.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.account_balance,
-                      color: saldo >= 0 ? AppColors.success : AppColors.error,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Saldo',
+                      'Saldo Kas RW',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
+                        color: AppColors.success,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      NumberHelpers.formatCurrency(saldo),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
                         color: AppColors.textPrimary,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Update: ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                   ],
                 ),
-                Text(
-                  _currencyFormat.format(saldo),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: saldo >= 0 ? AppColors.success : AppColors.error,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(String label, String value, Color color, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 16),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                'Total Pemasukan',
+                NumberHelpers.formatCurrency(totalPemasukan),
+                Icons.trending_up,
+                AppColors.success,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'Total Pengeluaran',
+                NumberHelpers.formatCurrency(totalPengeluaran),
+                Icons.trending_down,
+                AppColors.error,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
           Text(
             value,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+              color: color,
+              letterSpacing: -0.5,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -233,9 +220,9 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider),
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,25 +255,26 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
           ),
           const SizedBox(height: 16),
           if (pemasukanList.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.divider),
+              ),
+              child: const Center(
                 child: Text(
                   'Belum ada data pemasukan',
-                  style: TextStyle(color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 ),
               ),
             )
           else
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: pemasukanList.length,
-              separatorBuilder: (_, __) => const Divider(height: 24),
-              itemBuilder: (context, index) {
-                final pemasukan = pemasukanList[index];
-                return _buildPemasukanItem(pemasukan);
-              },
+            ...pemasukanList.map(
+              (pemasukan) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildPemasukanItem(pemasukan),
+              ),
             ),
         ],
       ),
@@ -294,29 +282,28 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
   }
 
   Widget _buildPemasukanItem(Pemasukan pemasukan) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         context.pushNamed('warga-pemasukan-detail', pathParameters: {'id': pemasukan.id});
       },
-      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.success.withValues(alpha: 0.05),
+          color: AppColors.backgroundGray,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.success.withValues(alpha: 0.2)),
+          border: Border.all(color: AppColors.divider, width: 1),
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: AppColors.success.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(Icons.add_circle, color: AppColors.success, size: 24),
+              child: Icon(Icons.add_circle, color: AppColors.success, size: 20),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,9 +312,11 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                     pemasukan.judul,
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -337,6 +326,7 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
                         ),
                         child: Text(
                           pemasukan.kategori,
@@ -357,23 +347,10 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  _currencyFormat.format(pemasukan.jumlah),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.success,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  pemasukan.nama,
-                  style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
-                ),
-              ],
+            const SizedBox(width: 12),
+            Text(
+              NumberHelpers.formatCurrency(pemasukan.jumlah),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.success),
             ),
           ],
         ),
@@ -386,9 +363,9 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider),
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -421,25 +398,26 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
           ),
           const SizedBox(height: 16),
           if (pengeluaranList.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.divider),
+              ),
+              child: const Center(
                 child: Text(
                   'Belum ada data pengeluaran',
-                  style: TextStyle(color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 ),
               ),
             )
           else
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: pengeluaranList.length,
-              separatorBuilder: (_, __) => const Divider(height: 24),
-              itemBuilder: (context, index) {
-                final pengeluaran = pengeluaranList[index];
-                return _buildPengeluaranItem(pengeluaran);
-              },
+            ...pengeluaranList.map(
+              (pengeluaran) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildPengeluaranItem(pengeluaran),
+              ),
             ),
         ],
       ),
@@ -447,29 +425,28 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
   }
 
   Widget _buildPengeluaranItem(Pengeluaran pengeluaran) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         context.pushNamed('warga-pengeluaran-detail', pathParameters: {'id': pengeluaran.id});
       },
-      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.error.withValues(alpha: 0.05),
+          color: AppColors.backgroundGray,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+          border: Border.all(color: AppColors.divider, width: 1),
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(Icons.remove_circle, color: AppColors.error, size: 24),
+              child: Icon(Icons.remove_circle, color: AppColors.error, size: 20),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,9 +455,11 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                     pengeluaran.nama,
                     style: const TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -490,6 +469,7 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                         decoration: BoxDecoration(
                           color: AppColors.warning.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
                         ),
                         child: Text(
                           pengeluaran.jenis,
@@ -510,8 +490,9 @@ class _WargaKeuanganMenuPageState extends State<WargaKeuanganMenuPage> {
                 ],
               ),
             ),
+            const SizedBox(width: 12),
             Text(
-              _currencyFormat.format(pengeluaran.nominal),
+              NumberHelpers.formatCurrency(pengeluaran.nominal),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.error),
             ),
           ],

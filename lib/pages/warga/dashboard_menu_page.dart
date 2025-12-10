@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 import 'package:jawara_four/data/models/broadcast_model.dart';
 import 'package:jawara_four/data/models/kegiatan_model.dart';
@@ -24,7 +23,7 @@ class WargaDashboardMenuPage extends StatelessWidget {
           children: [
             _buildWelcomeCard(),
             const SizedBox(height: 20),
-            _buildAspirasiCard(context),
+            _buildQuickActions(context),
             const SizedBox(height: 20),
             _buildBroadcastTerbaru(context),
             const SizedBox(height: 20),
@@ -44,151 +43,285 @@ class WargaDashboardMenuPage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withValues(alpha: 0.1),
-            AppColors.primary.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: currentUser != null
           ? StreamBuilder<UserProfile?>(
               stream: userRepository.getUserProfileStream(currentUser.uid),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selamat Datang',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    ],
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
+                final userProfile = snapshot.data;
                 final displayName =
                     currentUser.displayName ?? currentUser.email?.split('@')[0] ?? 'Warga';
+                final role = userProfile?.role.value ?? '';
 
-                return Row(
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
+                    Text(
+                      'Selamat Datang, $displayName',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
                       ),
-                      child: const Icon(Icons.person, color: Colors.white, size: 32),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Selamat Datang',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textSecondary,
-                            ),
+                    const SizedBox(height: 8),
+                    if (role.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          role,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            displayName,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Jl. Merdeka No. 123, RT 01/RW 05',
-                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                          ),
-                        ],
+                        ),
                       ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Pantau informasi kegiatan dan pengumuman terbaru dari RW',
+                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
                     ),
                   ],
                 );
               },
             )
-          : Row(
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
+                Text(
+                  'Selamat Datang',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
-                  child: const Icon(Icons.person, color: Colors.white, size: 32),
                 ),
-                const SizedBox(width: 16),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Selamat Datang',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Warga',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
+                const SizedBox(height: 12),
+                Text(
+                  'Pantau informasi kegiatan dan pengumuman terbaru dari RW',
+                  style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
                 ),
               ],
             ),
     );
   }
 
-  Widget _buildAspirasiCard(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.info.withValues(alpha: 0.1), AppColors.info.withValues(alpha: 0.05)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Aksi Cepat',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.info.withValues(alpha: 0.3), width: 2),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                context,
+                'Aspirasi',
+                'Sampaikan keluhan',
+                Icons.feedback_outlined,
+                AppColors.info,
+                () => context.pushNamed('warga-aspirasi-form'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionCard(
+                context,
+                'Kegiatan',
+                'Lihat kegiatan',
+                Icons.event_rounded,
+                AppColors.primary,
+                () => context.pushNamed('warga-kegiatan'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                context,
+                'Keuangan',
+                'Lihat laporan',
+                Icons.account_balance_wallet,
+                AppColors.success,
+                () => context.pushNamed('warga-keuangan'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionCard(
+                context,
+                'Broadcast',
+                'Lihat pengumuman',
+                Icons.campaign_rounded,
+                AppColors.softPurple,
+                () => context.pushNamed('warga-broadcast'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.divider, width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBroadcastTerbaru(BuildContext context) {
+    final broadcastRepo = BroadcastRepository();
+
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: broadcastRepo.getBroadcastStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.divider, width: 1),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final broadcastList = (snapshot.data ?? []).map((map) => Broadcast.fromMap(map)).toList();
+        final recentBroadcasts = broadcastList.take(3).toList();
+
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.divider, width: 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pengumuman Terbaru',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.pushNamed('warga-broadcast');
+                    },
+                    child: Text(
+                      'Lihat Semua',
+                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              if (recentBroadcasts.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.divider),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Tidak ada pengumuman terbaru',
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                    ),
+                  ),
+                )
+              else
+                ...recentBroadcasts.map(
+                  (broadcast) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _buildBroadcastItem(
+                      broadcast.judul,
+                      broadcast.isi,
+                      timeAgo(broadcast.createdAt),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBroadcastItem(String title, String content, String time) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGray,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,60 +329,37 @@ class WargaDashboardMenuPage extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.info, AppColors.info.withValues(alpha: 0.8)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.softPurple.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.feedback_outlined, color: Colors.white, size: 24),
+                child: Icon(Icons.campaign, color: AppColors.softPurple, size: 20),
               ),
-              const SizedBox(width: 16),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Aspirasi Warga',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Sampaikan aspirasi Anda',
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                  ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                context.pushNamed('warga-aspirasi-form');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.info,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              icon: const Icon(Icons.add),
-              label: const Text(
-                'Buat Aspirasi',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-            ),
+          const SizedBox(height: 12),
+          Text(
+            content,
+            style: TextStyle(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
+          const SizedBox(height: 8),
+          Text(time, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
         ],
       ),
     );
@@ -267,7 +377,7 @@ class WargaDashboardMenuPage extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.background,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider, width: 1.5),
+              border: Border.all(color: AppColors.divider, width: 1),
             ),
             child: const Center(child: CircularProgressIndicator()),
           );
@@ -284,7 +394,7 @@ class WargaDashboardMenuPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.background,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider, width: 1.5),
+            border: Border.all(color: AppColors.divider, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,10 +402,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Kegiatan Mendatang',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                     ),
@@ -311,33 +421,34 @@ class WargaDashboardMenuPage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               if (upcomingKegiatan.isEmpty)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.divider),
+                  ),
+                  child: const Center(
                     child: Text(
                       'Tidak ada kegiatan mendatang',
-                      style: TextStyle(color: AppColors.textSecondary),
+                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                     ),
                   ),
                 )
               else
-                ...upcomingKegiatan.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final kegiatan = entry.value;
-                  return Column(
-                    children: [
-                      if (index > 0) const SizedBox(height: 12),
-                      _buildKegiatanItem(
-                        kegiatan.nama,
-                        DateFormat('dd MMMM yyyy', 'id_ID').format(kegiatan.tanggal),
-                        kegiatan.lokasi,
-                        _getKategoriColor(kegiatan.kategori),
-                      ),
-                    ],
-                  );
-                }),
+                ...upcomingKegiatan.map(
+                  (kegiatan) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _buildKegiatanItem(
+                      kegiatan.nama,
+                      DateHelpers.formatDate(kegiatan.tanggal),
+                      kegiatan.lokasi,
+                      _getKategoriColor(kegiatan.kategori),
+                    ),
+                  ),
+                ),
             ],
           ),
         );
@@ -360,24 +471,23 @@ class WargaDashboardMenuPage extends StatelessWidget {
     }
   }
 
-  Widget _buildKegiatanItem(String title, String date, String time, Color color) {
+  Widget _buildKegiatanItem(String title, String date, String location, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.backgroundGray.withValues(alpha: 0.3),
+        color: AppColors.backgroundGray,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider),
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: color.withValues(alpha: 0.3)),
             ),
-            child: Icon(Icons.event, color: color, size: 24),
+            child: Icon(Icons.event, color: color, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -386,171 +496,37 @@ class WargaDashboardMenuPage extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 15,
+                  style: TextStyle(
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
-                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     Icon(Icons.calendar_today, size: 12, color: AppColors.textSecondary),
                     const SizedBox(width: 4),
                     Text(date, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                    const SizedBox(width: 12),
-                    Icon(Icons.access_time, size: 12, color: AppColors.textSecondary),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    Icon(Icons.location_on, size: 12, color: AppColors.textSecondary),
                     const SizedBox(width: 4),
-                    Text(time, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    Expanded(
+                      child: Text(
+                        location,
+                        style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBroadcastTerbaru(BuildContext context) {
-    final broadcastRepo = BroadcastRepository();
-
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: broadcastRepo.getBroadcastStream(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider, width: 1.5),
-            ),
-            child: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        final broadcastList = (snapshot.data ?? []).map((map) => Broadcast.fromMap(map)).toList();
-        final recentBroadcasts = broadcastList.take(3).toList();
-
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider, width: 1.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Pengumuman Terbaru',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context.pushNamed('warga-broadcast');
-                    },
-                    child: Text(
-                      'Lihat Semua',
-                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              if (recentBroadcasts.isEmpty)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      'Tidak ada pengumuman terbaru',
-                      style: TextStyle(color: AppColors.textSecondary),
-                    ),
-                  ),
-                )
-              else
-                ...recentBroadcasts.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final broadcast = entry.value;
-                  return Column(
-                    children: [
-                      if (index > 0) const SizedBox(height: 12),
-                      _buildBroadcastItem(
-                        broadcast.judul,
-                        broadcast.isi,
-                        timeAgo(broadcast.createdAt),
-                      ),
-                    ],
-                  );
-                }),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildBroadcastItem(String title, String content, String time) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGray.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppColors.softPurple.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.softPurple.withValues(alpha: 0.3)),
-                ),
-                child: const Icon(Icons.campaign, color: AppColors.softPurple, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            content,
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.5),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            time,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary.withValues(alpha: 0.7),
-              fontStyle: FontStyle.italic,
             ),
           ),
         ],
