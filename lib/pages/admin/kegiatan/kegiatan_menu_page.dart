@@ -80,10 +80,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      width: 2,
-                    ),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
                   ),
                   child: Row(
                     children: [
@@ -91,20 +88,13 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              AppColors.primary,
-                              AppColors.primary.withValues(alpha: 0.8),
-                            ],
+                            colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(
-                          Icons.event_note_rounded,
-                          color: Colors.white,
-                          size: 32,
-                        ),
+                        child: const Icon(Icons.event_note_rounded, color: Colors.white, size: 32),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
@@ -175,21 +165,13 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
     );
   }
 
-  Widget _buildStatCard(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.divider.withValues(alpha: 0.6),
-          width: 1.5,
-        ),
+        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
       ),
       child: Column(
         children: [
@@ -197,18 +179,12 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color.withValues(alpha: 0.2),
-                  color.withValues(alpha: 0.1),
-                ],
+                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: color.withValues(alpha: 0.25),
-                width: 1.5,
-              ),
+              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
             ),
             child: Icon(icon, color: color, size: 26),
           ),
@@ -245,11 +221,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
       children: [
         Text(
           'Menu Kegiatan',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
         ),
         const SizedBox(height: 16),
         Row(
@@ -260,7 +232,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                 'Kegiatan',
                 Icons.event_note_rounded,
                 AppColors.primary,
-                'kegiatan',
+                'admin-kegiatan',
               ),
             ),
             const SizedBox(width: 12),
@@ -270,7 +242,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                 'Broadcast',
                 Icons.campaign_rounded,
                 AppColors.softPurple,
-                'broadcast',
+                'admin-broadcast',
               ),
             ),
           ],
@@ -358,23 +330,17 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => context.pushNamed('kegiatan'),
+                    onPressed: () => context.pushNamed('admin-kegiatan'),
                     child: Text(
                       'Selengkapnya',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
               if (recentItems.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('Belum ada kegiatan.'),
-                )
+                const Padding(padding: EdgeInsets.all(8.0), child: Text('Belum ada kegiatan.'))
               else
                 ...recentItems.map((item) => _buildActivityItem(item)),
             ],
@@ -398,9 +364,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: UIHelpers.getKegiatanColor(
-                item.kategori,
-              ).withValues(alpha: 0.1),
+              color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -425,10 +389,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
                 ),
                 Text(
                   item.penanggungJawab,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -448,9 +409,7 @@ class _KegiatanMenuPageState extends State<KegiatanMenuPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: UIHelpers.getKegiatanColor(
-                    item.kategori,
-                  ).withValues(alpha: 0.1),
+                  color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(

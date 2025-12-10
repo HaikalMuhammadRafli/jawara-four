@@ -80,7 +80,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Tambahkan data warga baru ke sistem',
                 Icons.person_add,
                 Colors.blue,
-                'kependudukan-tambah',
+                'admin-kependudukan-tambah',
               ),
               _buildOptionCard(
                 context,
@@ -88,7 +88,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Tambahkan data rumah baru ke sistem',
                 Icons.home_work,
                 Colors.orange,
-                'kependudukan-tambah',
+                'admin-kependudukan-tambah',
               ),
               _buildOptionCard(
                 context,
@@ -96,7 +96,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Buat keluarga baru dan hubungkan warga',
                 Icons.family_restroom,
                 Colors.green,
-                'kependudukan-tambah',
+                'admin-kependudukan-tambah',
               ),
               _buildOptionCard(
                 context,
@@ -104,7 +104,7 @@ class KependudukanTambahPage extends StatelessWidget {
                 'Import data dari file Excel',
                 Icons.upload_file,
                 Colors.purple,
-                'kependudukan-tambah',
+                'admin-kependudukan-tambah',
               ),
             ],
           ),

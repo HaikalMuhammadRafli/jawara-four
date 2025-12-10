@@ -427,7 +427,7 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
                   NumberHelpers.formatCurrency(totalPemasukan.toInt()),
                   Icons.trending_up,
                   AppColors.primary,
-                  'keuangan-pemasukan-lain',
+                  'admin-keuangan-pemasukan-lain',
                 ),
                 const SizedBox(height: 12),
                 _buildMenuCardWithValue(
@@ -436,7 +436,7 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
                   NumberHelpers.formatCurrency(totalPengeluaran.toInt()),
                   Icons.trending_down,
                   AppColors.error,
-                  'keuangan-pengeluaran',
+                  'admin-keuangan-pengeluaran',
                 ),
               ],
             );
@@ -470,7 +470,7 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
                     ),
                   )
                   .toList(),
-              'keuangan-pemasukan-lain',
+              'admin-keuangan-pemasukan-lain',
             );
           },
         ),
@@ -496,7 +496,7 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
                     ),
                   )
                   .toList(),
-              'keuangan-pengeluaran',
+              'admin-keuangan-pengeluaran',
             );
           },
         ),

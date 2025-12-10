@@ -78,24 +78,36 @@ class CustomBottomNavigationbar extends StatelessWidget {
   int _getCurrentIndex(BuildContext context) {
     final location = GoRouterState.of(context).fullPath;
 
-    // Admin routes
-    if (location == '/dashboard') return 0;
-    if (location == '/kependudukan') return 1;
-    if (location == '/keuangan') return 2;
-    if (location == '/kegiatan-broadcast') return 3;
+    // Admin routes - check for main routes and their sub-routes
+    if (location == '/admin/dashboard') return 0;
+    if (location == '/admin/kependudukan' || location?.startsWith('/admin/kependudukan/') == true) {
+      return 1;
+    }
+    if (location == '/admin/keuangan' || location?.startsWith('/admin/keuangan/') == true) return 2;
+    if (location == '/admin/kegiatan-broadcast' ||
+        location?.startsWith('/admin/kegiatan') == true ||
+        location?.startsWith('/admin/broadcast') == true) {
+      return 3;
+    }
 
-    // Warga routes
+    // Warga routes - check for main routes and their sub-routes
     if (location == '/warga/dashboard') return 0;
-    if (location == '/warga/kependudukan') return 1;
-    if (location == '/warga/keuangan') return 2;
-    if (location == '/warga/kegiatan') return 3;
+    if (location == '/warga/kependudukan' || location?.startsWith('/warga/kependudukan/') == true) {
+      return 1;
+    }
+    if (location == '/warga/keuangan' || location?.startsWith('/warga/keuangan/') == true) return 2;
+    if (location == '/warga/kegiatan' ||
+        location?.startsWith('/warga/kegiatan') == true ||
+        location?.startsWith('/warga/broadcast') == true) {
+      return 3;
+    }
 
-    // Lainnya routes
-    if (location == '/informasi-aspirasi' ||
-        location == '/penerimaan-warga' ||
-        location == '/mutasi-keluarga' ||
-        location == '/log-aktifitas' ||
-        location == '/daftar-pengguna') {
+    // Admin Lainnya routes (menu "more")
+    if (location?.startsWith('/admin/informasi-aspirasi') == true ||
+        location?.startsWith('/admin/penerimaan-warga') == true ||
+        location?.startsWith('/admin/mutasi-keluarga') == true ||
+        location?.startsWith('/admin/log-aktifitas') == true ||
+        location?.startsWith('/admin/daftar-pengguna') == true) {
       return 4;
     }
 
