@@ -32,7 +32,7 @@ class CustomFab extends StatelessWidget {
         ],
       ),
       child: FloatingActionButton.extended(
-        heroTag: 'fab_${routeName}_${hashCode}',
+        heroTag: 'fab_${routeName}_$hashCode',
         onPressed: () {
           context.pushNamed(routeName);
         },

@@ -57,7 +57,9 @@ class WargaDashboardMenuPage extends StatelessWidget {
 
                 final userProfile = snapshot.data;
                 final displayName =
-                    currentUser.displayName ?? currentUser.email?.split('@')[0] ?? 'Warga';
+                    currentUser.displayName ??
+                    currentUser.email?.split('@')[0] ??
+                    'Warga';
                 final role = userProfile?.role.value ?? '';
 
                 return Column(
@@ -74,7 +76,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     if (role.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -91,7 +96,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       'Pantau informasi kegiatan dan pengumuman terbaru dari RW',
-                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 );
@@ -111,7 +119,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   'Pantau informasi kegiatan dan pengumuman terbaru dari RW',
-                  style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -124,7 +135,11 @@ class WargaDashboardMenuPage extends StatelessWidget {
       children: [
         Text(
           'Aksi Cepat',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         const SizedBox(height: 16),
         Row(
@@ -221,7 +236,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            ),
           ],
         ),
       ),
@@ -246,7 +264,9 @@ class WargaDashboardMenuPage extends StatelessWidget {
           );
         }
 
-        final broadcastList = (snapshot.data ?? []).map((map) => Broadcast.fromMap(map)).toList();
+        final broadcastList = (snapshot.data ?? [])
+            .map((map) => Broadcast.fromMap(map))
+            .toList();
         final recentBroadcasts = broadcastList.take(3).toList();
 
         return Container(
@@ -262,12 +282,14 @@ class WargaDashboardMenuPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Pengumuman Terbaru',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                  Expanded(
+                    child: Text(
+                      'Pengumuman Terbaru',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                   ),
                   TextButton(
@@ -276,7 +298,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                     },
                     child: Text(
                       'Lihat Semua',
-                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -293,7 +318,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                   child: const Center(
                     child: Text(
                       'Tidak ada pengumuman terbaru',
-                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 )
@@ -334,7 +362,11 @@ class WargaDashboardMenuPage extends StatelessWidget {
                   color: AppColors.softPurple.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.campaign, color: AppColors.softPurple, size: 20),
+                child: Icon(
+                  Icons.campaign,
+                  color: AppColors.softPurple,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -354,12 +386,19 @@ class WargaDashboardMenuPage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             content,
-            style: TextStyle(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 8),
-          Text(time, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+          Text(
+            time,
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
         ],
       ),
     );
@@ -383,7 +422,9 @@ class WargaDashboardMenuPage extends StatelessWidget {
           );
         }
 
-        final kegiatanList = (snapshot.data ?? []).map((map) => Kegiatan.fromMap(map)).toList();
+        final kegiatanList = (snapshot.data ?? [])
+            .map((map) => Kegiatan.fromMap(map))
+            .toList();
         final upcomingKegiatan = kegiatanList
             .where((k) => k.tanggal.isAfter(DateTime.now()))
             .take(3)
@@ -402,12 +443,14 @@ class WargaDashboardMenuPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Kegiatan Mendatang',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                  Expanded(
+                    child: Text(
+                      'Kegiatan Mendatang',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                   ),
                   TextButton(
@@ -416,7 +459,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                     },
                     child: Text(
                       'Lihat Semua',
-                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -433,7 +479,10 @@ class WargaDashboardMenuPage extends StatelessWidget {
                   child: const Center(
                     child: Text(
                       'Tidak ada kegiatan mendatang',
-                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 )
@@ -471,7 +520,12 @@ class WargaDashboardMenuPage extends StatelessWidget {
     }
   }
 
-  Widget _buildKegiatanItem(String title, String date, String location, Color color) {
+  Widget _buildKegiatanItem(
+    String title,
+    String date,
+    String location,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -507,20 +561,37 @@ class WargaDashboardMenuPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.calendar_today, size: 12, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.calendar_today,
+                      size: 12,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 4),
-                    Text(date, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    Text(
+                      date,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 2),
                 Row(
                   children: [
-                    Icon(Icons.location_on, size: 12, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.location_on,
+                      size: 12,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         location,
-                        style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

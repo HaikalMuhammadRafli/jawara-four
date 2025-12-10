@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-
-import '../../../../data/mocks/user_profile_mocks.dart';
-import '../../../../data/models/user_profile_model.dart';
-import '../../../../utils/ui_helpers.dart';
+import 'package:jawara_four/data/repositories/user_repository.dart';
+import 'package:jawara_four/data/models/user_profile_model.dart';
+import 'package:jawara_four/utils/ui_helpers.dart';
+import 'package:jawara_four/data/models/log_model.dart';
+import 'package:jawara_four/data/repositories/log_repository.dart';
 
 class PenggunaPage extends StatelessWidget {
-  const PenggunaPage({super.key});
+  PenggunaPage({super.key});
+
+  final UserRepository _userRepository = UserRepository();
+  final LogRepository _logRepository = LogRepository();
 
   void _showEditDialog(BuildContext context, UserProfile item) {
     showDialog(
@@ -17,7 +21,12 @@ class PenggunaPage extends StatelessWidget {
           'Edit data untuk "${item.nama}" (dummy)\nFungsionalitas belum diaktifkan.',
           style: const TextStyle(fontSize: 14),
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup'))],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
+          ),
+        ],
       ),
     );
   }
@@ -29,38 +38,95 @@ class PenggunaPage extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Hapus Pengguna'),
         content: Text(
-          'Konfirmasi hapus "${item.nama}" (dummy)\nFungsionalitas belum diaktifkan.',
+          'Apakah Anda yakin ingin menghapus "${item.nama}"?',
           style: const TextStyle(fontSize: 14),
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup'))],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              try {
+                await _userRepository.deleteUser(item.uid);
+
+                // Log activity
+                await _logRepository.createLog(
+                  LogEntry(
+                    id: '',
+                    deskripsi: 'Menghapus pengguna ${item.nama}',
+                    aktor:
+                        'Admin', // In a real app, this should be the current user's name
+                    tanggal: DateTime.now(),
+                    createdAt: DateTime.now(),
+                  ),
+                );
+
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Pengguna berhasil dihapus')),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                }
+              }
+            },
+            child: const Text('Hapus'),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final penggunaList = userProfileMock; // hanya data dummy
+    return StreamBuilder<List<UserProfile>>(
+      stream: _userRepository.getUsersStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return penggunaList.isEmpty
-        ? _buildEmptyState()
-        : SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: penggunaList.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final item = penggunaList[index];
-                    return _buildPenggunaCard(context, item);
-                  },
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final penggunaList = snapshot.data ?? [];
+
+        return penggunaList.isEmpty
+            ? _buildEmptyState()
+            : SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: penggunaList.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 16),
+                      itemBuilder: (context, index) {
+                        final item = penggunaList[index];
+                        return _buildPenggunaCard(context, item);
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
+              );
+      },
+    );
   }
 
   Widget _buildEmptyState() {
@@ -70,13 +136,24 @@ class PenggunaPage extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
-            child: Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.people_outline,
+              size: 64,
+              color: Colors.grey[400],
+            ),
           ),
           const SizedBox(height: 24),
           Text(
             'Belum Ada Pengguna',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -116,11 +193,17 @@ class PenggunaPage extends StatelessWidget {
                     color: UIHelpers.getUserColor(item.role),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.2),
+                      color: UIHelpers.getUserColor(
+                        item.role,
+                      ).withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
-                  child: Icon(UIHelpers.getUserIcon(item.role), color: Colors.white, size: 20),
+                  child: Icon(
+                    UIHelpers.getUserIcon(item.role),
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -134,12 +217,19 @@ class PenggunaPage extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.1),
+                    color: UIHelpers.getUserColor(
+                      item.role,
+                    ).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: UIHelpers.getUserColor(item.role).withValues(alpha: 0.2),
+                      color: UIHelpers.getUserColor(
+                        item.role,
+                      ).withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -163,7 +253,11 @@ class PenggunaPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.email_outlined, size: 16, color: const Color(0xFF757575)),
+                    Icon(
+                      Icons.email_outlined,
+                      size: 16,
+                      color: const Color(0xFF757575),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       item.email,
@@ -186,7 +280,9 @@ class PenggunaPage extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF1E88E5),
                           side: const BorderSide(color: Color(0xFF1E88E5)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
                     ),
@@ -199,7 +295,9 @@ class PenggunaPage extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFFE53E3E),
                           side: const BorderSide(color: Color(0xFFE53E3E)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
                     ),
