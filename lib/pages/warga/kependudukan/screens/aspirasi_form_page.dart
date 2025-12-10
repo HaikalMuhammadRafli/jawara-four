@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 import 'package:jawara_four/data/repositories/aspirasi_repository.dart';
 
+import 'package:jawara_four/services/auth_service.dart';
+
 class WargaAspirasiFormPage extends StatefulWidget {
   const WargaAspirasiFormPage({super.key});
 
@@ -16,6 +18,7 @@ class _WargaAspirasiFormPageState extends State<WargaAspirasiFormPage> {
   final _isiController = TextEditingController();
   final _namaPengusulController = TextEditingController();
   final AspirasiRepository _repository = AspirasiRepository();
+  final AuthService _authService = AuthService();
 
   String _kategori = 'Infrastruktur';
   bool _isLoading = false;
@@ -48,11 +51,13 @@ class _WargaAspirasiFormPageState extends State<WargaAspirasiFormPage> {
     });
 
     try {
+      final currentUser = _authService.currentUser;
       final aspirasi = {
         'judul': _judulController.text.trim(),
         'isi': _isiController.text.trim(),
         'kategori': _kategori,
         'namaPengusul': _namaPengusulController.text.trim(),
+        'pengirim': currentUser?.uid, // Added user ID
         'status': 'Menunggu',
         'tanggal': DateTime.now().toIso8601String(),
         'createdAt': DateTime.now().toIso8601String(),

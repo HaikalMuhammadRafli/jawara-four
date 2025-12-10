@@ -28,12 +28,18 @@ class LogEntry {
 
   factory LogEntry.fromMap(Map<String, dynamic> map) {
     return LogEntry(
-      id: map['id'] as String,
-      deskripsi: map['deskripsi'] as String,
-      aktor: map['aktor'] as String,
-      tanggal: DateTime.parse(map['tanggal'] as String),
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      id: map['id']?.toString() ?? '',
+      deskripsi: map['deskripsi']?.toString() ?? 'Tidak ada deskripsi',
+      aktor: map['aktor']?.toString() ?? 'User',
+      tanggal: map['tanggal'] != null
+          ? DateTime.tryParse(map['tanggal'].toString()) ?? DateTime.now()
+          : DateTime.now(),
+      createdAt: map['createdAt'] != null
+          ? DateTime.tryParse(map['createdAt'].toString()) ?? DateTime.now()
+          : DateTime.now(),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.tryParse(map['updatedAt'].toString())
+          : null,
     );
   }
 

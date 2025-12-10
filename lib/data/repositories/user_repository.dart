@@ -81,6 +81,14 @@ class UserRepository {
     });
   }
 
+  Future<void> deleteUser(String uid) async {
+    try {
+      await _firestore.collection(_collection).doc(uid).delete();
+    } catch (e) {
+      throw 'Gagal menghapus pengguna: ${e.toString()}';
+    }
+  }
+
   Stream<List<UserProfile>> getUsersStream() {
     return _firestore.collection(_collection).snapshots().map((snapshot) {
       return snapshot.docs

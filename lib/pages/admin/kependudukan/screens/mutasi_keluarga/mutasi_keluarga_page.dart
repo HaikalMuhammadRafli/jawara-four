@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../../../data/mocks/mutasi_keluarga_mocks.dart';
+import '../../../../../data/repositories/mutasi_keluarga_repository.dart';
 import '../../../../../data/models/mutasi_keluarga_model.dart';
 import '../../../../../utils/date_helpers.dart';
 import '../../../../../utils/ui_helpers.dart';
@@ -151,15 +151,33 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
     );
   }
 
-  Widget _buildMutasiKeluargaList() {
-    final List<MutasiKeluarga> mutasiKeluargaData = mutasiKeluargaMock;
+  final MutasiKeluargaRepository _mutasiRepository = MutasiKeluargaRepository();
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: mutasiKeluargaData.length,
-      itemBuilder: (context, index) {
-        final mutasiKeluarga = mutasiKeluargaData[index];
-        return _buildMutasiKeluargaCard(mutasiKeluarga);
+  Widget _buildMutasiKeluargaList() {
+    return StreamBuilder<List<MutasiKeluarga>>(
+      stream: _mutasiRepository.streamAll(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final mutasiKeluargaData = snapshot.data ?? [];
+
+        if (mutasiKeluargaData.isEmpty) {
+          return const Center(child: Text('Belum ada data mutasi'));
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: mutasiKeluargaData.length,
+          itemBuilder: (context, index) {
+            final mutasiKeluarga = mutasiKeluargaData[index];
+            return _buildMutasiKeluargaCard(mutasiKeluarga);
+          },
+        );
       },
     );
   }

@@ -69,7 +69,9 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
 
                 final userProfile = snapshot.data;
                 final displayName =
-                    currentUser.displayName ?? currentUser.email?.split('@')[0] ?? 'User';
+                    currentUser.displayName ??
+                    currentUser.email?.split('@')[0] ??
+                    'User';
                 final role = userProfile?.role.value ?? '';
 
                 return Column(
@@ -86,7 +88,10 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                     const SizedBox(height: 8),
                     if (role.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -103,7 +108,10 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                     const SizedBox(height: 12),
                     Text(
                       'Pantau perkembangan warga dan aktivitas RW secara real-time',
-                      style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 );
@@ -123,7 +131,10 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                 const SizedBox(height: 12),
                 Text(
                   'Pantau perkembangan warga dan aktivitas RW secara real-time',
-                  style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -143,18 +154,79 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                 return StreamBuilder<List<Map<String, dynamic>>>(
                   stream: _kegiatanRepository.getKegiatanStream(),
                   builder: (context, kegiatanSnapshot) {
-                    final double totalPemasukan = (pemasukanSnapshot.data ?? []).fold(
-                      0.0,
-                      (sum, item) => sum + item.jumlah,
-                    );
-                    final double totalPengeluaran = (pengeluaranSnapshot.data ?? []).fold(
-                      0.0,
-                      (sum, item) => sum + item.nominal,
-                    );
+                    final double totalPemasukan = (pemasukanSnapshot.data ?? [])
+                        .fold(0.0, (sum, item) => sum + item.jumlah);
+                    final double totalPengeluaran =
+                        (pengeluaranSnapshot.data ?? []).fold(
+                          0.0,
+                          (sum, item) => sum + item.nominal,
+                        );
                     final double saldo = totalPemasukan - totalPengeluaran;
 
                     final int wargaCount = userSnapshot.data?.length ?? 0;
-                    final int kegiatanCount = kegiatanSnapshot.data?.length ?? 0;
+                    final int kegiatanCount =
+                        kegiatanSnapshot.data?.length ?? 0;
+
+                    // Calculate spots for sparkline & Growth
+                    final now = DateTime.now();
+                    final currentYear = now.year;
+                    final currentMonth = now.month;
+                    final previousMonth = currentMonth == 1
+                        ? 12
+                        : currentMonth - 1;
+                    final previousYear = currentMonth == 1
+                        ? currentYear - 1
+                        : currentYear;
+
+                    final List<double> monthlyIncome = List.filled(12, 0.0);
+                    final pemasukanList = pemasukanSnapshot.data ?? [];
+
+                    double currentMonthIncome = 0;
+                    double previousMonthIncome = 0;
+
+                    for (var item in pemasukanList) {
+                      // For sparkline (current year)
+                      if (item.tanggal.year == currentYear) {
+                        monthlyIncome[item.tanggal.month - 1] += item.jumlah;
+                      }
+
+                      // For growth calculation
+                      if (item.tanggal.year == currentYear &&
+                          item.tanggal.month == currentMonth) {
+                        currentMonthIncome += item.jumlah;
+                      }
+                      if (item.tanggal.year == previousYear &&
+                          item.tanggal.month == previousMonth) {
+                        previousMonthIncome += item.jumlah;
+                      }
+                    }
+
+                    List<FlSpot> incomeSpots = [];
+                    for (int i = 0; i < 12; i++) {
+                      incomeSpots.add(FlSpot(i.toDouble(), monthlyIncome[i]));
+                    }
+
+                    // Growth Logic
+                    double growth = 0;
+                    if (previousMonthIncome > 0) {
+                      growth =
+                          ((currentMonthIncome - previousMonthIncome) /
+                              previousMonthIncome) *
+                          100;
+                    } else if (currentMonthIncome > 0) {
+                      growth = 100;
+                    }
+
+                    final isPositive = growth >= 0;
+                    final growthStr =
+                        '${isPositive ? '+' : ''}${growth.abs().toStringAsFixed(1)}%';
+                    final growthColor = isPositive
+                        ? AppColors.success
+                        : AppColors.error;
+                    final growthIcon = isPositive
+                        ? Icons.arrow_upward
+                        : Icons.arrow_downward;
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -167,6 +239,19 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Keuangan Card - Full Width
+                        SizedBox(
+                          width: double.infinity,
+                          child: _buildSummaryCard(
+                            'Keuangan',
+                            NumberHelpers.formatCurrency(saldo.toInt()),
+                            'Saldo Akhir',
+                            Icons.account_balance_wallet,
+                            AppColors.success,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // Other Cards - Grid
                         GridView.count(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -175,13 +260,6 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                           mainAxisSpacing: 12,
                           childAspectRatio: 1.1,
                           children: [
-                            _buildSummaryCard(
-                              'Keuangan',
-                              NumberHelpers.formatCurrency(saldo.toInt()),
-                              'Saldo Akhir',
-                              Icons.account_balance_wallet,
-                              AppColors.success,
-                            ),
                             _buildSummaryCard(
                               'Warga',
                               '$wargaCount',
@@ -196,14 +274,96 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                               Icons.event,
                               AppColors.warning,
                             ),
-                            _buildSummaryCard(
-                              'Statistik',
-                              '+12%',
-                              'Pertumbuhan',
-                              Icons.trending_up,
-                              AppColors.primaryDark,
-                            ),
                           ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Statistik - Full Width
+                        SizedBox(
+                          width: double.infinity,
+                          child: _buildSummaryCard(
+                            'Pertumbuhan',
+                            '', // Custom content used
+                            '',
+                            Icons.trending_up,
+                            AppColors.primaryDark,
+                            customContent: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        growthStr,
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: growthColor,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            growthIcon,
+                                            size: 16,
+                                            color: growthColor,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            'vs bulan lalu',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                  height: 60,
+                                  child: LineChart(
+                                    LineChartData(
+                                      gridData: const FlGridData(show: false),
+                                      titlesData: const FlTitlesData(
+                                        show: false,
+                                      ),
+                                      borderData: FlBorderData(show: false),
+                                      minY: 0,
+                                      lineBarsData: [
+                                        LineChartBarData(
+                                          spots: incomeSpots,
+                                          isCurved: true,
+                                          preventCurveOverShooting: true,
+                                          color: growthColor,
+                                          barWidth: 3,
+                                          dotData: const FlDotData(show: false),
+                                          belowBarData: BarAreaData(
+                                            show: true,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                growthColor.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                                growthColor.withValues(
+                                                  alpha: 0.0,
+                                                ),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     );
@@ -222,8 +382,9 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
     String value,
     String subtitle,
     IconData icon,
-    Color color,
-  ) {
+    Color color, {
+    Widget? customContent,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -259,17 +420,25 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            value,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-            overflow: TextOverflow.ellipsis,
-          ),
+          if (customContent != null)
+            customContent!
+          else ...[
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ],
       ),
     );
@@ -308,52 +477,20 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
             for (var val in monthlyIncome) {
               if (val > maxY) maxY = val;
             }
-            for (var val in monthlyExpense) {
-              if (val > maxY) maxY = val;
-            }
             if (maxY == 0) maxY = 100; // Default if no data
 
-            // Prepare bar groups (showing last 6 months or all 12? Design showed ~6 bars)
-            // Let's show first 6 months or relevant months.
-            // The design had 6 bars. Let's show Jan-Jun or current 6 months window.
-            // For simplicity, let's show Jan-Jun as in original code, or better, dynamic.
-            // Let's show Jan-Jun for now to match the UI labels.
-
-            List<BarChartGroupData> barGroups = [];
-            for (int i = 0; i < 6; i++) {
-              // Normalize to percentage of maxY for visualization if needed, or just raw values?
-              // The original code used percentages (maxY=100).
-              // Let's use raw values but scale maxY.
-
-              // We will show Income (Green) bar.
-              // Wait, the design had single bars. Maybe it was "Net Income" or just "Income"?
-              // The original code had single bars with success color. Let's assume it visualizes Income.
-              // Or maybe Balance?
-              // Let's visualize Income for now.
-
-              barGroups.add(
-                BarChartGroupData(
-                  x: i,
-                  barRods: [
-                    BarChartRodData(
-                      toY: monthlyIncome[i],
-                      gradient: LinearGradient(
-                        colors: [AppColors.success, AppColors.success.withValues(alpha: 0.7)],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
-                      width: 28,
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                    ),
-                  ],
-                ),
-              );
+            // Prepare LineChart spots
+            List<FlSpot> incomeSpots = [];
+            for (int i = 0; i < 12; i++) {
+              incomeSpots.add(FlSpot(i.toDouble(), monthlyIncome[i]));
             }
 
             // Stats
             double totalIncome = monthlyIncome.fold(0, (sum, val) => sum + val);
-            double avgIncome = totalIncome / 12; // Or divide by current month index?
-            double maxIncome = monthlyIncome.reduce((curr, next) => curr > next ? curr : next);
+            double avgIncome = totalIncome / 12;
+            double maxIncome = monthlyIncome.reduce(
+              (curr, next) => curr > next ? curr : next,
+            );
 
             return Container(
               padding: const EdgeInsets.all(24),
@@ -377,7 +514,10 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -396,87 +536,8 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                   const SizedBox(height: 24),
                   SizedBox(
                     height: 280,
-                    child: BarChart(
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: maxY * 1.2, // Add some buffer
-                        barTouchData: BarTouchData(
-                          enabled: true,
-                          touchTooltipData: BarTouchTooltipData(
-                            tooltipRoundedRadius: 8,
-                            tooltipPadding: const EdgeInsets.all(12),
-                            tooltipMargin: 8,
-                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                              return BarTooltipItem(
-                                NumberHelpers.formatCurrency(rod.toY.toInt()),
-                                TextStyle(
-                                  color: AppColors.background,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (double value, TitleMeta meta) {
-                                const style = TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                );
-                                Widget text;
-                                switch (value.toInt()) {
-                                  case 0:
-                                    text = const Text('Jan', style: style);
-                                    break;
-                                  case 1:
-                                    text = const Text('Feb', style: style);
-                                    break;
-                                  case 2:
-                                    text = const Text('Mar', style: style);
-                                    break;
-                                  case 3:
-                                    text = const Text('Apr', style: style);
-                                    break;
-                                  case 4:
-                                    text = const Text('Mei', style: style);
-                                    break;
-                                  case 5:
-                                    text = const Text('Jun', style: style);
-                                    break;
-                                  default:
-                                    text = const Text('', style: style);
-                                    break;
-                                }
-                                return SideTitleWidget(
-                                  axisSide: meta.axisSide,
-                                  space: 16,
-                                  child: text,
-                                );
-                              },
-                              reservedSize: 30,
-                            ),
-                          ),
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 40,
-                              interval: maxY / 5,
-                              getTitlesWidget: (double value, TitleMeta meta) {
-                                return const SizedBox(); // Hide left labels to avoid clutter or format them short
-                              },
-                            ),
-                          ),
-                        ),
-                        borderData: FlBorderData(show: false),
-                        barGroups: barGroups,
+                    child: LineChart(
+                      LineChartData(
                         gridData: FlGridData(
                           show: true,
                           drawVerticalLine: false,
@@ -489,6 +550,115 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                             );
                           },
                         ),
+                        titlesData: FlTitlesData(
+                          show: true,
+                          rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 30,
+                              interval: 1,
+                              getTitlesWidget: (double value, TitleMeta meta) {
+                                const style = TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                );
+                                Widget text;
+                                switch (value.toInt()) {
+                                  case 0:
+                                    text = const Text('Jan', style: style);
+                                    break;
+                                  case 2:
+                                    text = const Text('Mar', style: style);
+                                    break;
+                                  case 4:
+                                    text = const Text('Mei', style: style);
+                                    break;
+                                  case 6:
+                                    text = const Text('Jul', style: style);
+                                    break;
+                                  case 8:
+                                    text = const Text('Sep', style: style);
+                                    break;
+                                  case 10:
+                                    text = const Text('Nov', style: style);
+                                    break;
+                                  default:
+                                    text = const Text('', style: style);
+                                    break;
+                                }
+                                return SideTitleWidget(
+                                  axisSide: meta.axisSide,
+                                  child: text,
+                                );
+                              },
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        minX: 0,
+                        maxX: 11,
+                        minY: 0,
+                        maxY: maxY * 1.2,
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: incomeSpots,
+                            isCurved: true,
+                            preventCurveOverShooting:
+                                true, // Fix spiky overshoot
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.success,
+                                AppColors.success.withValues(alpha: 0.5),
+                              ],
+                            ),
+                            barWidth: 4,
+                            isStrokeCapRound: true,
+                            dotData: const FlDotData(show: false),
+                            belowBarData: BarAreaData(
+                              show: true,
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.success.withValues(alpha: 0.2),
+                                  AppColors.success.withValues(alpha: 0.0),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                          ),
+                        ],
+                        lineTouchData: LineTouchData(
+                          touchTooltipData: LineTouchTooltipData(
+                            tooltipRoundedRadius: 8,
+                            tooltipPadding: const EdgeInsets.all(12),
+                            tooltipMargin: 8,
+                            getTooltipItems:
+                                (List<LineBarSpot> touchedBarSpots) {
+                                  return touchedBarSpots.map((barSpot) {
+                                    final flSpot = barSpot;
+                                    return LineTooltipItem(
+                                      NumberHelpers.formatCurrency(
+                                        flSpot.y.toInt(),
+                                      ),
+                                      const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }).toList();
+                                },
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -496,20 +666,26 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildChartStat(
-                        'Total',
-                        NumberHelpers.formatCurrency(totalIncome.toInt()),
-                        AppColors.textPrimary,
+                      Expanded(
+                        child: _buildChartStat(
+                          'Total',
+                          NumberHelpers.formatCurrency(totalIncome.truncate()),
+                          AppColors.textPrimary,
+                        ),
                       ),
-                      _buildChartStat(
-                        'Rata-rata',
-                        NumberHelpers.formatCurrency(avgIncome.toInt()),
-                        AppColors.success,
+                      Expanded(
+                        child: _buildChartStat(
+                          'Rata-rata',
+                          NumberHelpers.formatCurrency(avgIncome.truncate()),
+                          AppColors.success,
+                        ),
                       ),
-                      _buildChartStat(
-                        'Tertinggi',
-                        NumberHelpers.formatCurrency(maxIncome.toInt()),
-                        AppColors.warning,
+                      Expanded(
+                        child: _buildChartStat(
+                          'Tertinggi',
+                          NumberHelpers.formatCurrency(maxIncome.truncate()),
+                          AppColors.warning,
+                        ),
                       ),
                     ],
                   ),
@@ -536,7 +712,13 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -600,7 +782,8 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
 
                 // Sort by date descending
                 allActivities.sort(
-                  (a, b) => (b['date'] as DateTime).compareTo(a['date'] as DateTime),
+                  (a, b) =>
+                      (b['date'] as DateTime).compareTo(a['date'] as DateTime),
                 );
 
                 // Take top 5
@@ -631,7 +814,9 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                         ...recentActivities.map((activity) {
                           IconData icon;
                           Color color;
-                          String dateStr = DateHelpers.formatDateShort(activity['date']);
+                          String dateStr = DateHelpers.formatDateShort(
+                            activity['date'],
+                          );
 
                           if (activity['type'] == 'pemasukan') {
                             icon = Icons.trending_up;
@@ -644,7 +829,12 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                             color = AppColors.primary;
                           }
 
-                          return _buildActivityItem(activity['title'], dateStr, icon, color);
+                          return _buildActivityItem(
+                            activity['title'],
+                            dateStr,
+                            icon,
+                            color,
+                          );
                         }),
                     ],
                   ),
@@ -657,7 +847,12 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
     );
   }
 
-  Widget _buildActivityItem(String name, String date, IconData icon, Color color) {
+  Widget _buildActivityItem(
+    String name,
+    String date,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -694,7 +889,10 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                 const SizedBox(height: 4),
                 Text(
                   date,
-                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
