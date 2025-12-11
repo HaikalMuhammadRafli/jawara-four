@@ -1,13 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:jawara_four/colors/app_colors.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:jawara_four/colors/app_colors.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../../../data/models/pemasukan_model.dart';
 import '../../../../data/models/tagihan_model.dart';
+import '../../../../data/repositories/pemasukan_repository.dart';
+import '../../../../data/repositories/tagihan_repository.dart';
 import '../../../../utils/number_helpers.dart';
 
-class IuranTagihanDetailPage extends StatelessWidget {
+class IuranTagihanDetailPage extends StatefulWidget {
   final Tagihan tagihan;
 
   const IuranTagihanDetailPage({super.key, required this.tagihan});
+
+  @override
+  State<IuranTagihanDetailPage> createState() => _IuranTagihanDetailPageState();
+}
+
+class _IuranTagihanDetailPageState extends State<IuranTagihanDetailPage> {
+  final TagihanRepository _tagihanRepository = TagihanRepository();
+  final PemasukanRepository _pemasukanRepository = PemasukanRepository();
+  bool _isLoading = false;
+
+  Future<void> _approveTagihan() async {
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. Update Tagihan Status to Lunas
+      final updatedTagihan = widget.tagihan.copyWith(
+        status: StatusTagihan.lunas,
+        updatedAt: DateTime.now(),
+      );
+      await _tagihanRepository.updateTagihan(updatedTagihan);
+
+      // 2. Create Pemasukan Record
+      final pemasukan = Pemasukan(
+        id: const Uuid().v4(),
+        judul: 'Iuran ${widget.tagihan.judul}',
+        nama: widget.tagihan.namaKeluarga,
+        jumlah: widget.tagihan.total,
+        kategori: widget.tagihan.kategori,
+        tanggal: DateTime.now(),
+        keterangan: 'Otomatis dari Iuran ${widget.tagihan.kodeTagihan}',
+        jenisPemasukan: 'Iuran',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await _pemasukanRepository.addPemasukan(pemasukan);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Tagihan disetujui dan dicatat ke Pemasukan'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal memproses: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _rejectTagihan(String reason) async {
+    // Implement rejection logic here if needed (e.g. just update status)
+    setState(() => _isLoading = true);
+    try {
+      // Example: just popping for now as per previous placeholder
+      // In real scenario, update status to 'Pending' or 'Rejected' if enum exists
+      context.pop();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Tagihan ditolak')));
+    } catch (e) {
+      // handle error
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +100,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
         backgroundColor: const Color(0xFFFFFFFF),
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back, color: Colors.black87),
         ),
         title: Text(
@@ -30,26 +113,29 @@ class IuranTagihanDetailPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeaderCard(),
-            const SizedBox(height: 16),
-            _buildInfoCard(),
-            const SizedBox(height: 16),
-            _buildStatusCard(),
-            const SizedBox(height: 16),
-            _buildActionButtons(context),
-          ],
-        ),
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeaderCard(),
+                  const SizedBox(height: 16),
+                  _buildInfoCard(),
+                  const SizedBox(height: 16),
+                  _buildStatusCard(),
+                  const SizedBox(height: 16),
+                  if (widget.tagihan.status == StatusTagihan.pending)
+                    _buildActionButtons(context),
+                ],
+              ),
+            ),
     );
   }
 
   Widget _buildHeaderCard() {
-    final statusColor = tagihan.status == StatusTagihan.lunas
+    final statusColor = widget.tagihan.status == StatusTagihan.lunas
         ? AppColors.success
         : AppColors.warning;
 
@@ -79,7 +165,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tagihan.judul,
+                      widget.tagihan.judul,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -88,7 +174,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      tagihan.kategori,
+                      widget.tagihan.kategori,
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
@@ -104,7 +190,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  tagihan.status.value,
+                  widget.tagihan.status.value,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -139,27 +225,30 @@ class IuranTagihanDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Kode Iuran', tagihan.kodeTagihan),
+          _buildInfoRow('Kode Iuran', widget.tagihan.kodeTagihan),
           const SizedBox(height: 12),
-          _buildInfoRow('Nama Iuran', tagihan.judul),
+          _buildInfoRow('Nama Iuran', widget.tagihan.judul),
           const SizedBox(height: 12),
-          _buildInfoRow('Kategori', tagihan.kategori),
+          _buildInfoRow('Kategori', widget.tagihan.kategori),
           const SizedBox(height: 12),
-          _buildInfoRow('Periode', tagihan.periode),
+          _buildInfoRow('Periode', widget.tagihan.periode),
           const SizedBox(height: 12),
-          _buildInfoRow('Nominal', NumberHelpers.formatCurrency(tagihan.total)),
+          _buildInfoRow(
+            'Nominal',
+            NumberHelpers.formatCurrency(widget.tagihan.total),
+          ),
           const SizedBox(height: 12),
-          _buildInfoRow('Status', tagihan.status.value),
+          _buildInfoRow('Status', widget.tagihan.status.value),
           const SizedBox(height: 12),
-          _buildInfoRow('Nama KK', tagihan.namaKeluarga),
+          _buildInfoRow('Nama KK', widget.tagihan.namaKeluarga),
           const SizedBox(height: 12),
-          _buildInfoRow('Alamat', tagihan.alamat),
+          _buildInfoRow('Alamat', widget.tagihan.alamat),
           const SizedBox(height: 12),
-          _buildInfoRow('Metode Pembayaran', tagihan.metodePembayaran),
+          _buildInfoRow('Metode Pembayaran', widget.tagihan.metodePembayaran),
           const SizedBox(height: 12),
           _buildInfoRow(
             'Bukti',
-            tagihan.bukti.isEmpty ? 'Tidak ada' : tagihan.bukti,
+            widget.tagihan.bukti.isEmpty ? 'Tidak ada' : widget.tagihan.bukti,
           ),
         ],
       ),
@@ -167,19 +256,19 @@ class IuranTagihanDetailPage extends StatelessWidget {
   }
 
   Widget _buildStatusCard() {
-    final statusColor = tagihan.status == StatusTagihan.lunas
+    final statusColor = widget.tagihan.status == StatusTagihan.lunas
         ? AppColors.success
-        : tagihan.status == StatusTagihan.pending
+        : widget.tagihan.status == StatusTagihan.pending
         ? Colors.orange
         : AppColors.warning;
-    final statusIcon = tagihan.status == StatusTagihan.lunas
+    final statusIcon = widget.tagihan.status == StatusTagihan.lunas
         ? Icons.check_circle
-        : tagihan.status == StatusTagihan.pending
+        : widget.tagihan.status == StatusTagihan.pending
         ? Icons.schedule
         : Icons.schedule;
-    final statusMessage = tagihan.status == StatusTagihan.lunas
+    final statusMessage = widget.tagihan.status == StatusTagihan.lunas
         ? 'Tagihan ini telah dibayar lunas'
-        : tagihan.status == StatusTagihan.pending
+        : widget.tagihan.status == StatusTagihan.pending
         ? 'Tagihan ini belum dibayar'
         : 'Tagihan ini belum dibayar';
 
@@ -223,6 +312,24 @@ class IuranTagihanDetailPage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
+    // Check if this is a broadcast tagihan
+    final isBroadcast = widget.tagihan.statusKeluarga == 'Broadcast';
+
+    if (isBroadcast) {
+      return SizedBox(
+        width: double.infinity,
+        child: _buildActionButton(
+          context,
+          'Konfirmasi Target Tercapai / Selesai',
+          Icons.check_circle_outline,
+          AppColors.primary,
+          () => _showApprovalDialog(context),
+        ),
+      );
+    }
+
+    final reasonController = TextEditingController();
+
     return Column(
       children: [
         Container(
@@ -248,6 +355,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                   border: Border.all(color: Colors.grey[300]!, width: 1),
                 ),
                 child: TextField(
+                  controller: reasonController,
                   maxLines: null,
                   expands: true,
                   decoration: InputDecoration(
@@ -283,7 +391,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
                 Icons.cancel,
                 Colors.pink,
                 () {
-                  _showRejectionDialog(context);
+                  _showRejectionDialog(context, reasonController.text);
                 },
               ),
             ),
@@ -365,20 +473,20 @@ class IuranTagihanDetailPage extends StatelessWidget {
         return AlertDialog(
           title: const Text('Setujui Tagihan'),
           content: const Text(
-            'Apakah Anda yakin ingin menyetujui tagihan ini?',
+            'Apakah Anda yakin ingin menyetujui tagihan ini?\n\n'
+            'Tindakan ini akan:\n'
+            '1. Mengubah status menjadi Lunas\n'
+            '2. Mencatat otomatis ke Pemasukan',
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: Implement approval functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Tagihan berhasil disetujui')),
-                );
+                context.pop();
+                _approveTagihan();
               },
               child: const Text(
                 'Setujui',
@@ -391,7 +499,7 @@ class IuranTagihanDetailPage extends StatelessWidget {
     );
   }
 
-  void _showRejectionDialog(BuildContext context) {
+  void _showRejectionDialog(BuildContext context, String reason) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -400,16 +508,13 @@ class IuranTagihanDetailPage extends StatelessWidget {
           content: const Text('Apakah Anda yakin ingin menolak tagihan ini?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.pop(),
               child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: Implement rejection functionality
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Tagihan berhasil ditolak')),
-                );
+                context.pop();
+                _rejectTagihan(reason);
               },
               child: const Text('Tolak', style: TextStyle(color: Colors.pink)),
             ),

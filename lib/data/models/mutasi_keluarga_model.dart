@@ -45,12 +45,20 @@ class MutasiKeluarga {
 
   factory MutasiKeluarga.fromMap(Map<String, dynamic> map) {
     return MutasiKeluarga(
-      id: map['id'] as String,
-      keluarga: map['keluarga'] as String,
-      tanggal: DateTime.parse(map['tanggal'] as String),
-      jenisMutasi: JenisMutasi.fromString(map['jenisMutasi'] as String),
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      id: map['id'] as String? ?? '',
+      keluarga: map['keluarga'] as String? ?? '',
+      tanggal: map['tanggal'] != null
+          ? DateTime.parse(map['tanggal'] as String)
+          : DateTime.now(),
+      jenisMutasi: map['jenisMutasi'] != null
+          ? JenisMutasi.fromString(map['jenisMutasi'] as String)
+          : JenisMutasi.pindahMasuk,
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'] as String)
+          : DateTime.now(),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'] as String)
+          : null,
     );
   }
 

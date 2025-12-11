@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 import '../../../../../data/models/tagihan_model.dart';
 import '../../../../../data/repositories/tagihan_repository.dart';
+import '../../../../../data/repositories/keluarga_repository.dart';
+import '../../../../../data/repositories/broadcast_repository.dart';
+import '../../../../../utils/number_helpers.dart';
 import 'package:uuid/uuid.dart';
 
 class IuranTagihanFormPage extends StatefulWidget {
@@ -25,6 +28,14 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
   String? _selectedBulan;
   String? _selectedTahun;
   DateTime? _selectedJatuhTempo;
+
+  // Logic fields
+  final KeluargaRepository _keluargaRepository = KeluargaRepository();
+  final BroadcastRepository _broadcastRepository = BroadcastRepository();
+  int _keluargaCount = 0;
+  bool _useTargetCalculator = false;
+  bool _isBroadcast = false;
+  int _calculatedPerPerson = 0;
 
   final List<String> _jenisIuranList = [
     'Iuran Keamanan',
@@ -59,6 +70,8 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
   @override
   void initState() {
     super.initState();
+    _fetchKeluargaCount();
+
     if (widget.tagihan != null) {
       final tagihan = widget.tagihan!;
       _namaWargaController.text = tagihan.namaKeluarga;
@@ -74,6 +87,28 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
       }
 
       _selectedJatuhTempo = tagihan.tanggal;
+    }
+  }
+
+  Future<void> _fetchKeluargaCount() async {
+    try {
+      final snapshot = await _keluargaRepository.getKeluargaStream().first;
+      if (mounted) {
+        setState(() {
+          _keluargaCount = snapshot.length;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching keluarga count: $e');
+    }
+  }
+
+  void _calculateNominal() {
+    if (_useTargetCalculator && _keluargaCount > 0) {
+      final total = int.tryParse(_nominalController.text) ?? 0;
+      setState(() {
+        _calculatedPerPerson = (total / _keluargaCount).ceil();
+      });
     }
   }
 
@@ -145,22 +180,31 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
               const Center(child: CircularProgressIndicator()),
         );
 
+        int finalTotal = int.tryParse(_nominalController.text) ?? 0;
+        if (_useTargetCalculator) {
+          finalTotal = _calculatedPerPerson;
+        }
+
         final isEditing = widget.tagihan != null;
         final tagihan = Tagihan(
           id: isEditing ? widget.tagihan!.id : '',
           judul: _selectedJenisIuran ?? 'Iuran',
           kategori: _selectedJenisIuran ?? 'Lainnya',
-          total: int.tryParse(_nominalController.text) ?? 0,
+          total: finalTotal,
           status: isEditing ? widget.tagihan!.status : StatusTagihan.pending,
           tanggal: _selectedJatuhTempo!,
-          warga: isEditing ? widget.tagihan!.warga : '0',
+          warga: isEditing
+              ? widget.tagihan!.warga
+              : (_isBroadcast ? 'broadcast' : '0'),
           kodeTagihan: isEditing
               ? widget.tagihan!.kodeTagihan
               : const Uuid().v4(),
-          namaKeluarga: _namaWargaController.text,
-          statusKeluarga: 'Warga',
+          namaKeluarga: _isBroadcast
+              ? 'Semua Warga'
+              : _namaWargaController.text,
+          statusKeluarga: _isBroadcast ? 'Broadcast' : 'Warga',
           periode: '$_selectedBulan $_selectedTahun',
-          alamat: _noRumahController.text,
+          alamat: _isBroadcast ? '-' : _noRumahController.text,
           metodePembayaran: '-',
           bukti: '-',
           createdAt: isEditing ? widget.tagihan!.createdAt : DateTime.now(),
@@ -171,6 +215,19 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           await _repository.updateTagihan(tagihan);
         } else {
           await _repository.addTagihan(tagihan);
+        }
+
+        if (_isBroadcast && !isEditing) {
+          await _broadcastRepository.addBroadcast({
+            'judul': 'Tagihan ${_selectedJenisIuran ?? "Iuran"}',
+            'isi':
+                'Mohon segera lunasi tagihan sebesar Rp ${NumberHelpers.formatCurrency(finalTotal)}',
+            'kategori': 'Keuangan',
+            'prioritas': 'Penting',
+            'pengirim': 'Admin Keuangan',
+            'tanggal': DateTime.now().toIso8601String(),
+            'createdAt': DateTime.now().toIso8601String(),
+          });
         }
 
         if (mounted) {
@@ -330,31 +387,35 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
             _buildCard(
               child: Column(
                 children: [
-                  _buildTextField(
-                    controller: _namaWargaController,
-                    label: 'Nama Warga',
-                    hint: 'Masukkan nama warga',
-                    icon: Icons.person_outline,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama warga harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _noRumahController,
-                    label: 'No. Rumah',
-                    hint: 'Contoh: 01',
-                    icon: Icons.home_outlined,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'No. rumah harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
+                  _buildSwitchBroadcast(),
+                  if (!_isBroadcast) ...[
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _namaWargaController,
+                      label: 'Nama Warga',
+                      hint: 'Masukkan nama warga',
+                      icon: Icons.person_outline,
+                      validator: (value) {
+                        if (!_isBroadcast && (value == null || value.isEmpty)) {
+                          return 'Nama warga harus diisi';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _noRumahController,
+                      label: 'No. Rumah',
+                      hint: 'Contoh: 01',
+                      icon: Icons.home_outlined,
+                      validator: (value) {
+                        if (!_isBroadcast && (value == null || value.isEmpty)) {
+                          return 'No. rumah harus diisi';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -413,12 +474,20 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  _buildSwitchCalculator(),
+                  const SizedBox(height: 16),
+                  if (_useTargetCalculator) _buildCalculationResult(),
                   _buildTextField(
                     controller: _nominalController,
-                    label: 'Nominal (Rp)',
-                    hint: 'Contoh: 50000',
+                    label: _useTargetCalculator
+                        ? 'Target Total (Rp)'
+                        : 'Nominal (Rp)',
+                    hint: _useTargetCalculator
+                        ? 'Contoh: 1000000'
+                        : 'Contoh: 50000',
                     icon: Icons.money_rounded,
                     keyboardType: TextInputType.number,
+                    onChanged: (val) => _calculateNominal(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Nominal harus diisi';
@@ -496,6 +565,156 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
     );
   }
 
+  Widget _buildSwitchBroadcast() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.info.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.info.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Buat Sebagai Pengumuman?',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  'Iuran akan muncul di semua warga & buat broadcast',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: _isBroadcast,
+            activeColor: AppColors.info,
+            onChanged: (value) {
+              setState(() {
+                _isBroadcast = value;
+                if (_isBroadcast) {
+                  _namaWargaController.text = 'Semua Warga';
+                  _noRumahController.text = '-';
+                } else {
+                  _namaWargaController.clear();
+                  _noRumahController.clear();
+                }
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSwitchCalculator() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Hitung dari Total Target?',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  'Hitung iuran per keluarga otomatis',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: _useTargetCalculator,
+            activeColor: AppColors.primary,
+            onChanged: (value) {
+              setState(() {
+                _useTargetCalculator = value;
+                _calculateNominal();
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCalculationResult() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.success.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline, size: 20, color: AppColors.success),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hasil Perhitungan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.success,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Rp ${NumberHelpers.formatCurrency(_calculatedPerPerson)} / keluarga',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Text(
+                  'Dari $_keluargaCount keluarga',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSectionTitle(String title, IconData icon) {
     return Row(
       children: [
@@ -541,6 +760,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
     String? Function(String?)? validator,
     int maxLines = 1,
     TextInputType? keyboardType,
+    void Function(String)? onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,6 +780,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           validator: validator,
           maxLines: maxLines,
           keyboardType: keyboardType,
+          onChanged: onChanged,
           style: const TextStyle(
             fontSize: 14,
             color: AppColors.textPrimary,
