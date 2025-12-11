@@ -5,10 +5,12 @@ import 'package:jawara_four/colors/app_colors.dart';
 import '../../data/models/pemasukan_model.dart';
 import '../../data/models/pengeluaran_model.dart';
 import '../../data/models/user_profile_model.dart';
+import '../../data/models/warga_model.dart';
 import '../../data/repositories/kegiatan_repository.dart';
 import '../../data/repositories/pemasukan_repository.dart';
 import '../../data/repositories/pengeluaran_repository.dart';
 import '../../data/repositories/user_repository.dart';
+import '../../data/repositories/warga_repository.dart';
 import '../../services/auth_service.dart';
 import '../../utils/date_helpers.dart';
 import '../../utils/number_helpers.dart';
@@ -22,6 +24,7 @@ class DashboardMenuPage extends StatefulWidget {
 
 class _DashboardMenuPageState extends State<DashboardMenuPage> {
   final UserRepository _userRepository = UserRepository();
+  final WargaRepository _wargaRepository = WargaRepository();
   final PemasukanRepository _pemasukanRepository = PemasukanRepository();
   final PengeluaranRepository _pengeluaranRepository = PengeluaranRepository();
   final KegiatanRepository _kegiatanRepository = KegiatanRepository();
@@ -148,9 +151,9 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
         return StreamBuilder<List<Pengeluaran>>(
           stream: _pengeluaranRepository.getPengeluaranStream(),
           builder: (context, pengeluaranSnapshot) {
-            return StreamBuilder<List<UserProfile>>(
-              stream: _userRepository.getUsersStream(),
-              builder: (context, userSnapshot) {
+            return StreamBuilder<List<Warga>>(
+              stream: _wargaRepository.getWargaStream(),
+              builder: (context, wargaSnapshot) {
                 return StreamBuilder<List<Map<String, dynamic>>>(
                   stream: _kegiatanRepository.getKegiatanStream(),
                   builder: (context, kegiatanSnapshot) {
@@ -163,7 +166,7 @@ class _DashboardMenuPageState extends State<DashboardMenuPage> {
                         );
                     final double saldo = totalPemasukan - totalPengeluaran;
 
-                    final int wargaCount = userSnapshot.data?.length ?? 0;
+                    final int wargaCount = wargaSnapshot.data?.length ?? 0;
                     final int kegiatanCount =
                         kegiatanSnapshot.data?.length ?? 0;
 
