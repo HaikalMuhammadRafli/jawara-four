@@ -1,26 +1,32 @@
 class Keluarga {
   final String id;
-  final String kepalaKeluarga;
-  final String alamat;
-  final int jumlahAnggota;
+  final String nomorKK; // Nomor Kartu Keluarga (16 digit)
+  final String kepalaKeluargaId; // Referensi ke ID warga
+  final List<String> anggotaIds; // List referensi ke ID warga
+  final String rumahId; // Referensi ke ID rumah
   final DateTime createdAt;
   final DateTime? updatedAt;
 
   Keluarga({
     required this.id,
-    required this.kepalaKeluarga,
-    required this.alamat,
-    required this.jumlahAnggota,
+    required this.nomorKK,
+    required this.kepalaKeluargaId,
+    required this.anggotaIds,
+    required this.rumahId,
     required this.createdAt,
     this.updatedAt,
   });
 
+  // Hitung jumlah anggota secara otomatis
+  int get jumlahAnggota => anggotaIds.length;
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'kepalaKeluarga': kepalaKeluarga,
-      'alamat': alamat,
-      'jumlahAnggota': jumlahAnggota,
+      'nomorKK': nomorKK,
+      'kepalaKeluargaId': kepalaKeluargaId,
+      'anggotaIds': anggotaIds,
+      'rumahId': rumahId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
@@ -29,27 +35,36 @@ class Keluarga {
   factory Keluarga.fromMap(Map<String, dynamic> map) {
     return Keluarga(
       id: map['id'] as String,
-      kepalaKeluarga: map['kepalaKeluarga'] as String,
-      alamat: map['alamat'] as String,
-      jumlahAnggota: map['jumlahAnggota'] as int,
-      createdAt: DateTime.parse(map['createdAt'] as String),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      nomorKK: map['nomorKK'] as String? ?? '',
+      kepalaKeluargaId: map['kepalaKeluargaId'] as String? ?? '',
+      anggotaIds: map['anggotaIds'] != null
+          ? List<String>.from(map['anggotaIds'] as List)
+          : [],
+      rumahId: map['rumahId'] as String? ?? '',
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'] as String)
+          : DateTime.now(),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'] as String)
+          : null,
     );
   }
 
   Keluarga copyWith({
     String? id,
-    String? kepalaKeluarga,
-    String? alamat,
-    int? jumlahAnggota,
+    String? nomorKK,
+    String? kepalaKeluargaId,
+    List<String>? anggotaIds,
+    String? rumahId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
     return Keluarga(
       id: id ?? this.id,
-      kepalaKeluarga: kepalaKeluarga ?? this.kepalaKeluarga,
-      alamat: alamat ?? this.alamat,
-      jumlahAnggota: jumlahAnggota ?? this.jumlahAnggota,
+      nomorKK: nomorKK ?? this.nomorKK,
+      kepalaKeluargaId: kepalaKeluargaId ?? this.kepalaKeluargaId,
+      anggotaIds: anggotaIds ?? this.anggotaIds,
+      rumahId: rumahId ?? this.rumahId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

@@ -4,6 +4,7 @@ import 'package:jawara_four/data/models/aspirasi_model.dart';
 import 'package:jawara_four/data/models/broadcast_model.dart';
 import 'package:jawara_four/data/models/kegiatan_model.dart';
 import 'package:jawara_four/data/models/keluarga_model.dart';
+import 'package:jawara_four/data/models/mutasi_keluarga_model.dart';
 import 'package:jawara_four/data/models/penerimaan_warga_model.dart';
 import 'package:jawara_four/data/models/rumah_model.dart';
 import 'package:jawara_four/data/models/user_profile_model.dart';
@@ -19,14 +20,17 @@ import 'package:jawara_four/pages/admin/kegiatan/screens/kegiatan_edit_page.dart
 import 'package:jawara_four/pages/admin/kegiatan/screens/kegiatan_form_page.dart';
 import 'package:jawara_four/pages/admin/kegiatan/screens/kegiatan_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/kependudukan_menu_page.dart';
+import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/keluarga_detail_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/keluarga_form_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/keluarga_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/rumah_edit_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/rumah_form_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/rumah_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/tambah_page.dart';
+import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/warga_detail_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/warga_form_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/kependudukan/warga_page.dart';
+import 'package:jawara_four/pages/admin/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_detail_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/mutasi_keluarga/mutasi_keluarga_tambah_page.dart';
 import 'package:jawara_four/pages/admin/kependudukan/screens/penerimaan_warga/penerimaan_warga_detail_page.dart';
@@ -142,8 +146,16 @@ final GoRouter appRouter = GoRouter(
     // ===========================================================
     // AUTH ROUTES
     // ===========================================================
-    GoRoute(path: '/login', name: 'login', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/register', name: 'register', builder: (context, state) => const RegisterPage()),
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/register',
+      name: 'register',
+      builder: (context, state) => const RegisterPage(),
+    ),
     GoRoute(
       path: '/logout',
       name: 'logout',
@@ -406,9 +418,19 @@ final GoRouter appRouter = GoRouter(
         final warga = state.extra as Warga?;
         return CustomScaffold(
           state: state,
-          appBar: CustomPushAppbar(title: warga == null ? 'Tambah Warga Baru' : 'Edit Data Warga'),
+          appBar: CustomPushAppbar(
+            title: warga == null ? 'Tambah Warga Baru' : 'Edit Data Warga',
+          ),
           child: WargaFormPage(warga: warga),
         );
+      },
+    ),
+    GoRoute(
+      path: '/admin/kependudukan/warga/detail',
+      name: 'admin-warga-detail',
+      builder: (context, state) {
+        final warga = state.extra as Warga;
+        return WargaDetailPage(warga: warga);
       },
     ),
     GoRoute(
@@ -433,10 +455,20 @@ final GoRouter appRouter = GoRouter(
         return CustomScaffold(
           state: state,
           appBar: CustomPushAppbar(
-            title: keluarga == null ? 'Tambah Keluarga Baru' : 'Edit Data Keluarga',
+            title: keluarga == null
+                ? 'Tambah Keluarga Baru'
+                : 'Edit Data Keluarga',
           ),
           child: KeluargaFormPage(keluarga: keluarga),
         );
+      },
+    ),
+    GoRoute(
+      path: '/admin/kependudukan/keluarga/detail',
+      name: 'admin-keluarga-detail',
+      builder: (context, state) {
+        final keluarga = state.extra as Keluarga;
+        return KeluargaDetailPage(keluarga: keluarga);
       },
     ),
     GoRoute(
@@ -521,6 +553,14 @@ final GoRouter appRouter = GoRouter(
         appBar: CustomPushAppbar(title: 'Tambah Mutasi Keluarga'),
         child: MutasiKeluargaTambahPage(),
       ),
+    ),
+    GoRoute(
+      path: '/admin/mutasi-keluarga/detail',
+      name: 'admin-mutasi-keluarga-detail',
+      builder: (context, state) {
+        final mutasi = state.extra as MutasiKeluarga;
+        return MutasiKeluargaDetailPage(mutasi: mutasi);
+      },
     ),
     GoRoute(
       path: '/admin/penerimaan-warga/detail',

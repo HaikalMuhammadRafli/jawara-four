@@ -1,40 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:jawara_four/colors/app_colors.dart';
+import 'package:jawara_four/data/models/keluarga_model.dart';
+import 'package:jawara_four/data/models/mutasi_keluarga_model.dart';
+import 'package:jawara_four/data/models/warga_model.dart';
+import 'package:jawara_four/data/repositories/keluarga_repository.dart';
+import 'package:jawara_four/data/repositories/mutasi_keluarga_repository.dart';
 
 class MutasiKeluargaTambahPage extends StatefulWidget {
   const MutasiKeluargaTambahPage({super.key});
 
   @override
-  State<MutasiKeluargaTambahPage> createState() => _MutasiKeluargaTambahPageState();
+  State<MutasiKeluargaTambahPage> createState() =>
+      _MutasiKeluargaTambahPageState();
 }
 
 class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
   final _formKey = GlobalKey<FormState>();
+  final MutasiKeluargaRepository _mutasiRepository = MutasiKeluargaRepository();
+  final KeluargaRepository _keluargaRepository = KeluargaRepository();
   bool _isLoading = false;
 
-  // Controllers untuk input fields
-  final TextEditingController _noKKController = TextEditingController();
-  final TextEditingController _kepalaKeluargaController = TextEditingController();
-  final TextEditingController _namaWargaController = TextEditingController();
-  final TextEditingController _alamatAsalController = TextEditingController();
+  // Controllers
   final TextEditingController _alamatTujuanController = TextEditingController();
   final TextEditingController _alasanController = TextEditingController();
   final TextEditingController _keteranganController = TextEditingController();
 
-  String? _selectedJenisMutasi;
+  // State
+  String? _selectedKeluargaId;
+  String? _selectedWargaId;
+  JenisMutasi? _selectedJenisMutasi;
   DateTime? _selectedTanggalMutasi;
+
+  // Auto-filled data
+  String _nomorKK = '';
+  String _namaKepalaKeluarga = '';
+  String _alamatAsal = '';
+  List<Warga> _anggotaKeluarga = [];
+
+  // Lists
+  List<Keluarga> _keluargaList = [];
+  bool _isLoadingKeluarga = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadKeluarga();
+  }
 
   @override
   void dispose() {
-    _noKKController.dispose();
-    _kepalaKeluargaController.dispose();
-    _namaWargaController.dispose();
-    _alamatAsalController.dispose();
     _alamatTujuanController.dispose();
     _alasanController.dispose();
     _keteranganController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadKeluarga() async {
+    setState(() => _isLoadingKeluarga = true);
+    _keluargaRepository.getKeluargaStream().listen((keluargaList) {
+      if (mounted) {
+        setState(() {
+          _keluargaList = keluargaList;
+          _isLoadingKeluarga = false;
+        });
+      }
+    });
+  }
+
+  Future<void> _onKeluargaSelected(String? keluargaId) async {
+    if (keluargaId == null) return;
+
+    setState(() {
+      _selectedKeluargaId = keluargaId;
+      _selectedWargaId = null; // Reset selected warga
+    });
+
+    // Fetch keluarga details
+    final keluargaDetails = await _keluargaRepository.getKeluargaWithDetails(
+      keluargaId,
+    );
+    if (keluargaDetails != null && mounted) {
+      final keluarga = keluargaDetails['keluarga'] as Keluarga;
+      final kepalaKeluarga = keluargaDetails['kepalaKeluarga'] as Warga?;
+      final anggota = keluargaDetails['anggota'] as List<Warga>;
+      final rumah = keluargaDetails['rumah'];
+
+      setState(() {
+        _nomorKK = keluarga.nomorKK;
+        _namaKepalaKeluarga = kepalaKeluarga?.nama ?? '';
+        _anggotaKeluarga = anggota;
+        if (rumah != null) {
+          _alamatAsal = '${rumah.alamat} (RT ${rumah.rt} / RW ${rumah.rw})';
+        }
+      });
+    }
   }
 
   Future<void> _selectTanggalMutasi() async {
@@ -42,7 +103,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
       context: context,
       initialDate: _selectedTanggalMutasi ?? DateTime.now(),
       firstDate: DateTime(2020),
-      lastDate: DateTime.now().add(Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -66,36 +127,97 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_selectedTanggalMutasi == null) {
+      if (_selectedKeluargaId == null || _selectedKeluargaId!.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Tanggal mutasi harus dipilih'), backgroundColor: AppColors.error),
+          const SnackBar(
+            content: Text('Keluarga harus dipilih'),
+            backgroundColor: AppColors.error,
+          ),
         );
         return;
       }
 
-      setState(() {
-        _isLoading = true;
-      });
+      if (_selectedWargaId == null || _selectedWargaId!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Warga yang pindah harus dipilih'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
 
-      // Simulasi submit ke backend
-      await Future.delayed(const Duration(seconds: 2));
+      if (_selectedJenisMutasi == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Jenis mutasi harus dipilih'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
 
-      setState(() {
-        _isLoading = false;
-      });
+      if (_selectedTanggalMutasi == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Tanggal mutasi harus dipilih'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
 
-      if (!mounted) return;
+      setState(() => _isLoading = true);
 
-      // Tampilkan pesan sukses
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Mutasi keluarga berhasil ditambahkan!'),
-          backgroundColor: AppColors.success,
-        ),
-      );
+      try {
+        // Get nama warga
+        final selectedWarga = _anggotaKeluarga.firstWhere(
+          (w) => w.id == _selectedWargaId,
+        );
 
-      // Kembali ke halaman sebelumnya
-      context.pop();
+        final mutasi = MutasiKeluarga(
+          id: '',
+          keluargaId: _selectedKeluargaId!,
+          nomorKK: _nomorKK,
+          namaKepalaKeluarga: _namaKepalaKeluarga,
+          namaWarga: selectedWarga.nama,
+          tanggal: _selectedTanggalMutasi!,
+          jenisMutasi: _selectedJenisMutasi!,
+          alamatAsal: _alamatAsal,
+          alamatTujuan: _alamatTujuanController.text,
+          alasan: _alasanController.text,
+          keterangan: _keteranganController.text.isEmpty
+              ? null
+              : _keteranganController.text,
+          createdAt: DateTime.now(),
+        );
+
+        await _mutasiRepository.create(mutasi);
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mutasi keluarga berhasil ditambahkan!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+
+        context.pop();
+      } catch (e) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menyimpan data: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
@@ -112,7 +234,10 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withValues(alpha: 0.8),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -121,7 +246,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -129,15 +254,19 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
               child: Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.move_to_inbox_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.move_to_inbox_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
-                  SizedBox(width: 16),
-                  Expanded(
+                  const SizedBox(width: 16),
+                  const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -152,7 +281,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                         SizedBox(height: 4),
                         Text(
                           'Catat perpindahan keluarga',
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 14),
+                          style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       ],
                     ),
@@ -160,84 +289,117 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-            // Section: Data Keluarga
-            _buildSectionTitle(Icons.family_restroom_rounded, 'Data Keluarga'),
+            // Section: Pilih Keluarga
+            _buildSectionTitle(Icons.family_restroom_rounded, 'Pilih Keluarga'),
             _buildCard(
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: _noKKController,
-                    label: 'Nomor Kartu Keluarga (KK)',
-                    hint: 'Masukkan 16 digit nomor KK',
-                    icon: Icons.badge_rounded,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nomor KK harus diisi';
-                      }
-                      if (value.length != 16) {
-                        return 'Nomor KK harus 16 digit';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _kepalaKeluargaController,
-                    label: 'Nama Kepala Keluarga',
-                    hint: 'Masukkan nama kepala keluarga',
-                    icon: Icons.person_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama kepala keluarga harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _namaWargaController,
-                    label: 'Nama Warga yang Pindah',
-                    hint: 'Masukkan nama warga',
-                    icon: Icons.person_outline_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama warga harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
+              child: _isLoadingKeluarga
+                  ? const Center(child: CircularProgressIndicator())
+                  : Column(
+                      children: [
+                        _buildLabel('Keluarga'),
+                        const SizedBox(height: 8),
+                        DropdownButtonFormField<String>(
+                          initialValue: _selectedKeluargaId,
+                          isExpanded: true,
+                          decoration: _buildInputDecoration(
+                            hint: 'Pilih keluarga',
+                            icon: Icons.family_restroom_rounded,
+                          ),
+                          items: _keluargaList.map((keluarga) {
+                            return DropdownMenuItem<String>(
+                              value: keluarga.id,
+                              child: Text(
+                                'KK: ${keluarga.nomorKK}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: _onKeluargaSelected,
+                        ),
+                        if (_selectedKeluargaId != null) ...[
+                          const SizedBox(height: 16),
+                          _buildInfoRow('Nomor KK', _nomorKK),
+                          const SizedBox(height: 8),
+                          _buildInfoRow('Kepala Keluarga', _namaKepalaKeluarga),
+                          const SizedBox(height: 8),
+                          _buildInfoRow('Alamat Asal', _alamatAsal),
+                        ],
+                      ],
+                    ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+
+            // Section: Warga yang Pindah
+            if (_selectedKeluargaId != null && _anggotaKeluarga.isNotEmpty) ...[
+              _buildSectionTitle(
+                Icons.person_outline_rounded,
+                'Warga yang Pindah',
+              ),
+              _buildCard(
+                child: Column(
+                  children: [
+                    _buildLabel('Pilih Warga'),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      initialValue: _selectedWargaId,
+                      isExpanded: true,
+                      decoration: _buildInputDecoration(
+                        hint: 'Pilih warga yang pindah',
+                        icon: Icons.person_outline_rounded,
+                      ),
+                      items: _anggotaKeluarga.map((warga) {
+                        return DropdownMenuItem<String>(
+                          value: warga.id,
+                          child: Text(
+                            '${warga.nama} - ${warga.nik}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedWargaId = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
 
             // Section: Detail Mutasi
             _buildSectionTitle(Icons.info_rounded, 'Detail Mutasi'),
             _buildCard(
               child: Column(
                 children: [
-                  _buildDropdown(
-                    value: _selectedJenisMutasi,
-                    label: 'Jenis Mutasi',
-                    hint: 'Pilih jenis mutasi',
-                    icon: Icons.swap_horiz_rounded,
-                    items: ['Pindah Masuk', 'Pindah Keluar', 'Pindah Antar RT/RW'],
+                  _buildLabel('Jenis Mutasi'),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<JenisMutasi>(
+                    initialValue: _selectedJenisMutasi,
+                    isExpanded: true,
+                    decoration: _buildInputDecoration(
+                      hint: 'Pilih jenis mutasi',
+                      icon: Icons.swap_horiz_rounded,
+                    ),
+                    items: JenisMutasi.values.map((jenis) {
+                      return DropdownMenuItem<JenisMutasi>(
+                        value: jenis,
+                        child: Text(
+                          jenis.value,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedJenisMutasi = value;
                       });
                     },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Jenis mutasi harus dipilih';
-                      }
-                      return null;
-                    },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildDateTimePicker(
                     label: 'Tanggal Mutasi',
                     hint: 'Pilih tanggal mutasi',
@@ -245,21 +407,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                     selectedDate: _selectedTanggalMutasi,
                     onTap: _selectTanggalMutasi,
                   ),
-                  SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _alamatAsalController,
-                    label: 'Alamat Asal',
-                    hint: 'Masukkan alamat asal',
-                    icon: Icons.location_on_outlined,
-                    maxLines: 2,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Alamat asal harus diisi';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _alamatTujuanController,
                     label: 'Alamat Tujuan',
@@ -273,7 +421,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _alasanController,
                     label: 'Alasan Mutasi',
@@ -287,7 +435,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _keteranganController,
                     label: 'Keterangan Tambahan (Opsional)',
@@ -298,14 +446,17 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                 ],
               ),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
 
             // Submit Button
             Container(
               height: 52,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withValues(alpha: 0.8),
+                  ],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
@@ -314,7 +465,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -323,18 +474,22 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: _isLoading
-                    ? SizedBox(
+                    ? const SizedBox(
                         height: 24,
                         width: 24,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
-                    : Row(
+                    : const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.save_rounded, color: Colors.white),
@@ -351,7 +506,7 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
                       ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -366,10 +521,10 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
       child: Row(
         children: [
           Icon(icon, color: AppColors.primary, size: 24),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
@@ -388,10 +543,60 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.divider),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: child,
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGray,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$label: ',
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -404,90 +609,19 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
     int maxLines = 1,
     String? Function(String?)? validator,
   }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.primary),
-        filled: true,
-        fillColor: AppColors.backgroundGray,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLabel(label),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          decoration: _buildInputDecoration(hint: hint, icon: icon),
+          validator: validator,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error, width: 2),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      ),
-      validator: validator,
-    );
-  }
-
-  Widget _buildDropdown({
-    required String? value,
-    required String label,
-    required String hint,
-    required IconData icon,
-    required List<String> items,
-    required void Function(String?) onChanged,
-    String? Function(String?)? validator,
-  }) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.primary),
-        filled: true,
-        fillColor: AppColors.backgroundGray,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error, width: 2),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      ),
-      items: items.map((item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item, overflow: TextOverflow.ellipsis),
-        );
-      }).toList(),
-      onChanged: onChanged,
-      validator: validator,
+      ],
     );
   }
 
@@ -498,41 +632,63 @@ class _MutasiKeluargaTambahPageState extends State<MutasiKeluargaTambahPage> {
     required DateTime? selectedDate,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          prefixIcon: Icon(icon, color: AppColors.primary),
-          filled: true,
-          fillColor: AppColors.backgroundGray,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.divider),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.divider),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.primary, width: 2),
-          ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-        child: Text(
-          selectedDate != null
-              ? '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'
-              : hint,
-          style: TextStyle(
-            color: selectedDate != null ? AppColors.textPrimary : AppColors.textSecondary,
-            fontSize: 16,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLabel(label),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: InputDecorator(
+            decoration: _buildInputDecoration(hint: hint, icon: icon),
+            child: Text(
+              selectedDate != null
+                  ? DateFormat('dd MMMM yyyy', 'id_ID').format(selectedDate)
+                  : hint,
+              style: TextStyle(
+                color: selectedDate != null
+                    ? AppColors.textPrimary
+                    : AppColors.textSecondary,
+                fontSize: 16,
+              ),
+            ),
           ),
         ),
+      ],
+    );
+  }
+
+  InputDecoration _buildInputDecoration({
+    required String hint,
+    required IconData icon,
+  }) {
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: Icon(icon, color: AppColors.primary),
+      filled: true,
+      fillColor: AppColors.backgroundGray,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColors.divider),
       ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColors.divider),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.error, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 }
-

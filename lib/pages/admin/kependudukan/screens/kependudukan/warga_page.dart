@@ -24,7 +24,10 @@ class _WargaPageState extends State<WargaPage> {
         title: const Text('Hapus Warga'),
         content: const Text('Apakah Anda yakin ingin menghapus data ini?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -48,7 +51,10 @@ class _WargaPageState extends State<WargaPage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: AppColors.error),
+            SnackBar(
+              content: Text('Gagal menghapus: $e'),
+              backgroundColor: AppColors.error,
+            ),
           );
         }
       }
@@ -74,7 +80,10 @@ class _WargaPageState extends State<WargaPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+          bottom: BorderSide(
+            color: AppColors.divider.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
         ),
       ),
       child: Column(
@@ -84,8 +93,15 @@ class _WargaPageState extends State<WargaPage> {
             onChanged: (value) => setState(() => _searchQuery = value),
             decoration: InputDecoration(
               hintText: 'Cari warga...',
-              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 15,
+              ),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: AppColors.textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -96,7 +112,10 @@ class _WargaPageState extends State<WargaPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -128,7 +147,9 @@ class _WargaPageState extends State<WargaPage> {
           color: isSelected ? AppColors.primary : AppColors.background,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.divider.withValues(alpha: 0.6),
             width: 1.5,
           ),
         ),
@@ -150,7 +171,9 @@ class _WargaPageState extends State<WargaPage> {
       stream: _repository.getWargaStream(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         }
 
         if (snapshot.hasError) {
@@ -175,7 +198,10 @@ class _WargaPageState extends State<WargaPage> {
                 const SizedBox(height: 8),
                 Text(
                   snapshot.error.toString(),
-                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -204,7 +230,10 @@ class _WargaPageState extends State<WargaPage> {
                 const SizedBox(height: 8),
                 Text(
                   'Tap tombol + untuk menambah data',
-                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -220,8 +249,10 @@ class _WargaPageState extends State<WargaPage> {
 
           final matchesFilter =
               _selectedFilter == 'Semua' ||
-              (_selectedFilter == 'Laki-laki' && warga.jenisKelamin == JenisKelamin.lakiLaki) ||
-              (_selectedFilter == 'Perempuan' && warga.jenisKelamin == JenisKelamin.perempuan);
+              (_selectedFilter == 'Laki-laki' &&
+                  warga.jenisKelamin == JenisKelamin.lakiLaki) ||
+              (_selectedFilter == 'Perempuan' &&
+                  warga.jenisKelamin == JenisKelamin.perempuan);
 
           return matchesSearch && matchesFilter;
         }).toList();
@@ -248,7 +279,10 @@ class _WargaPageState extends State<WargaPage> {
                 const SizedBox(height: 8),
                 Text(
                   'Coba ubah pencarian atau filter',
-                  style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -369,51 +403,30 @@ class _WargaPageState extends State<WargaPage> {
           const SizedBox(height: 14),
           Row(
             children: [
-              Icon(Icons.wc_rounded, size: 16, color: AppColors.textSecondary),
-              const SizedBox(width: 8),
-              Text(
-                warga.jenisKelamin.value,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
-              // Action buttons modern
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.divider.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    context.pushNamed('admin-warga-form', extra: warga);
-                  },
-                  icon: Icon(Icons.edit_rounded, size: 18, color: AppColors.textSecondary),
-                  tooltip: 'Edit',
-                  padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(),
+              Expanded(
+                child: _buildActionButton(
+                  'Detail',
+                  Icons.visibility_outlined,
+                  AppColors.textSecondary,
+                  warga,
                 ),
               ),
               const SizedBox(width: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE53935).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: _buildActionButton(
+                  'Edit',
+                  Icons.edit_outlined,
+                  AppColors.primary,
+                  warga,
                 ),
-                child: IconButton(
-                  onPressed: () {
-                    _deleteWarga(warga.id);
-                  },
-                  icon: const Icon(
-                    Icons.delete_outline_rounded,
-                    size: 18,
-                    color: Color(0xFFE53935),
-                  ),
-                  tooltip: 'Hapus',
-                  padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildActionButton(
+                  'Hapus',
+                  Icons.delete_outline_rounded,
+                  const Color(0xFFE53935),
+                  warga,
                 ),
               ),
             ],
@@ -422,4 +435,53 @@ class _WargaPageState extends State<WargaPage> {
       ),
     );
   }
+
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    Warga warga,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          if (label == 'Detail') {
+            context.pushNamed('admin-warga-detail', extra: warga);
+          } else if (label == 'Edit') {
+            context.pushNamed('admin-warga-form', extra: warga);
+          } else if (label == 'Hapus') {
+            _deleteWarga(warga.id);
+          }
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
+

@@ -85,6 +85,8 @@ class UIHelpers {
         return Icons.home;
       case JenisMutasi.pindahKeluar:
         return Icons.house;
+      case JenisMutasi.pindahAntarRTRW:
+        return Icons.compare_arrows;
       case JenisMutasi.kelahiran:
         return Icons.child_care;
       case JenisMutasi.kematian:
@@ -98,6 +100,8 @@ class UIHelpers {
         return Colors.green;
       case JenisMutasi.pindahKeluar:
         return Colors.orange;
+      case JenisMutasi.pindahAntarRTRW:
+        return Colors.purple;
       case JenisMutasi.kelahiran:
         return Colors.blue;
       case JenisMutasi.kematian:

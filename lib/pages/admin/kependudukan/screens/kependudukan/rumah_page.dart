@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
 import '../../../../../data/models/rumah_model.dart';
+import '../../../../../data/models/warga_model.dart';
 import '../../../../../data/repositories/rumah_repository.dart';
+import '../../../../../data/repositories/warga_repository.dart';
 import 'rumah_detail_page.dart';
 
 class RumahPage extends StatefulWidget {
@@ -15,6 +17,7 @@ class RumahPage extends StatefulWidget {
 
 class _RumahPageState extends State<RumahPage> {
   final RumahRepository _repository = RumahRepository();
+  final WargaRepository _wargaRepository = WargaRepository();
   String _searchQuery = '';
   String _selectedFilter = 'Semua';
 
@@ -38,7 +41,11 @@ class _RumahPageState extends State<RumahPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.error_outline, size: 64, color: AppColors.error),
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: AppColors.error,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Terjadi kesalahan: ${snapshot.error}',
@@ -57,11 +64,18 @@ class _RumahPageState extends State<RumahPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.home_outlined, size: 64, color: AppColors.textSecondary),
+                        Icon(
+                          Icons.home_outlined,
+                          size: 64,
+                          color: AppColors.textSecondary,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Belum ada data rumah',
-                          style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -71,13 +85,20 @@ class _RumahPageState extends State<RumahPage> {
                 // Filter data
                 final filteredList = rumahList.where((rumah) {
                   final matchesSearch =
-                      rumah.alamat.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                      rumah.pemilik.toLowerCase().contains(_searchQuery.toLowerCase());
+                      rumah.alamat.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ||
+                      (rumah.pemilikId?.toLowerCase().contains(
+                            _searchQuery.toLowerCase(),
+                          ) ??
+                          false);
 
                   final matchesFilter =
                       _selectedFilter == 'Semua' ||
-                      (_selectedFilter == 'Ditempati' && rumah.status == StatusRumah.ditempati) ||
-                      (_selectedFilter == 'Tersedia' && rumah.status != StatusRumah.ditempati);
+                      (_selectedFilter == 'Ditempati' &&
+                          rumah.status == StatusRumah.ditempati) ||
+                      (_selectedFilter == 'Tersedia' &&
+                          rumah.status != StatusRumah.ditempati);
 
                   return matchesSearch && matchesFilter;
                 }).toList();
@@ -87,11 +108,18 @@ class _RumahPageState extends State<RumahPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.search_off, size: 64, color: AppColors.textSecondary),
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: AppColors.textSecondary,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           'Tidak ada rumah yang sesuai',
-                          style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -119,7 +147,10 @@ class _RumahPageState extends State<RumahPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+          bottom: BorderSide(
+            color: AppColors.divider.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
         ),
       ),
       child: Column(
@@ -133,8 +164,15 @@ class _RumahPageState extends State<RumahPage> {
             },
             decoration: InputDecoration(
               hintText: 'Cari rumah...',
-              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 15,
+              ),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: AppColors.textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -145,7 +183,10 @@ class _RumahPageState extends State<RumahPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -180,7 +221,9 @@ class _RumahPageState extends State<RumahPage> {
           color: isSelected ? AppColors.primary : AppColors.background,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.divider.withValues(alpha: 0.6),
             width: 1.5,
           ),
         ),
@@ -208,7 +251,10 @@ class _RumahPageState extends State<RumahPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,9 +274,16 @@ class _RumahPageState extends State<RumahPage> {
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
                 ),
-                child: Icon(Icons.home_rounded, color: AppColors.primary, size: 24),
+                child: Icon(
+                  Icons.home_rounded,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -247,24 +300,52 @@ class _RumahPageState extends State<RumahPage> {
                       ),
                     ),
                     const SizedBox(height: 3),
-                    Text(
-                      'Pemilik: ${rumah.pemilik}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                        letterSpacing: 0.2,
-                      ),
+                    FutureBuilder<Warga?>(
+                      future: rumah.pemilikId != null
+                          ? _wargaRepository.getWargaById(rumah.pemilikId!)
+                          : Future.value(null),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text(
+                            'Loading...',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                              letterSpacing: 0.2,
+                            ),
+                          );
+                        }
+
+                        final pemilik = snapshot.data;
+                        return Text(
+                          pemilik != null
+                              ? 'Pemilik: ${pemilik.nama}'
+                              : 'Pemilik: Belum diatur',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                            letterSpacing: 0.2,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
               // Badge status
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
+                  border: Border.all(
+                    color: statusColor.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
                 ),
                 child: Text(
                   rumah.status.value,
@@ -293,7 +374,12 @@ class _RumahPageState extends State<RumahPage> {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: _buildActionButton('Edit', Icons.edit_outlined, AppColors.primary, rumah),
+                child: _buildActionButton(
+                  'Edit',
+                  Icons.edit_outlined,
+                  AppColors.primary,
+                  rumah,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -311,7 +397,12 @@ class _RumahPageState extends State<RumahPage> {
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, Rumah rumah) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    Rumah rumah,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -319,7 +410,9 @@ class _RumahPageState extends State<RumahPage> {
           if (label == 'Detail') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RumahDetailPage(rumah: rumah)),
+              MaterialPageRoute(
+                builder: (context) => RumahDetailPage(rumah: rumah),
+              ),
             );
           } else if (label == 'Edit') {
             context.pushNamed('admin-rumah-edit', extra: rumah);
@@ -391,7 +484,10 @@ class _RumahPageState extends State<RumahPage> {
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.2), width: 1),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,9 +501,22 @@ class _RumahPageState extends State<RumahPage> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    'Pemilik: ${rumah.pemilik}',
-                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                  FutureBuilder<Warga?>(
+                    future: rumah.pemilikId != null
+                        ? _wargaRepository.getWargaById(rumah.pemilikId!)
+                        : Future.value(null),
+                    builder: (context, snapshot) {
+                      final pemilik = snapshot.data;
+                      return Text(
+                        pemilik != null
+                            ? 'Pemilik: ${pemilik.nama}'
+                            : 'Pemilik: Belum diatur',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -419,7 +528,10 @@ class _RumahPageState extends State<RumahPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Batal',
-              style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           TextButton(
@@ -439,7 +551,9 @@ class _RumahPageState extends State<RumahPage> {
                     ),
                     backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     duration: const Duration(seconds: 3),
                   ),
                 );
@@ -451,12 +565,16 @@ class _RumahPageState extends State<RumahPage> {
                       children: [
                         const Icon(Icons.error_outline, color: Colors.white),
                         const SizedBox(width: 12),
-                        Expanded(child: Text('Gagal menghapus rumah: ${e.toString()}')),
+                        Expanded(
+                          child: Text('Gagal menghapus rumah: ${e.toString()}'),
+                        ),
                       ],
                     ),
                     backgroundColor: AppColors.error,
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     duration: const Duration(seconds: 4),
                   ),
                 );
@@ -464,7 +582,10 @@ class _RumahPageState extends State<RumahPage> {
             },
             child: Text(
               'Hapus',
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

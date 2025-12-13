@@ -177,13 +177,21 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
@@ -191,12 +199,18 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.1),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
+              border: Border.all(
+                color: color.withValues(alpha: 0.25),
+                width: 1.5,
+              ),
             ),
             child: Icon(icon, color: color, size: 26),
           ),
@@ -232,7 +246,11 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
       children: [
         Text(
           'Menu Kependudukan',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         const SizedBox(height: 16),
         // Row 1
@@ -418,7 +436,7 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
                             );
                           } else if (item is Keluarga) {
                             return _buildActivityItem(
-                              item.kepalaKeluarga,
+                              'KK: ${item.nomorKK}',
                               'Keluarga Baru',
                               DateHelpers.formatDateShort(item.createdAt),
                               AppColors.success,
@@ -444,7 +462,12 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
     );
   }
 
-  Widget _buildActivityItem(String title, String subtitle, String date, Color color) {
+  Widget _buildActivityItem(
+    String title,
+    String subtitle,
+    String date,
+    Color color,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
@@ -458,7 +481,10 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -474,7 +500,13 @@ class _KependudukanMenuPageState extends State<KependudukanMenuPage> {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
             ),
           ),

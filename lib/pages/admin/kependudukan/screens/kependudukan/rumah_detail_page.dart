@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../colors/app_colors.dart';
 import '../../../../../data/models/rumah_model.dart';
+import '../../../../../data/models/warga_model.dart';
 import '../../../../../data/repositories/rumah_repository.dart';
+import '../../../../../data/repositories/warga_repository.dart';
 import '../../../../../utils/date_helpers.dart';
 
 class RumahDetailPage extends StatefulWidget {
@@ -17,6 +19,7 @@ class RumahDetailPage extends StatefulWidget {
 
 class _RumahDetailPageState extends State<RumahDetailPage> {
   final _repository = RumahRepository();
+  final _wargaRepository = WargaRepository();
   bool _isDeleting = false;
 
   Color _getStatusColor() {
@@ -54,7 +57,11 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
         ),
         title: const Text(
           'Detail Rumah',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
         centerTitle: true,
       ),
@@ -112,22 +119,44 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      widget.rumah.pemilik,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    FutureBuilder<Warga?>(
+                      future: widget.rumah.pemilikId != null
+                          ? _wargaRepository.getWargaById(
+                              widget.rumah.pemilikId!,
+                            )
+                          : Future.value(null),
+                      builder: (context, snapshot) {
+                        final pemilik = snapshot.data;
+                        return Text(
+                          pemilik != null
+                              ? 'Pemilik: ${pemilik.nama}'
+                              : 'Pemilik: Belum diatur',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   _getStatusText(),
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: statusColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: statusColor,
+                  ),
                 ),
               ),
             ],
@@ -150,16 +179,34 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
         children: [
           const Text(
             'Informasi Rumah',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 16),
           _buildInfoRow('Alamat', widget.rumah.alamat),
           const SizedBox(height: 12),
-          _buildInfoRow('Pemilik', widget.rumah.pemilik),
+          FutureBuilder<Warga?>(
+            future: widget.rumah.pemilikId != null
+                ? _wargaRepository.getWargaById(widget.rumah.pemilikId!)
+                : Future.value(null),
+            builder: (context, snapshot) {
+              final pemilik = snapshot.data;
+              return _buildInfoRow(
+                'Pemilik',
+                pemilik != null ? pemilik.nama : 'Belum diatur',
+              );
+            },
+          ),
           const SizedBox(height: 12),
           _buildInfoRow('Status', _getStatusText()),
           const SizedBox(height: 12),
-          _buildInfoRow('Tanggal Terdaftar', DateHelpers.formatDate(widget.rumah.createdAt)),
+          _buildInfoRow(
+            'Tanggal Terdaftar',
+            DateHelpers.formatDate(widget.rumah.createdAt),
+          ),
         ],
       ),
     );
@@ -209,7 +256,10 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(statusMessage, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(
+                  statusMessage,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
               ],
             ),
           ),
@@ -242,9 +292,15 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
     return Row(
       children: [
         Expanded(
-          child: _buildActionButton(context, 'Edit Rumah', Icons.edit_outlined, Colors.blue, () {
-            // TODO: Navigate to edit page
-          }),
+          child: _buildActionButton(
+            context,
+            'Edit Rumah',
+            Icons.edit_outlined,
+            Colors.blue,
+            () {
+              // TODO: Navigate to edit page
+            },
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -282,7 +338,11 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
             const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -297,7 +357,11 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         Flexible(
           child: Text(
@@ -319,9 +383,13 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Text('Hapus Rumah'),
-          content: const Text('Apakah Anda yakin ingin menghapus data rumah ini?'),
+          content: const Text(
+            'Apakah Anda yakin ingin menghapus data rumah ini?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
@@ -352,7 +420,9 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
                       backgroundColor: AppColors.success,
                       behavior: SnackBarBehavior.floating,
                       duration: const Duration(seconds: 3),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   );
 
@@ -372,7 +442,9 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
                       backgroundColor: AppColors.error,
                       behavior: SnackBarBehavior.floating,
                       duration: const Duration(seconds: 4),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   );
                 } finally {
@@ -386,7 +458,9 @@ class _RumahDetailPageState extends State<RumahDetailPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               child: const Text('Hapus'),
             ),

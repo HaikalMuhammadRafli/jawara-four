@@ -18,7 +18,8 @@ class _RumahEditPageState extends State<RumahEditPage> {
   final RumahRepository _repository = RumahRepository();
 
   late TextEditingController _alamatController;
-  late TextEditingController _pemilikController;
+  // TODO: Replace with dropdown for pemilik selection
+  // late TextEditingController _pemilikController;
 
   late StatusRumah _selectedStatus;
 
@@ -28,14 +29,14 @@ class _RumahEditPageState extends State<RumahEditPage> {
   void initState() {
     super.initState();
     _alamatController = TextEditingController(text: widget.rumah.alamat);
-    _pemilikController = TextEditingController(text: widget.rumah.pemilik);
+    // _pemilikController = TextEditingController(text: widget.rumah.pemilikId);
     _selectedStatus = widget.rumah.status;
   }
 
   @override
   void dispose() {
     _alamatController.dispose();
-    _pemilikController.dispose();
+    // _pemilikController.dispose();
     super.dispose();
   }
 
@@ -47,7 +48,7 @@ class _RumahEditPageState extends State<RumahEditPage> {
     try {
       final updatedRumah = widget.rumah.copyWith(
         alamat: _alamatController.text.trim(),
-        pemilik: _pemilikController.text.trim(),
+        // pemilikId: _pemilikController.text.trim(), // TODO: Use dropdown
         status: _selectedStatus,
         updatedAt: DateTime.now(),
       );
@@ -66,7 +67,9 @@ class _RumahEditPageState extends State<RumahEditPage> {
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             margin: const EdgeInsets.all(16),
           ),
         );
@@ -85,7 +88,9 @@ class _RumahEditPageState extends State<RumahEditPage> {
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             margin: const EdgeInsets.all(16),
           ),
         );
@@ -112,7 +117,11 @@ class _RumahEditPageState extends State<RumahEditPage> {
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.arrow_back_rounded, color: AppColors.primary, size: 20),
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: AppColors.primary,
+              size: 20,
+            ),
           ),
         ),
         title: const Text(
@@ -143,23 +152,27 @@ class _RumahEditPageState extends State<RumahEditPage> {
                     hint: 'Masukkan alamat lengkap',
                     icon: Icons.location_on_outlined,
                     maxLines: 2,
-                    validator: (v) => v?.trim().isEmpty ?? true ? 'Alamat harus diisi' : null,
+                    validator: (v) =>
+                        v?.trim().isEmpty ?? true ? 'Alamat harus diisi' : null,
                   ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _pemilikController,
-                    label: 'Pemilik',
-                    hint: 'Masukkan nama pemilik',
-                    icon: Icons.person_outline_rounded,
-                    validator: (v) => v?.trim().isEmpty ?? true ? 'Pemilik harus diisi' : null,
-                  ),
+                  // TODO: Replace with dropdown for pemilik selection
+                  // const SizedBox(height: 16),
+                  // _buildTextField(
+                  //   controller: _pemilikController,
+                  //   label: 'Pemilik',
+                  //   hint: 'Masukkan nama pemilik',
+                  //   icon: Icons.person_outline_rounded,
+                  //   validator: (v) => v?.trim().isEmpty ?? true ? 'Pemilik harus diisi' : null,
+                  // ),
                   const SizedBox(height: 16),
                   _buildDropdown(
                     label: 'Status',
                     value: _selectedStatus.value,
                     items: StatusRumah.values.map((e) => e.value).toList(),
                     icon: Icons.flag_outlined,
-                    onChanged: (v) => setState(() => _selectedStatus = StatusRumah.fromString(v!)),
+                    onChanged: (v) => setState(
+                      () => _selectedStatus = StatusRumah.fromString(v!),
+                    ),
                   ),
                 ],
               ),
@@ -170,7 +183,9 @@ class _RumahEditPageState extends State<RumahEditPage> {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 elevation: 0,
               ),
               child: _isUpdating
@@ -211,7 +226,10 @@ class _RumahEditPageState extends State<RumahEditPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: child,
     );
@@ -230,7 +248,10 @@ class _RumahEditPageState extends State<RumahEditPage> {
               ],
             ),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 1.5),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.2),
+              width: 1.5,
+            ),
           ),
           child: Icon(icon, color: AppColors.primary, size: 20),
         ),
@@ -282,11 +303,15 @@ class _RumahEditPageState extends State<RumahEditPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.3),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.3),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
@@ -296,7 +321,10 @@ class _RumahEditPageState extends State<RumahEditPage> {
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(color: AppColors.error, width: 1.5),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -335,17 +363,24 @@ class _RumahEditPageState extends State<RumahEditPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.3),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.3),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(color: AppColors.primary, width: 1.5),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           style: const TextStyle(fontSize: 15, color: AppColors.textPrimary),
           dropdownColor: AppColors.background,

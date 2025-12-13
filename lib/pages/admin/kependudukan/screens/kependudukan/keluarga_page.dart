@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
 import '../../../../../data/models/keluarga_model.dart';
+import '../../../../../data/models/warga_model.dart';
 import '../../../../../data/repositories/keluarga_repository.dart';
+import '../../../../../data/repositories/warga_repository.dart';
 
 class KeluargaPage extends StatefulWidget {
   const KeluargaPage({super.key});
@@ -14,6 +16,7 @@ class KeluargaPage extends StatefulWidget {
 
 class _KeluargaPageState extends State<KeluargaPage> {
   final KeluargaRepository _repository = KeluargaRepository();
+  final WargaRepository _wargaRepository = WargaRepository();
   String _searchQuery = '';
   String _selectedFilter = 'Semua';
 
@@ -23,9 +26,14 @@ class _KeluargaPageState extends State<KeluargaPage> {
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Hapus Keluarga'),
-        content: const Text('Apakah Anda yakin ingin menghapus data keluarga ini?'),
+        content: const Text(
+          'Apakah Anda yakin ingin menghapus data keluarga ini?',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
@@ -39,9 +47,9 @@ class _KeluargaPageState extends State<KeluargaPage> {
       try {
         await _repository.deleteKeluarga(id);
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Data keluarga berhasil dihapus')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Data keluarga berhasil dihapus')),
+          );
         }
       } catch (e) {
         if (mounted) {
@@ -72,18 +80,29 @@ class _KeluargaPageState extends State<KeluargaPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+          bottom: BorderSide(
+            color: AppColors.divider.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
         ),
       ),
       child: Column(
         children: [
           // Search field dengan design modern
           TextField(
-            onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
+            onChanged: (value) =>
+                setState(() => _searchQuery = value.toLowerCase()),
             decoration: InputDecoration(
               hintText: 'Cari keluarga...',
-              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 15,
+              ),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: AppColors.textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -94,7 +113,10 @@ class _KeluargaPageState extends State<KeluargaPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -128,7 +150,9 @@ class _KeluargaPageState extends State<KeluargaPage> {
           color: isSelected ? AppColors.primary : AppColors.background,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.divider.withValues(alpha: 0.6),
             width: 1.5,
           ),
         ),
@@ -161,9 +185,9 @@ class _KeluargaPageState extends State<KeluargaPage> {
 
         // Filter berdasarkan search query dan filter kategori
         final filteredData = allData.where((keluarga) {
-          final matchesSearch =
-              keluarga.kepalaKeluarga.toLowerCase().contains(_searchQuery) ||
-              keluarga.alamat.toLowerCase().contains(_searchQuery);
+          final matchesSearch = keluarga.nomorKK.toLowerCase().contains(
+            _searchQuery,
+          );
 
           // Filter berdasarkan kategori (placeholder - bisa disesuaikan dengan field di model)
           final matchesFilter = _selectedFilter == 'Semua';
@@ -183,8 +207,13 @@ class _KeluargaPageState extends State<KeluargaPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  allData.isEmpty ? 'Belum ada data keluarga' : 'Tidak ada hasil pencarian',
-                  style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+                  allData.isEmpty
+                      ? 'Belum ada data keluarga'
+                      : 'Tidak ada hasil pencarian',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -217,7 +246,6 @@ class _KeluargaPageState extends State<KeluargaPage> {
         children: [
           Row(
             children: [
-              // Icon dengan design modern
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -229,10 +257,17 @@ class _KeluargaPageState extends State<KeluargaPage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
                 ),
-                child: Icon(Icons.family_restroom_rounded, color: AppColors.primary, size: 24),
+                child: Icon(
+                  Icons.family_restroom_rounded,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -240,7 +275,7 @@ class _KeluargaPageState extends State<KeluargaPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      keluarga.kepalaKeluarga,
+                      'KK: ${keluarga.nomorKK}',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -260,13 +295,15 @@ class _KeluargaPageState extends State<KeluargaPage> {
                   ],
                 ),
               ),
-              // Badge status
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
                 ),
                 child: Text(
                   'Aktif',
@@ -285,49 +322,30 @@ class _KeluargaPageState extends State<KeluargaPage> {
           const SizedBox(height: 14),
           Row(
             children: [
-              Icon(Icons.location_on_rounded, size: 16, color: AppColors.textSecondary),
+              Expanded(
+                child: _buildActionButton(
+                  'Detail',
+                  Icons.visibility_outlined,
+                  AppColors.textSecondary,
+                  keluarga,
+                ),
+              ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  keluarga.alamat,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: _buildActionButton(
+                  'Edit',
+                  Icons.edit_outlined,
+                  AppColors.primary,
+                  keluarga,
                 ),
               ),
               const SizedBox(width: 8),
-              // Action buttons modern
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.divider.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    context.pushNamed('admin-keluarga-form', extra: keluarga);
-                  },
-                  icon: Icon(Icons.edit_rounded, size: 18, color: AppColors.textSecondary),
-                  tooltip: 'Edit',
-                  padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: IconButton(
-                  onPressed: () => _deleteKeluarga(keluarga.id),
-                  icon: Icon(Icons.delete_rounded, size: 18, color: AppColors.error),
-                  tooltip: 'Hapus',
-                  padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(),
+              Expanded(
+                child: _buildActionButton(
+                  'Hapus',
+                  Icons.delete_outline_rounded,
+                  const Color(0xFFE53935),
+                  keluarga,
                 ),
               ),
             ],
@@ -336,4 +354,53 @@ class _KeluargaPageState extends State<KeluargaPage> {
       ),
     );
   }
+
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    Keluarga keluarga,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          if (label == 'Detail') {
+            context.pushNamed('admin-keluarga-detail', extra: keluarga);
+          } else if (label == 'Edit') {
+            context.pushNamed('admin-keluarga-form', extra: keluarga);
+          } else if (label == 'Hapus') {
+            _deleteKeluarga(keluarga.id);
+          }
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
+

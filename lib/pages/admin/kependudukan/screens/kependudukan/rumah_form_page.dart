@@ -3,82 +3,106 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
 import '../../../../../data/models/rumah_model.dart';
+// warga_model and warga_repository imports removed - pemilik auto-assigned
 import '../../../../../data/repositories/rumah_repository.dart';
 
 class RumahFormPage extends StatefulWidget {
-  const RumahFormPage({super.key});
+  final Rumah? rumah;
+
+  const RumahFormPage({super.key, this.rumah});
 
   @override
   State<RumahFormPage> createState() => _RumahFormPageState();
 }
 
 class _RumahFormPageState extends State<RumahFormPage> {
-  final RumahRepository _repository = RumahRepository();
   final _formKey = GlobalKey<FormState>();
-  final _alamatController = TextEditingController();
-  final _pemilikController = TextEditingController();
+  final RumahRepository _rumahRepository = RumahRepository();
+  // WargaRepository removed - pemilik will be auto-assigned from Keluarga
+  bool _isLoading = false;
 
-  String? _selectedStatus;
-  bool _isSubmitting = false;
+  // Controllers
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _rtController = TextEditingController();
+  final TextEditingController _rwController = TextEditingController();
+  final TextEditingController _nomorRumahController = TextEditingController();
+  final TextEditingController _luasTanahController = TextEditingController();
+  final TextEditingController _luasBangunanController = TextEditingController();
 
-  final List<String> _statusList = ['Ditempati', 'Kosong', 'Disewakan'];
+  // State
+  StatusRumah _selectedStatus = StatusRumah.kosong;
+  @override
+  void initState() {
+    super.initState();
+    // Pemilik loading removed - will be auto-assigned
+
+    if (widget.rumah != null) {
+      _alamatController.text = widget.rumah!.alamat;
+      _rtController.text = widget.rumah!.rt;
+      _rwController.text = widget.rumah!.rw;
+      _nomorRumahController.text = widget.rumah!.nomorRumah ?? '';
+      _luasTanahController.text = widget.rumah!.luasTanah?.toString() ?? '';
+      _luasBangunanController.text =
+          widget.rumah!.luasBangunan?.toString() ?? '';
+      _selectedStatus = widget.rumah!.status;
+      // pemilikId not loaded - will be set by Keluarga
+    }
+  }
 
   @override
   void dispose() {
     _alamatController.dispose();
-    _pemilikController.dispose();
+    _rtController.dispose();
+    _rwController.dispose();
+    _nomorRumahController.dispose();
+    _luasTanahController.dispose();
+    _luasBangunanController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_selectedStatus == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Silakan pilih status rumah'),
-              ],
-            ),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
-        return;
-      }
+      // Pemilik validation removed - will be set by Keluarga
 
-      setState(() => _isSubmitting = true);
+      setState(() => _isLoading = true);
 
       try {
-        final now = DateTime.now();
         final rumah = Rumah(
-          id: '',
-          alamat: _alamatController.text.trim(),
-          status: StatusRumah.fromString(_selectedStatus!),
-          pemilik: _pemilikController.text.trim(),
-          createdAt: now,
+          id: widget.rumah?.id ?? '',
+          alamat: _alamatController.text,
+          rt: _rtController.text,
+          rw: _rwController.text,
+          nomorRumah: _nomorRumahController.text.isEmpty
+              ? null
+              : _nomorRumahController.text,
+          status: _selectedStatus,
+          pemilikId: null, // Will be auto-assigned from Keluarga
+          luasTanah: _luasTanahController.text.isEmpty
+              ? null
+              : double.tryParse(_luasTanahController.text),
+          luasBangunan: _luasBangunanController.text.isEmpty
+              ? null
+              : double.tryParse(_luasBangunanController.text),
+          createdAt: widget.rumah?.createdAt ?? DateTime.now(),
+          updatedAt: widget.rumah != null ? DateTime.now() : null,
         );
 
-        await _repository.addRumah(rumah);
+        if (widget.rumah == null) {
+          await _rumahRepository.addRumah(rumah);
+        } else {
+          await _rumahRepository.updateRumah(rumah);
+        }
 
         if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.check_circle_outline, color: Colors.white),
-                SizedBox(width: 12),
-                Expanded(child: Text('Rumah berhasil ditambahkan!')),
-              ],
+            content: Text(
+              widget.rumah == null
+                  ? 'Data rumah berhasil ditambahkan!'
+                  : 'Data rumah berhasil diupdate!',
             ),
             backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            duration: const Duration(seconds: 3),
           ),
         );
 
@@ -88,22 +112,13 @@ class _RumahFormPageState extends State<RumahFormPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline, color: Colors.white),
-                const SizedBox(width: 12),
-                Expanded(child: Text('Gagal menambahkan rumah: ${e.toString()}')),
-              ],
-            ),
+            content: Text('Gagal menyimpan data: $e'),
             backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            duration: const Duration(seconds: 4),
           ),
         );
       } finally {
         if (mounted) {
-          setState(() => _isSubmitting = false);
+          setState(() => _isLoading = false);
         }
       }
     }
@@ -111,186 +126,248 @@ class _RumahFormPageState extends State<RumahFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text(
-          'Tambah Rumah',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-            letterSpacing: -0.3,
-          ),
-        ),
-        actions: [
-          TextButton.icon(
-            onPressed: _isSubmitting ? null : _submitForm,
-            icon: _isSubmitting
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
-            label: Text(
-              _isSubmitting ? 'Menyimpan...' : 'Simpan',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          // Header Card
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.divider, width: 1),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.home_rounded,
+                    color: AppColors.primary,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.rumah == null ? 'Tambah Rumah' : 'Edit Rumah',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.rumah == null
+                            ? 'Lengkapi semua informasi rumah'
+                            : 'Perbarui informasi rumah',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            // Header Card
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+          const SizedBox(height: 24),
+
+          // Lokasi Section
+          _buildSectionTitle('Lokasi Rumah', Icons.location_on_rounded),
+          const SizedBox(height: 12),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildTextField(
+                  controller: _alamatController,
+                  label: 'Alamat Lengkap',
+                  hint: 'Masukkan alamat lengkap',
+                  icon: Icons.location_on_outlined,
+                  maxLines: 2,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Alamat wajib diisi';
+                    }
+                    return null;
+                  },
                 ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(12),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        controller: _rtController,
+                        label: 'RT',
+                        hint: 'Masukkan RT',
+                        icon: Icons.home_work,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'RT wajib diisi';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    child: const Icon(Icons.home_rounded, color: Colors.white, size: 32),
-                  ),
-                  const SizedBox(width: 16),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tambah Rumah Baru',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildTextField(
+                        controller: _rwController,
+                        label: 'RW',
+                        hint: 'Masukkan RW',
+                        icon: Icons.apartment,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'RW wajib diisi';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _nomorRumahController,
+                  label: 'Nomor Rumah (Opsional)',
+                  hint: 'Masukkan nomor rumah',
+                  icon: Icons.numbers,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Pemilik section removed - will be auto-assigned from Keluarga
+          // Status Section
+          _buildSectionTitle('Status Rumah', Icons.info_outline_rounded),
+          _buildCard(child: Column(children: [_buildStatusDropdown()])),
+          const SizedBox(height: 20),
+
+          // Detail Bangunan Section
+          _buildSectionTitle(
+            'Detail Bangunan (Opsional)',
+            Icons.straighten_rounded,
+          ),
+          _buildCard(
+            child: Column(
+              children: [
+                _buildTextField(
+                  controller: _luasTanahController,
+                  label: 'Luas Tanah (m²)',
+                  hint: 'Masukkan luas tanah',
+                  icon: Icons.landscape,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: _luasBangunanController,
+                  label: 'Luas Bangunan (m²)',
+                  hint: 'Masukkan luas bangunan',
+                  icon: Icons.home_outlined,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          // Submit Button
+          Container(
+            height: 52,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _isLoading ? null : _submitForm,
+                borderRadius: BorderRadius.circular(12),
+                child: _isLoading
+                    ? const Center(
+                        child: SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
                             color: Colors.white,
-                            letterSpacing: -0.3,
+                            strokeWidth: 2,
                           ),
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Lengkapi informasi rumah di bawah ini',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                      )
+                    : Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.save_rounded,
+                              size: 22,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              widget.rumah == null
+                                  ? 'Simpan Rumah'
+                                  : 'Update Rumah',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
               ),
             ),
-            const SizedBox(height: 24),
-
-            // Section: Data Rumah
-            _buildSectionTitle('Data Rumah', Icons.home_work_rounded),
-            const SizedBox(height: 12),
-            _buildCard(
-              child: Column(
-                children: [
-                  _buildTextField(
-                    controller: _alamatController,
-                    label: 'Alamat Lengkap',
-                    hint: 'Masukkan alamat lengkap rumah',
-                    icon: Icons.location_on_rounded,
-                    maxLines: 3,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Alamat harus diisi';
-                      }
-                      if (value.length < 10) {
-                        return 'Alamat minimal 10 karakter';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _pemilikController,
-                    label: 'Nama Pemilik',
-                    hint: 'Masukkan nama pemilik rumah',
-                    icon: Icons.person_rounded,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama pemilik harus diisi';
-                      }
-                      if (value.length < 3) {
-                        return 'Nama pemilik minimal 3 karakter';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDropdown(
-                    value: _selectedStatus,
-                    label: 'Status Rumah',
-                    hint: 'Pilih status rumah',
-                    icon: Icons.info_rounded,
-                    items: _statusList,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedStatus = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
 
-  // Helper Widgets
-
   Widget _buildSectionTitle(String title, IconData icon) {
-    return Row(
-      children: [
-        Icon(icon, color: AppColors.primary, size: 24),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-            letterSpacing: -0.3,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 18, color: AppColors.primary),
           ),
-        ),
-      ],
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+              letterSpacing: -0.3,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -298,18 +375,23 @@ class _RumahFormPageState extends State<RumahFormPage> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: child,
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+        letterSpacing: 0.2,
+      ),
     );
   }
 
@@ -318,87 +400,107 @@ class _RumahFormPageState extends State<RumahFormPage> {
     required String label,
     required String hint,
     required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
     String? Function(String?)? validator,
   }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.primary),
-        filled: true,
-        fillColor: const Color(0xFFF8F9FA),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLabel(label),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: Icon(
+              icon,
+              color: AppColors.primary.withValues(alpha: 0.6),
+            ),
+            filled: true,
+            fillColor: AppColors.divider.withValues(alpha: 0.2),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+          ),
+          validator: validator,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error, width: 1.5),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      ),
-      validator: validator,
+      ],
     );
   }
 
-  Widget _buildDropdown({
-    required String? value,
-    required String label,
-    required String hint,
-    required IconData icon,
-    required List<String> items,
-    required void Function(String?) onChanged,
-  }) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: AppColors.primary),
-        filled: true,
-        fillColor: const Color(0xFFF8F9FA),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+  Widget _buildStatusDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLabel('Status Rumah'),
+        const SizedBox(height: 8),
+        DropdownButtonFormField<StatusRumah>(
+          initialValue: _selectedStatus,
+          isExpanded: true,
+          decoration: InputDecoration(
+            hintText: 'Pilih status rumah',
+            prefixIcon: Icon(
+              Icons.home_outlined,
+              color: AppColors.primary.withValues(alpha: 0.6),
+            ),
+            filled: true,
+            fillColor: AppColors.backgroundGray,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.3),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+          ),
+          items: StatusRumah.values.map((status) {
+            return DropdownMenuItem<StatusRumah>(
+              value: status,
+              child: Text(status.value),
+            );
+          }).toList(),
+          onChanged: (value) {
+            if (value != null) {
+              setState(() {
+                _selectedStatus = value;
+              });
+            }
+          },
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.error, width: 1.5),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      ),
-      items: items.map((item) {
-        return DropdownMenuItem<String>(value: item, child: Text(item));
-      }).toList(),
-      onChanged: onChanged,
+      ],
     );
   }
 }

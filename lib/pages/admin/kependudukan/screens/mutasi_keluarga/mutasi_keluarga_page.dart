@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
-import '../../../../../data/repositories/mutasi_keluarga_repository.dart';
 import '../../../../../data/models/mutasi_keluarga_model.dart';
+import '../../../../../data/repositories/mutasi_keluarga_repository.dart';
 import '../../../../../utils/date_helpers.dart';
 import '../../../../../utils/ui_helpers.dart';
 
@@ -14,6 +16,50 @@ class MutasiKeluargaPage extends StatefulWidget {
 }
 
 class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
+  final _repository = MutasiKeluargaRepository();
+
+  Future<void> _showDeleteConfirmation(MutasiKeluarga mutasi) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Hapus Mutasi?'),
+        content: const Text(
+          'Apakah Anda yakin ingin menghapus data mutasi ini?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await _repository.delete(mutasi.id);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Mutasi berhasil dihapus')),
+        );
+        setState(() {}); // Refresh list
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal menghapus: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -23,51 +69,6 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
             _buildSearchAndFilter(),
             Expanded(child: _buildMutasiKeluargaList()),
           ],
-        ),
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(
-                    context,
-                  ).primaryColor.withAlpha((0.3 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: FloatingActionButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    title: const Text('Tambah Mutasi Keluarga'),
-                    content: const Text(
-                      'Fitur ini belum bisa digunakan saat ini.',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Tutup'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              backgroundColor: Theme.of(context).primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),
         ),
       ],
     );
@@ -255,7 +256,7 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
             const SizedBox(height: 16),
             _buildDetailRow(
               'Keluarga',
-              keluarga.keluarga,
+              '${keluarga.nomorKK} - ${keluarga.namaKepalaKeluarga}',
               Icons.family_restroom_rounded,
             ),
             const SizedBox(height: 16),
@@ -331,105 +332,164 @@ class _MutasiKeluargaPageState extends State<MutasiKeluargaPage> {
     );
   }
 
-  Widget _buildMutasiKeluargaCard(MutasiKeluarga keluarga) {
-    // Get color based on mutation type
-    final color = UIHelpers.getMutasiColor(keluarga.jenisMutasi);
+  Widget _buildMutasiKeluargaCard(MutasiKeluarga mutasi) {
+    final color = UIHelpers.getMutasiColor(mutasi.jenisMutasi);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider, width: 1),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => _showDetailBottomSheet(context, keluarga),
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    UIHelpers.getMutasiIcon(keluarga.jenisMutasi),
-                    color: color,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              keluarga.keluarga,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              keluarga.jenisMutasi.value,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: color,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today_rounded,
-                            size: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            DateHelpers.formatDate(keluarga.tanggal),
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      color.withValues(alpha: 0.15),
+                      color.withValues(alpha: 0.05),
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.3),
+                    width: 1.5,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 16,
-                  color: AppColors.textSecondary.withValues(alpha: 0.5),
+                child: Icon(Icons.swap_horiz_rounded, color: color, size: 24),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      mutasi.jenisMutasi.value,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      'KK: ${mutasi.nomorKK}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  DateFormat('dd/MM/yy').format(mutasi.tanggal),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: color,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Divider(color: AppColors.divider.withValues(alpha: 0.5), height: 1),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _buildActionButton(
+                  'Detail',
+                  Icons.visibility_outlined,
+                  AppColors.textSecondary,
+                  mutasi,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildActionButton(
+                  'Hapus',
+                  Icons.delete_outline_rounded,
+                  const Color(0xFFE53935),
+                  mutasi,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    MutasiKeluarga mutasi,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          if (label == 'Detail') {
+            context.pushNamed('admin-mutasi-keluarga-detail', extra: mutasi);
+          } else if (label == 'Hapus') {
+            _showDeleteConfirmation(mutasi);
+          }
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
           ),
         ),
       ),
