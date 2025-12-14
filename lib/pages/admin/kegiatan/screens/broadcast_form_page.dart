@@ -59,7 +59,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -77,6 +79,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
           isi: _isiController.text.trim(),
           kategori: _selectedKategori!,
           prioritas: _selectedPrioritas,
+          status: 'Aktif',
           tanggal: now,
           createdAt: now,
         );
@@ -96,7 +99,9 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -111,12 +116,16 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Gagal mengirim broadcast: ${e.toString()}')),
+                Expanded(
+                  child: Text('Gagal mengirim broadcast: ${e.toString()}'),
+                ),
               ],
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             duration: const Duration(seconds: 4),
           ),
         );
@@ -131,7 +140,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -182,29 +191,23 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                border: Border.all(color: AppColors.divider, width: 1),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.campaign_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.campaign_rounded,
+                      color: AppColors.primary,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -216,14 +219,18 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             letterSpacing: -0.3,
                           ),
                         ),
                         SizedBox(height: 4),
                         Text(
                           'Kirim pesan ke seluruh warga RT',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -313,18 +320,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               height: 52,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                gradient: const LinearGradient(
-                  colors: [AppColors.primary, Color(0xFF1976D2)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: AppColors.primary,
               ),
               child: Material(
                 color: Colors.transparent,
@@ -390,14 +386,7 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.divider, width: 1),
       ),
       child: child,
     );
@@ -444,11 +433,15 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -462,7 +455,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -504,17 +500,24 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -537,7 +540,10 @@ class _BroadcastFormPageState extends State<BroadcastFormPage> {
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
+          icon: const Icon(
+            Icons.arrow_drop_down_rounded,
+            color: AppColors.primary,
+          ),
           dropdownColor: AppColors.background,
         ),
       ],

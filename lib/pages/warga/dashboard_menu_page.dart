@@ -15,486 +15,311 @@ class WargaDashboardMenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.background,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
-        child: Column(
-          children: [
-            _buildWelcomeCard(),
-            const SizedBox(height: 20),
-            _buildQuickActions(context),
-            const SizedBox(height: 20),
-            _buildBroadcastTerbaru(context),
-            const SizedBox(height: 20),
-            _buildKegiatanTerbaru(context),
-          ],
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA), // Soft gray background
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildWelcomeSection(),
+              const SizedBox(height: 24),
+              _buildBentoGrid(context),
+              const SizedBox(height: 24),
+              _buildActivitySection(context),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildWelcomeCard() {
+  Widget _buildWelcomeSection() {
     final authService = AuthService();
     final userRepository = UserRepository();
     final currentUser = authService.currentUser;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider, width: 1),
-      ),
-      child: currentUser != null
-          ? StreamBuilder<UserProfile?>(
-              stream: userRepository.getUserProfileStream(currentUser.uid),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+    return StreamBuilder<UserProfile?>(
+      stream: currentUser != null
+          ? userRepository.getUserProfileStream(currentUser.uid)
+          : Stream.value(null),
+      builder: (context, snapshot) {
+        final userProfile = snapshot.data;
+        final displayName =
+            currentUser?.displayName ??
+            currentUser?.email?.split('@')[0] ??
+            'Warga';
+        final role = userProfile?.role.value ?? '';
 
-                final userProfile = snapshot.data;
-                final displayName =
-                    currentUser.displayName ??
-                    currentUser.email?.split('@')[0] ??
-                    'Warga';
-                final role = userProfile?.role.value ?? '';
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Selamat Datang, $displayName',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    if (role.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          role,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Pantau informasi kegiatan dan pengumuman terbaru dari RW',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            )
-          : Column(
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Selamat Datang',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+                  'Halo, $displayName 👋',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
                     color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 4),
                 Text(
-                  'Pantau informasi kegiatan dan pengumuman terbaru dari RW',
+                  'Selamat datang di Dashboard Warga',
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                    color: AppColors.textSecondary.withValues(alpha: 0.8),
+                    letterSpacing: 0.2,
                   ),
                 ),
               ],
             ),
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Aksi Cepat',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildActionCard(
-                context,
-                'Aspirasi',
-                'Sampaikan keluhan',
-                Icons.feedback_outlined,
-                AppColors.info,
-                () => context.pushNamed('warga-aspirasi-form'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionCard(
-                context,
-                'Kegiatan',
-                'Lihat kegiatan',
-                Icons.event_rounded,
-                AppColors.primary,
-                () => context.pushNamed('warga-kegiatan'),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildActionCard(
-                context,
-                'Keuangan',
-                'Lihat laporan',
-                Icons.account_balance_wallet,
-                AppColors.success,
-                () => context.pushNamed('warga-keuangan'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionCard(
-                context,
-                'Broadcast',
-                'Lihat pengumuman',
-                Icons.campaign_rounded,
-                AppColors.softPurple,
-                () => context.pushNamed('warga-broadcast'),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionCard(
-    BuildContext context,
-    String title,
-    String subtitle,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.divider, width: 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withValues(alpha: 0.3)),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.2),
+                  width: 2,
+                ),
               ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBroadcastTerbaru(BuildContext context) {
-    final broadcastRepo = BroadcastRepository();
-
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: broadcastRepo.getBroadcastStream(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider, width: 1),
-            ),
-            child: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        final broadcastList = (snapshot.data ?? [])
-            .map((map) => Broadcast.fromMap(map))
-            .toList();
-        final recentBroadcasts = broadcastList.take(3).toList();
-
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider, width: 1),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Pengumuman Terbaru',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context.pushNamed('warga-broadcast');
-                    },
-                    child: Text(
-                      'Lihat Semua',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              if (recentBroadcasts.isEmpty)
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Tidak ada pengumuman terbaru',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                )
-              else
-                ...recentBroadcasts.map(
-                  (broadcast) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildBroadcastItem(
-                      broadcast.judul,
-                      broadcast.isi,
-                      timeAgo(broadcast.createdAt),
-                    ),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                child: Text(
+                  displayName.isNotEmpty ? displayName[0].toUpperCase() : 'W',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-            ],
-          ),
+              ),
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget _buildBroadcastItem(String title, String content, String time) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGray,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildBentoGrid(BuildContext context) {
+    return SizedBox(
+      height: 340, // Fixed height for consistency
+      child: Row(
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: AppColors.softPurple.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.campaign,
-                  color: AppColors.softPurple,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+          // Left Column: Quick Actions (2/3 width)
+          Expanded(
+            flex: 2,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildBentoActionCard(
+                          context,
+                          'Aspirasi',
+                          Icons.campaign_rounded,
+                          const Color(0xFF5C6BC0), // Indigo
+                          () => context.pushNamed('warga-aspirasi-form'),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildBentoActionCard(
+                          context,
+                          'Kegiatan',
+                          Icons.event_note_rounded,
+                          const Color(0xFF26A69A), // Teal
+                          () => context.pushNamed('warga-kegiatan'),
+                        ),
+                      ),
+                    ],
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            content,
-            style: TextStyle(
-              fontSize: 13,
-              color: AppColors.textSecondary,
-              height: 1.5,
+                const SizedBox(height: 16),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildBentoActionCard(
+                          context,
+                          'Keuangan',
+                          Icons.account_balance_wallet_rounded,
+                          const Color(0xFF66BB6A), // Green
+                          () => context.pushNamed('warga-keuangan'),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildBentoActionCard(
+                          context,
+                          'Broadcast',
+                          Icons.notifications_active_rounded,
+                          const Color(0xFFFFA726), // Orange
+                          () => context.pushNamed('warga-broadcast'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
-          Text(
-            time,
-            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-          ),
+          const SizedBox(width: 16),
+          // Right Column: Latest Query/Info (1/3 width) - e.g. Next Activity Highlight
+          Expanded(flex: 1, child: _buildHighlightCard(context)),
         ],
       ),
     );
   }
 
-  Widget _buildKegiatanTerbaru(BuildContext context) {
+  Widget _buildBentoActionCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color, size: 28),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHighlightCard(BuildContext context) {
+    // Shows the nearest upcoming activity or broadcast count
     final kegiatanRepo = KegiatanRepository();
 
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: kegiatanRepo.getKegiatanStream(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.divider, width: 1),
-            ),
-            child: const Center(child: CircularProgressIndicator()),
-          );
-        }
-
         final kegiatanList = (snapshot.data ?? [])
             .map((map) => Kegiatan.fromMap(map))
             .toList();
-        final upcomingKegiatan = kegiatanList
+        final upcoming = kegiatanList
             .where((k) => k.tanggal.isAfter(DateTime.now()))
-            .take(3)
             .toList();
 
+        // Find nearest
+        upcoming.sort((a, b) => a.tanggal.compareTo(b.tanggal));
+        final nearest = upcoming.isNotEmpty ? upcoming.first : null;
+
         return Container(
-          padding: const EdgeInsets.all(24),
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider, width: 1),
+            gradient: LinearGradient(
+              colors: [const Color(0xFF42A5F5), const Color(0xFF1E88E5)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF1E88E5).withValues(alpha: 0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Kegiatan Mendatang',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context.pushNamed('warga-kegiatan');
-                    },
-                    child: Text(
-                      'Lihat Semua',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.star_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
-              const SizedBox(height: 20),
-              if (upcomingKegiatan.isEmpty)
+              const Spacer(),
+              Text(
+                nearest != null ? 'Segera Hadir' : 'Tidak Ada',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                nearest?.nama ?? 'Kegiatan',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.2,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 8),
+              if (nearest != null)
                 Container(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Center(
-                    child: Text(
-                      'Tidak ada kegiatan mendatang',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                )
-              else
-                ...upcomingKegiatan.map(
-                  (kegiatan) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildKegiatanItem(
-                      kegiatan.nama,
-                      DateHelpers.formatDate(kegiatan.tanggal),
-                      kegiatan.lokasi,
-                      _getKategoriColor(kegiatan.kategori),
+                  child: Text(
+                    DateHelpers.formatDateShort(nearest.tanggal),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E88E5),
                     ),
                   ),
                 ),
@@ -505,43 +330,86 @@ class WargaDashboardMenuPage extends StatelessWidget {
     );
   }
 
-  Color _getKategoriColor(String kategori) {
-    switch (kategori.toLowerCase()) {
-      case 'sosial':
-        return AppColors.success;
-      case 'keamanan':
-        return AppColors.error;
-      case 'kebersihan':
-        return AppColors.info;
-      case 'kesehatan':
-        return AppColors.warning;
-      default:
-        return AppColors.primary;
-    }
+  Widget _buildActivitySection(BuildContext context) {
+    final broadcastRepo = BroadcastRepository();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Informasi Terbaru',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            letterSpacing: -0.3,
+          ),
+        ),
+        const SizedBox(height: 16),
+        StreamBuilder<List<Map<String, dynamic>>>(
+          stream: broadcastRepo.getBroadcastStream(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final broadcasts = (snapshot.data ?? [])
+                .map((m) => Broadcast.fromMap(m))
+                .take(4) // Show 4 most recent
+                .toList();
+
+            if (broadcasts.isEmpty) {
+              return Center(
+                child: Text(
+                  'Belum ada informasi.',
+                  style: TextStyle(color: Colors.grey[500]),
+                ),
+              );
+            }
+
+            return ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: broadcasts.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final item = broadcasts[index];
+                return _buildBroadcastCard(item);
+              },
+            );
+          },
+        ),
+      ],
+    );
   }
 
-  Widget _buildKegiatanItem(
-    String title,
-    String date,
-    String location,
-    Color color,
-  ) {
+  Widget _buildBroadcastCard(Broadcast item) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.backgroundGray,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.divider, width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              color: AppColors.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.event, color: color, size: 20),
+            child: const Icon(
+              Icons.article_rounded,
+              color: AppColors.primary,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -549,55 +417,33 @@ class WargaDashboardMenuPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
-                  style: TextStyle(
+                  item.judul,
+                  style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      size: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      date,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        location,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+                Text(
+                  item.isi,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary.withValues(alpha: 0.8),
+                  ),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${item.tanggal.day}/${item.tanggal.month}',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[400],
             ),
           ),
         ],

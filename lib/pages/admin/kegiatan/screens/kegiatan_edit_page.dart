@@ -24,6 +24,7 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
   late final TextEditingController _pesertaController;
 
   String? _selectedKategori;
+  String? _selectedStatus;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   bool _isUpdating = false;
@@ -39,15 +40,24 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
     'Lainnya',
   ];
 
+  final List<String> _statusList = ['Belum Terlaksana', 'Terlaksana'];
+
   @override
   void initState() {
     super.initState();
     _namaController = TextEditingController(text: widget.kegiatan.nama);
-    _penanggungJawabController = TextEditingController(text: widget.kegiatan.penanggungJawab);
-    _deskripsiController = TextEditingController(text: widget.kegiatan.deskripsi);
+    _penanggungJawabController = TextEditingController(
+      text: widget.kegiatan.penanggungJawab,
+    );
+    _deskripsiController = TextEditingController(
+      text: widget.kegiatan.deskripsi,
+    );
     _lokasiController = TextEditingController(text: widget.kegiatan.lokasi);
-    _pesertaController = TextEditingController(text: widget.kegiatan.peserta.toString());
+    _pesertaController = TextEditingController(
+      text: widget.kegiatan.peserta.toString(),
+    );
     _selectedKategori = widget.kegiatan.kategori;
+    _selectedStatus = widget.kegiatan.status;
     _selectedDate = widget.kegiatan.tanggal;
     _selectedTime = TimeOfDay.fromDateTime(widget.kegiatan.tanggal);
   }
@@ -126,7 +136,9 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -144,7 +156,9 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -162,7 +176,9 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
         return;
@@ -188,9 +204,13 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
           peserta: int.tryParse(_pesertaController.text.trim()) ?? 0,
           tanggal: kegiatanDateTime,
           updatedAt: DateTime.now(),
+          status: _selectedStatus!,
         );
 
-        await _repository.updateKegiatan(updatedKegiatan.id, updatedKegiatan.toMap());
+        await _repository.updateKegiatan(
+          updatedKegiatan.id,
+          updatedKegiatan.toMap(),
+        );
 
         if (!mounted) return;
 
@@ -205,7 +225,9 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -220,12 +242,16 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Gagal memperbarui kegiatan: ${e.toString()}')),
+                Expanded(
+                  child: Text('Gagal memperbarui kegiatan: ${e.toString()}'),
+                ),
               ],
             ),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             duration: const Duration(seconds: 4),
           ),
         );
@@ -240,7 +266,7 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -269,7 +295,11 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
-                : const Icon(Icons.check_rounded, color: Colors.white, size: 20),
+                : const Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
             label: Text(
               _isUpdating ? 'Menyimpan...' : 'Simpan',
               style: const TextStyle(
@@ -291,29 +321,23 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                border: Border.all(color: AppColors.divider, width: 1),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.edit_note_rounded,
+                      color: AppColors.primary,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -325,14 +349,18 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             letterSpacing: -0.3,
                           ),
                         ),
                         SizedBox(height: 4),
                         Text(
                           'Perbarui informasi kegiatan',
-                          style: TextStyle(fontSize: 13, color: Colors.white70, letterSpacing: 0.2),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ],
                     ),
@@ -377,6 +405,19 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  _buildDropdown(
+                    value: _selectedStatus,
+                    label: 'Status Kegiatan',
+                    hint: 'Pilih status kegiatan',
+                    icon: Icons.check_circle_outline_rounded,
+                    items: _statusList,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedStatus = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _deskripsiController,
                     label: 'Deskripsi',
@@ -396,7 +437,10 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             const SizedBox(height: 24),
 
             // Penanggung Jawab Section
-            _buildSectionTitle('Penanggung Jawab', Icons.person_outline_rounded),
+            _buildSectionTitle(
+              'Penanggung Jawab',
+              Icons.person_outline_rounded,
+            ),
             const SizedBox(height: 12),
             _buildCard(
               child: _buildTextField(
@@ -489,18 +533,7 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
               height: 52,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                gradient: const LinearGradient(
-                  colors: [AppColors.primary, Color(0xFF1976D2)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                color: AppColors.primary,
               ),
               child: Material(
                 color: Colors.transparent,
@@ -511,7 +544,11 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.check_circle_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 12),
                         Text(
                           'Simpan Perubahan',
@@ -566,14 +603,10 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: child,
     );
@@ -620,11 +653,15 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -638,7 +675,10 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.error, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
         ),
       ],
@@ -680,17 +720,24 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             fillColor: AppColors.divider.withValues(alpha: 0.2),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.6)),
+              borderSide: BorderSide(
+                color: AppColors.divider.withValues(alpha: 0.6),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
           ),
           items: items.map((String item) {
             return DropdownMenuItem<String>(
@@ -713,7 +760,10 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
             }
             return null;
           },
-          icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary),
+          icon: const Icon(
+            Icons.arrow_drop_down_rounded,
+            color: AppColors.primary,
+          ),
           dropdownColor: AppColors.background,
         ),
       ],
@@ -750,7 +800,9 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.divider.withValues(alpha: 0.6)),
+                border: Border.all(
+                  color: AppColors.divider.withValues(alpha: 0.6),
+                ),
               ),
               child: Row(
                 children: [
@@ -764,7 +816,9 @@ class _KegiatanEditPageState extends State<KegiatanEditPage> {
                         color: value != null
                             ? AppColors.textPrimary
                             : AppColors.textSecondary.withValues(alpha: 0.6),
-                        fontWeight: value != null ? FontWeight.w500 : FontWeight.w400,
+                        fontWeight: value != null
+                            ? FontWeight.w500
+                            : FontWeight.w400,
                       ),
                     ),
                   ),
