@@ -34,7 +34,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 ],
               ),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.2),
+                width: 2,
+              ),
             ),
             child: Icon(
               Icons.campaign_rounded,
@@ -55,7 +58,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
           const SizedBox(height: 8),
           Text(
             'Belum ada broadcast yang tersedia',
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary, letterSpacing: 0.2),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ),
@@ -80,7 +87,9 @@ class _BroadcastPageState extends State<BroadcastPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -122,7 +131,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
                           child: Text(
                             snapshot.error.toString(),
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -133,8 +145,13 @@ class _BroadcastPageState extends State<BroadcastPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                         ),
                       ],
@@ -154,12 +171,19 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 final filteredList = broadcasts.where((item) {
                   final matchesSearch =
                       _searchQuery.isEmpty ||
-                      item.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                      item.judul.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                      item.isi.toLowerCase().contains(_searchQuery.toLowerCase());
+                      item.nama.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ||
+                      item.judul.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ||
+                      item.isi.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      );
 
                   final matchesKategori =
-                      _selectedKategori == 'Semua' || item.kategori == _selectedKategori;
+                      _selectedKategori == 'Semua' ||
+                      item.kategori == _selectedKategori;
 
                   return matchesSearch && matchesKategori;
                 }).toList();
@@ -191,7 +215,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
                         const SizedBox(height: 8),
                         Text(
                           'Coba ubah pencarian atau filter',
-                          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -201,7 +228,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 return ListView.separated(
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                   itemCount: filteredList.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 14),
                   itemBuilder: (context, index) {
                     final item = filteredList[index];
                     return _buildBroadcastCard(item);
@@ -220,7 +248,9 @@ class _BroadcastPageState extends State<BroadcastPage> {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
       decoration: BoxDecoration(
         color: AppColors.background,
-        border: Border(bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.3))),
+        border: Border(
+          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.3)),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,22 +260,32 @@ class _BroadcastPageState extends State<BroadcastPage> {
             onChanged: (value) => setState(() => _searchQuery = value),
             decoration: InputDecoration(
               hintText: 'Cari broadcast...',
-              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: AppColors.textSecondary,
+              ),
               filled: true,
               fillColor: AppColors.background.withValues(alpha: 0.5),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.5)),
+                borderSide: BorderSide(
+                  color: AppColors.divider.withValues(alpha: 0.5),
+                ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.divider.withValues(alpha: 0.5)),
+                borderSide: BorderSide(
+                  color: AppColors.divider.withValues(alpha: 0.5),
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: AppColors.primary, width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -278,10 +318,14 @@ class _BroadcastPageState extends State<BroadcastPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.background.withValues(alpha: 0.5),
+          color: isSelected
+              ? AppColors.primary
+              : AppColors.background.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.5),
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.divider.withValues(alpha: 0.5),
             width: 1.5,
           ),
         ),
@@ -302,7 +346,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
@@ -317,15 +364,21 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.15),
-                        UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.05),
+                        UIHelpers.getBroadcastColor(
+                          item.kategori,
+                        ).withValues(alpha: 0.15),
+                        UIHelpers.getBroadcastColor(
+                          item.kategori,
+                        ).withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.3),
+                      color: UIHelpers.getBroadcastColor(
+                        item.kategori,
+                      ).withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
@@ -387,12 +440,19 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.1),
+                        color: UIHelpers.getBroadcastColor(
+                          item.kategori,
+                        ).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: UIHelpers.getBroadcastColor(item.kategori).withValues(alpha: 0.3),
+                          color: UIHelpers.getBroadcastColor(
+                            item.kategori,
+                          ).withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),
@@ -408,7 +468,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.textSecondary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
@@ -428,7 +491,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(Icons.person_outline_rounded, size: 16, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.person_outline_rounded,
+                      size: 16,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -440,7 +507,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
                         ),
                       ),
                     ),
-                    Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       DateHelpers.formatDateShort(item.tanggal),
@@ -471,10 +542,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   children: [
                     Expanded(
                       child: _buildActionButton(
-                        icon: Icons.edit_outlined,
-                        label: 'Edit',
-                        color: AppColors.primary,
-                        onPressed: () => _showEditDialog(item),
+                        icon: Icons.check_circle_outline_rounded,
+                        label: 'Selesai',
+                        color: AppColors.success, // Green for Done
+                        onPressed: () => _showSelesaiDialog(item),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -543,8 +614,102 @@ class _BroadcastPageState extends State<BroadcastPage> {
     context.pushNamed('admin-broadcast-detail', extra: item);
   }
 
-  void _showEditDialog(Broadcast item) {
-    context.pushNamed('admin-broadcast-edit', extra: item);
+  void _showSelesaiDialog(Broadcast item) {
+    if (item.status == 'Selesai') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Broadcast ini sudah selesai.'),
+          backgroundColor: AppColors.primary,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.success,
+              size: 24,
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Selesaikan Broadcast',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Tandai broadcast "${item.nama}" sebagai selesai?',
+          style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Batal',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                // Update status to 'Selesai'
+                final updatedBroadcast = item.copyWith(status: 'Selesai');
+                await _broadcastRepository.updateBroadcast(
+                  item.id,
+                  updatedBroadcast.toMap(),
+                );
+
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Broadcast ditandai selesai!'),
+                    backgroundColor: AppColors.success,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Gagal: ${e.toString()}'),
+                    backgroundColor: AppColors.error,
+                  ),
+                );
+              }
+            },
+            child: const Text(
+              'Selesai',
+              style: TextStyle(
+                color: AppColors.success,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDeleteDialog(Broadcast item) {
@@ -554,7 +719,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
+            Icon(
+              Icons.warning_rounded,
+              color: const Color(0xFFE53935),
+              size: 24,
+            ),
             const SizedBox(width: 12),
             const Text(
               'Hapus Broadcast',
@@ -571,7 +740,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
           children: [
             Text(
               'Yakin ingin menghapus broadcast "${item.nama}"?',
-              style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -579,11 +751,18 @@ class _BroadcastPageState extends State<BroadcastPage> {
               decoration: BoxDecoration(
                 color: const Color(0xFFE53935).withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFE53935).withValues(alpha: 0.2), width: 1),
+                border: Border.all(
+                  color: const Color(0xFFE53935).withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: const Color(0xFFE53935), size: 18),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: const Color(0xFFE53935),
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -605,7 +784,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Batal',
-              style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           TextButton(
@@ -622,7 +804,9 @@ class _BroadcastPageState extends State<BroadcastPage> {
                         height: 16,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -642,14 +826,19 @@ class _BroadcastPageState extends State<BroadcastPage> {
                   SnackBar(
                     content: Row(
                       children: [
-                        const Icon(Icons.check_circle_outline, color: Colors.white),
+                        const Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.white,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(child: Text('${item.nama} telah dihapus')),
                       ],
                     ),
                     backgroundColor: const Color(0xFF43A047),
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 );
               } catch (e) {
@@ -661,12 +850,16 @@ class _BroadcastPageState extends State<BroadcastPage> {
                       children: [
                         const Icon(Icons.error_outline, color: Colors.white),
                         const SizedBox(width: 12),
-                        Expanded(child: Text('Gagal menghapus: ${e.toString()}')),
+                        Expanded(
+                          child: Text('Gagal menghapus: ${e.toString()}'),
+                        ),
                       ],
                     ),
                     backgroundColor: const Color(0xFFE53935),
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 );
               }
@@ -674,11 +867,16 @@ class _BroadcastPageState extends State<BroadcastPage> {
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFFE53935),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text(
               'Hapus',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

@@ -6,6 +6,7 @@ class Broadcast {
   final String isi;
   final String kategori;
   final String prioritas;
+  final String status;
   final DateTime tanggal;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -18,6 +19,7 @@ class Broadcast {
     required this.isi,
     required this.kategori,
     required this.prioritas,
+    required this.status,
     required this.tanggal,
     required this.createdAt,
     this.updatedAt,
@@ -31,6 +33,7 @@ class Broadcast {
       'isi': isi,
       'kategori': kategori,
       'prioritas': prioritas,
+      'status': status,
       'tanggal': tanggal.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
@@ -46,11 +49,16 @@ class Broadcast {
       isi: map['isi'] as String? ?? '',
       kategori: map['kategori'] as String? ?? '',
       prioritas: map['prioritas'] as String? ?? 'Normal',
-      tanggal: map['tanggal'] != null ? DateTime.parse(map['tanggal'] as String) : DateTime.now(),
+      status: map['status'] as String? ?? 'Aktif',
+      tanggal: map['tanggal'] != null
+          ? DateTime.parse(map['tanggal'] as String)
+          : DateTime.now(),
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'] as String)
           : DateTime.now(),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'] as String)
+          : null,
     );
   }
 
@@ -62,6 +70,7 @@ class Broadcast {
     String? isi,
     String? kategori,
     String? prioritas,
+    String? status,
     DateTime? tanggal,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -74,6 +83,7 @@ class Broadcast {
       isi: isi ?? this.isi,
       kategori: kategori ?? this.kategori,
       prioritas: prioritas ?? this.prioritas,
+      status: status ?? this.status,
       tanggal: tanggal ?? this.tanggal,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

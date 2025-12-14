@@ -34,7 +34,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 ],
               ),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2), width: 2),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.2),
+                width: 2,
+              ),
             ),
             child: Icon(
               Icons.event_available_rounded,
@@ -55,7 +58,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
           const SizedBox(height: 8),
           Text(
             'Belum ada kegiatan yang tersedia',
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary, letterSpacing: 0.2),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ),
@@ -80,7 +87,9 @@ class _KegiatanPageState extends State<KegiatanPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.primary,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -122,7 +131,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
                           child: Text(
                             snapshot.error.toString(),
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -133,8 +145,13 @@ class _KegiatanPageState extends State<KegiatanPage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                         ),
                       ],
@@ -151,11 +168,18 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 final filteredList = kegiatanList.where((kegiatan) {
                   final matchesSearch =
                       _searchQuery.isEmpty ||
-                      kegiatan.nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                      kegiatan.deskripsi.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                      kegiatan.lokasi.toLowerCase().contains(_searchQuery.toLowerCase());
+                      kegiatan.nama.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ||
+                      kegiatan.deskripsi.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ||
+                      kegiatan.lokasi.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      );
                   final matchesKategori =
-                      _selectedKategori == 'Semua' || kegiatan.kategori == _selectedKategori;
+                      _selectedKategori == 'Semua' ||
+                      kegiatan.kategori == _selectedKategori;
                   return matchesSearch && matchesKategori;
                 }).toList();
 
@@ -193,7 +217,8 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 return ListView.separated(
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                   itemCount: filteredList.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 14),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 14),
                   itemBuilder: (context, index) {
                     final item = filteredList[index];
                     return _buildKegiatanCard(item);
@@ -213,7 +238,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         border: Border(
-          bottom: BorderSide(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+          bottom: BorderSide(
+            color: AppColors.divider.withValues(alpha: 0.6),
+            width: 1.5,
+          ),
         ),
       ),
       child: Column(
@@ -222,8 +250,15 @@ class _KegiatanPageState extends State<KegiatanPage> {
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
               hintText: 'Cari kegiatan...',
-              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              prefixIcon: Icon(Icons.search_rounded, color: AppColors.textSecondary, size: 22),
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 15,
+              ),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: AppColors.textSecondary,
+                size: 22,
+              ),
               filled: true,
               fillColor: AppColors.divider.withValues(alpha: 0.15),
               border: OutlineInputBorder(
@@ -234,7 +269,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: AppColors.primary, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -271,7 +309,9 @@ class _KegiatanPageState extends State<KegiatanPage> {
           color: isSelected ? AppColors.primary : AppColors.background,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider.withValues(alpha: 0.6),
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.divider.withValues(alpha: 0.6),
             width: 1.5,
           ),
         ),
@@ -293,7 +333,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
@@ -308,15 +351,21 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.15),
-                        UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.05),
+                        UIHelpers.getKegiatanColor(
+                          item.kategori,
+                        ).withValues(alpha: 0.15),
+                        UIHelpers.getKegiatanColor(
+                          item.kategori,
+                        ).withValues(alpha: 0.05),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: UIHelpers.getKegiatanColor(item.kategori).withValues(alpha: 0.3),
+                      color: UIHelpers.getKegiatanColor(
+                        item.kategori,
+                      ).withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
@@ -352,6 +401,8 @@ class _KegiatanPageState extends State<KegiatanPage> {
                     ],
                   ),
                 ),
+                const SizedBox(width: 8),
+                _buildStatusChip(item.status),
               ],
             ),
           ),
@@ -393,7 +444,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 // Info row
                 Row(
                   children: [
-                    Icon(Icons.location_on_outlined, size: 16, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 16,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -408,7 +463,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Icon(Icons.people_outline, size: 16, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.people_outline,
+                      size: 16,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       '${item.peserta} orang',
@@ -423,7 +482,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.person_outline_rounded, size: 16, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.person_outline_rounded,
+                      size: 16,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -435,7 +498,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         ),
                       ),
                     ),
-                    Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textSecondary),
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: AppColors.textSecondary,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       DateHelpers.formatDateShort(item.tanggal),
@@ -448,6 +515,29 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   ],
                 ),
                 const SizedBox(height: 16),
+
+                if (item.status != 'Terlaksana')
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showFinishDialog(item),
+                      icon: const Icon(
+                        Icons.check_circle_outline_rounded,
+                        size: 18,
+                      ),
+                      label: const Text('Tandai Selesai'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.success,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
 
                 // Action buttons dengan desain modern
                 Row(
@@ -481,6 +571,38 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   ],
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String status) {
+    final isDone = status == 'Terlaksana';
+    final color = isDone ? AppColors.success : const Color(0xFF1976D2);
+    final label = isDone ? 'Selesai' : 'On Going';
+    final icon = isDone ? Icons.check_circle_rounded : Icons.timelapse_rounded;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ],
@@ -537,7 +659,11 @@ class _KegiatanPageState extends State<KegiatanPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(Icons.warning_rounded, color: const Color(0xFFE53935), size: 24),
+            Icon(
+              Icons.warning_rounded,
+              color: const Color(0xFFE53935),
+              size: 24,
+            ),
             const SizedBox(width: 12),
             const Text(
               'Hapus Kegiatan',
@@ -554,7 +680,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
           children: [
             Text(
               'Yakin ingin menghapus kegiatan "${item.nama}"?',
-              style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -562,11 +691,18 @@ class _KegiatanPageState extends State<KegiatanPage> {
               decoration: BoxDecoration(
                 color: const Color(0xFFE53935).withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFE53935).withValues(alpha: 0.2), width: 1),
+                border: Border.all(
+                  color: const Color(0xFFE53935).withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: const Color(0xFFE53935), size: 18),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: const Color(0xFFE53935),
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -588,7 +724,10 @@ class _KegiatanPageState extends State<KegiatanPage> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Batal',
-              style: TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           TextButton(
@@ -605,7 +744,9 @@ class _KegiatanPageState extends State<KegiatanPage> {
                         height: 16,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -625,14 +766,19 @@ class _KegiatanPageState extends State<KegiatanPage> {
                   SnackBar(
                     content: Row(
                       children: [
-                        const Icon(Icons.check_circle_outline, color: Colors.white),
+                        const Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.white,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(child: Text('${item.nama} telah dihapus')),
                       ],
                     ),
                     backgroundColor: const Color(0xFF43A047),
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 );
               } catch (e) {
@@ -644,12 +790,16 @@ class _KegiatanPageState extends State<KegiatanPage> {
                       children: [
                         const Icon(Icons.error_outline, color: Colors.white),
                         const SizedBox(width: 12),
-                        Expanded(child: Text('Gagal menghapus: ${e.toString()}')),
+                        Expanded(
+                          child: Text('Gagal menghapus: ${e.toString()}'),
+                        ),
                       ],
                     ),
                     backgroundColor: const Color(0xFFE53935),
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 );
               }
@@ -657,11 +807,170 @@ class _KegiatanPageState extends State<KegiatanPage> {
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xFFE53935),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text(
               'Hapus',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFinishDialog(Kegiatan item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(
+              Icons.check_circle_outline_rounded,
+              color: AppColors.success,
+              size: 24,
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Selesaikan Kegiatan',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Tandai kegiatan "${item.nama}" sebagai terlaksana?',
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Batal',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // Show loading
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text('Memperbarui status...'),
+                    ],
+                  ),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+
+              try {
+                final updatedKegiatan = item.copyWith(
+                  status: 'Terlaksana',
+                  updatedAt: DateTime.now(),
+                );
+
+                await _kegiatanRepository.updateKegiatan(
+                  item.id,
+                  updatedKegiatan.toMap(),
+                );
+
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        const Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '${item.nama} ditandai sebagai terlaksana',
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: AppColors.success,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.white),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Gagal meperbarui status: ${e.toString()}',
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: AppColors.error,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              }
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: AppColors.success,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              'Selesai',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

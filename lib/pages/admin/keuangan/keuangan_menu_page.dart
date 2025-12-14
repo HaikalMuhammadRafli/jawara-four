@@ -1,17 +1,12 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jawara_four/colors/app_colors.dart';
-
+import 'package:jawara_four/utils/number_helpers.dart';
 import '../../../data/models/pemasukan_model.dart';
 import '../../../data/models/pengeluaran_model.dart';
-import '../../../data/models/tagihan_model.dart';
 import '../../../data/repositories/pemasukan_repository.dart';
 import '../../../data/repositories/pengeluaran_repository.dart';
-import '../../../data/repositories/tagihan_repository.dart';
-import '../../../utils/date_helpers.dart';
-import '../../../utils/number_helpers.dart';
 
 class KeuanganMenuPage extends StatefulWidget {
   const KeuanganMenuPage({super.key});
@@ -23,499 +18,271 @@ class KeuanganMenuPage extends StatefulWidget {
 class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
   final PemasukanRepository _pemasukanRepository = PemasukanRepository();
   final PengeluaranRepository _pengeluaranRepository = PengeluaranRepository();
-  final TagihanRepository _tagihanRepository = TagihanRepository();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.background,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
-        child: Column(
-          children: [
-            _buildQuickStats(context),
-            const SizedBox(height: 20),
-            _buildMenuGrid(context),
-            const SizedBox(height: 20),
-            _buildTransactionLists(context),
-            const SizedBox(height: 20),
-            _buildFinanceChart(),
-          ],
-        ),
-      ),
-    );
-  }
+    return Scaffold(
+      backgroundColor: const Color(0xFF1E88E5), // Blue background
+      body: StreamBuilder<List<Pemasukan>>(
+        stream: _pemasukanRepository.getPemasukanStream(),
+        builder: (context, pemasukanSnapshot) {
+          return StreamBuilder<List<Pengeluaran>>(
+            stream: _pengeluaranRepository.getPengeluaranStream(),
+            builder: (context, pengeluaranSnapshot) {
+              final pemasukanList = pemasukanSnapshot.data ?? [];
+              final pengeluaranList = pengeluaranSnapshot.data ?? [];
 
-  Widget _buildQuickStats(BuildContext context) {
-    return StreamBuilder<List<Pemasukan>>(
-      stream: _pemasukanRepository.getPemasukanStream(),
-      builder: (context, pemasukanSnapshot) {
-        return StreamBuilder<List<Tagihan>>(
-          stream: _tagihanRepository.getTagihanStream(),
-          builder: (context, tagihanSnapshot) {
-            return StreamBuilder<List<Pengeluaran>>(
-              stream: _pengeluaranRepository.getPengeluaranStream(),
-              builder: (context, pengeluaranSnapshot) {
-                if (pemasukanSnapshot.connectionState == ConnectionState.waiting ||
-                    tagihanSnapshot.connectionState == ConnectionState.waiting ||
-                    pengeluaranSnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+              double totalPemasukan = 0;
+              for (var item in pemasukanList) {
+                totalPemasukan += item.jumlah;
+              }
+
+              double totalPengeluaran = 0;
+              for (var item in pengeluaranList) {
+                totalPengeluaran += item.nominal;
+              }
+
+              final double balance = totalPemasukan - totalPengeluaran;
+
+              // Combine for recent transactions
+              final List<dynamic> allTransactions = [
+                ...pemasukanList.map((e) => {'type': 'income', 'data': e}),
+                ...pengeluaranList.map((e) => {'type': 'expense', 'data': e}),
+              ];
+
+              // Sort by date descending
+              allTransactions.sort((a, b) {
+                DateTime dateA;
+                DateTime dateB;
+                if (a['type'] == 'income') {
+                  dateA = (a['data'] as Pemasukan).tanggal;
+                } else {
+                  dateA = (a['data'] as Pengeluaran).tanggal;
                 }
 
-                final pemasukanList = pemasukanSnapshot.data ?? [];
-                final pengeluaranList = pengeluaranSnapshot.data ?? [];
+                if (b['type'] == 'income') {
+                  dateB = (b['data'] as Pemasukan).tanggal;
+                } else {
+                  dateB = (b['data'] as Pengeluaran).tanggal;
+                }
 
-                double totalPemasukan = pemasukanList.fold(0.0, (sum, item) => sum + item.jumlah);
-                double totalPengeluaran = pengeluaranList.fold(
-                  0.0,
-                  (sum, item) => sum + item.nominal,
-                );
-                double saldo = totalPemasukan - totalPengeluaran;
+                return dateB.compareTo(dateA);
+              });
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              final recentTransactions = allTransactions.take(10).toList();
+
+              return SingleChildScrollView(
+                child: Column(
                   children: [
-                    Text(
-                      'Ringkasan Keuangan',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                    SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
+                        child: _buildHeader(),
                       ),
                     ),
-                    const SizedBox(height: 16),
                     Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.success.withValues(alpha: 0.1),
-                            AppColors.success.withValues(alpha: 0.05),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: AppColors.success.withValues(alpha: 0.3),
-                          width: 2,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(32),
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.success,
-                                  AppColors.success.withValues(alpha: 0.8),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Icon(
-                              Icons.account_balance_wallet,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height * 0.8,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            _buildVirtualCard(balance),
+                            const SizedBox(height: 20),
+                            Row(
                               children: [
-                                Text(
-                                  'Saldo Tersedia',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.success,
-                                    letterSpacing: 0.5,
+                                Expanded(
+                                  child: _buildFinanceCard(
+                                    'Pemasukan',
+                                    totalPemasukan,
+                                    Icons.arrow_downward_rounded,
+                                    const Color(0xFF4CAF50),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  NumberHelpers.formatCurrency(saldo.toInt()),
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppColors.textPrimary,
-                                    letterSpacing: -0.5,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Update terakhir: ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.textSecondary,
-                                    fontStyle: FontStyle.italic,
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildFinanceCard(
+                                    'Pengeluaran',
+                                    totalPengeluaran,
+                                    Icons.arrow_upward_rounded,
+                                    const Color(0xFFF44336),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 24),
+                            _buildMenuGrid(context),
+                            const SizedBox(height: 24),
+                            _buildRecentTransactions(recentTransactions),
+                            const SizedBox(height: 80),
+                          ],
+                        ),
                       ),
                     ),
                   ],
-                );
-              },
-            );
-          },
-        );
-      },
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildFinanceChart() {
-    return StreamBuilder<List<Pengeluaran>>(
-      stream: _pengeluaranRepository.getPengeluaranStream(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox();
-
-        final pengeluaranList = snapshot.data!;
-        if (pengeluaranList.isEmpty) return const SizedBox();
-
-        // Group by category (jenis)
-        final Map<String, double> categoryTotals = {};
-        double totalPengeluaran = 0;
-
-        for (var item in pengeluaranList) {
-          categoryTotals[item.jenis] = (categoryTotals[item.jenis] ?? 0.0) + item.nominal;
-          totalPengeluaran += item.nominal;
-        }
-
-        // Colors for categories
-        final List<Color> colors = [
-          AppColors.success,
-          AppColors.primary,
-          AppColors.warning,
-          AppColors.error,
-          Colors.purple,
-          Colors.teal,
-        ];
-
-        int colorIndex = 0;
-        final List<PieChartSectionData> sections = [];
-        final List<Widget> legendItems = [];
-
-        categoryTotals.forEach((category, amount) {
-          final percentage = (amount / totalPengeluaran) * 100;
-          final color = colors[colorIndex % colors.length];
-
-          sections.add(
-            PieChartSectionData(
-              color: color,
-              value: percentage,
-              title: '${percentage.toInt()}%',
-              radius: 70,
-              titleStyle: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                shadows: [Shadow(color: Colors.black.withValues(alpha: 0.2))],
-              ),
-            ),
-          );
-
-          legendItems.add(
-            _buildEnhancedLegendItem(
-              category,
-              color,
-              '${percentage.toStringAsFixed(1)}%',
-              NumberHelpers.formatCurrency(amount.toInt()),
-            ),
-          );
-
-          colorIndex++;
-        });
-
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.divider, width: 1.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Distribusi Pengeluaran',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Berdasarkan kategori',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.textPrimary.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
-              Center(
-                child: SizedBox(
-                  height: 300,
-                  width: 300,
-                  child: PieChart(
-                    PieChartData(
-                      pieTouchData: PieTouchData(
-                        touchCallback: (FlTouchEvent event, pieTouchResponse) {},
-                        enabled: true,
-                      ),
-                      sectionsSpace: 3,
-                      centerSpaceRadius: 60,
-                      sections: sections,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.background.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.divider.withValues(alpha: 0.5), width: 1),
-                ),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  childAspectRatio: 2.5,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  children: legendItems,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildEnhancedLegendItem(String label, Color color, String percentage, String amount) {
+  Widget _buildHeader() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(3),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Keuangan',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: -0.5,
               ),
-            ],
-          ),
+            ),
+            Text(
+              'Info Keuangan',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.white.withValues(alpha: 0.8),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                '$percentage • $amount',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textPrimary.withValues(alpha: 0.6),
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.2),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.account_balance_wallet_rounded,
+            color: Colors.white,
+            size: 24,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildMenuGrid(BuildContext context) {
-    return StreamBuilder<List<Pemasukan>>(
-      stream: _pemasukanRepository.getPemasukanStream(),
-      builder: (context, pemasukanSnapshot) {
-        return StreamBuilder<List<Pengeluaran>>(
-          stream: _pengeluaranRepository.getPengeluaranStream(),
-          builder: (context, pengeluaranSnapshot) {
-            final double totalPemasukan = (pemasukanSnapshot.data ?? []).fold(
-              0.0,
-              (sum, item) => sum + item.jumlah,
-            );
-            final double totalPengeluaran = (pengeluaranSnapshot.data ?? []).fold(
-              0.0,
-              (sum, item) => sum + item.nominal,
-            );
-
-            return Column(
+  Widget _buildVirtualCard(double balance) {
+    return Container(
+      width: double.infinity,
+      height: 180,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF2E3192), Color(0xFF1BFFFF)],
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -40,
+            top: -40,
+            child: CircleAvatar(
+              radius: 80,
+              backgroundColor: Colors.white.withValues(alpha: 0.1),
+            ),
+          ),
+          Positioned(
+            left: -20,
+            bottom: -40,
+            child: CircleAvatar(
+              radius: 60,
+              backgroundColor: Colors.white.withValues(alpha: 0.1),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Menu Keuangan',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: _buildMenuCard(
-                        context,
-                        'Iuran',
-                        Icons.receipt_long,
-                        AppColors.success,
-                        'keuangan-iuran-tagihan',
+                    Text(
+                      'Total Saldo',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildMenuCard(
-                        context,
-                        'Kategori Iuran',
-                        Icons.category,
-                        AppColors.warning,
-                        'keuangan-kategori-iuran',
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildMenuCard(
-                        context,
-                        'Laporan',
-                        Icons.analytics,
-                        AppColors.primary,
-                        'keuangan-laporan',
-                      ),
+                    const Icon(
+                      Icons.contactless_rounded,
+                      color: Colors.white,
+                      size: 28,
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                _buildMenuCardWithValue(
-                  context,
-                  'Pemasukan',
-                  NumberHelpers.formatCurrency(totalPemasukan.toInt()),
-                  Icons.trending_up,
-                  AppColors.primary,
-                  'admin-keuangan-pemasukan-lain',
+                Text(
+                  NumberHelpers.formatCurrency(balance.toInt()),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1,
+                  ),
                 ),
-                const SizedBox(height: 12),
-                _buildMenuCardWithValue(
-                  context,
-                  'Pengeluaran',
-                  NumberHelpers.formatCurrency(totalPengeluaran.toInt()),
-                  Icons.trending_down,
-                  AppColors.error,
-                  'admin-keuangan-pengeluaran',
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'Keuangan Jawara',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ],
-            );
-          },
-        );
-      },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildTransactionLists(BuildContext context) {
-    return Column(
-      children: [
-        StreamBuilder<List<Pemasukan>>(
-          stream: _pemasukanRepository.getPemasukanStream(),
-          builder: (context, snapshot) {
-            final list = snapshot.data ?? [];
-            // Sort by date descending
-            list.sort((a, b) => b.tanggal.compareTo(a.tanggal));
-            final recentList = list.take(3).toList();
-
-            return _buildTransactionSection(
-              context,
-              'Pemasukan Terbaru',
-              recentList
-                  .map(
-                    (item) => _buildTransactionItem(
-                      item.nama,
-                      NumberHelpers.formatCurrency(item.jumlah),
-                      DateHelpers.formatDateShort(item.tanggal),
-                      AppColors.success,
-                    ),
-                  )
-                  .toList(),
-              'admin-keuangan-pemasukan-lain',
-            );
-          },
-        ),
-        const SizedBox(height: 20),
-        StreamBuilder<List<Pengeluaran>>(
-          stream: _pengeluaranRepository.getPengeluaranStream(),
-          builder: (context, snapshot) {
-            final list = snapshot.data ?? [];
-            // Sort by date descending
-            list.sort((a, b) => b.tanggal.compareTo(a.tanggal));
-            final recentList = list.take(3).toList();
-
-            return _buildTransactionSection(
-              context,
-              'Pengeluaran Terbaru',
-              recentList
-                  .map(
-                    (item) => _buildTransactionItem(
-                      item.nama,
-                      NumberHelpers.formatCurrency(item.nominal),
-                      DateHelpers.formatDateShort(item.tanggal),
-                      AppColors.error,
-                    ),
-                  )
-                  .toList(),
-              'admin-keuangan-pengeluaran',
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTransactionSection(
-    BuildContext context,
+  Widget _buildFinanceCard(
     String title,
-    List<Widget> items,
-    String routeName,
+    double amount,
+    IconData icon,
+    Color color,
   ) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider, width: 1),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,73 +290,100 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
                 ),
+                child: Icon(icon, color: color, size: 20),
               ),
-              TextButton(
-                onPressed: () => context.pushNamed(routeName),
-                child: Text(
-                  'Selengkapnya',
-                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-                ),
+              Icon(
+                Icons.more_horiz,
+                color: Colors.grey.withValues(alpha: 0.5),
+                size: 20,
               ),
             ],
           ),
           const SizedBox(height: 16),
-          if (items.isEmpty)
-            const Padding(padding: EdgeInsets.all(8.0), child: Text('Belum ada data'))
-          else
-            ...items,
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            NumberHelpers.formatCurrency(amount.toInt()).replaceAll('Rp', ''),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTransactionItem(String title, String amount, String date, Color color) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGray.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.divider, width: 1),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
+  Widget _buildMenuGrid(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Menu Keuangan',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(date, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-              ],
+        ),
+        const SizedBox(height: 16),
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 2.2,
+          children: [
+            _buildMenuCard(
+              context,
+              'Iuran & Tagihan',
+              Icons.receipt_long_rounded,
+              'admin-keuangan-iuran-tagihan',
             ),
-          ),
-          Text(
-            amount,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color),
-          ),
-        ],
-      ),
+            _buildMenuCard(
+              context,
+              'Pemasukan Lain',
+              Icons.account_balance_wallet_rounded,
+              'admin-keuangan-pemasukan-lain',
+            ),
+            _buildMenuCard(
+              context,
+              'Pengeluaran',
+              Icons.monetization_on_rounded,
+              'admin-keuangan-pengeluaran',
+            ),
+            _buildMenuCard(
+              context,
+              'Kategori Iuran',
+              Icons.category_rounded,
+              'admin-keuangan-kategori-iuran',
+            ),
+            _buildMenuCard(
+              context,
+              'Laporan',
+              Icons.summarize_rounded,
+              'admin-keuangan-laporan',
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -597,40 +391,30 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
     BuildContext context,
     String title,
     IconData icon,
-    Color color,
     String routeName,
   ) {
     return GestureDetector(
       onTap: () => context.pushNamed(routeName),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: AppColors.background,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.divider, width: 1),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+            Icon(icon, size: 24, color: AppColors.primary),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
               ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -638,57 +422,108 @@ class _KeuanganMenuPageState extends State<KeuanganMenuPage> {
     );
   }
 
-  Widget _buildMenuCardWithValue(
-    BuildContext context,
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-    String routeName,
-  ) {
-    return GestureDetector(
-      onTap: () => context.pushNamed(routeName),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.divider, width: 1),
+  Widget _buildRecentTransactions(List<dynamic> transactions) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Transaksi Terakhir',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
         ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color, size: 24),
+        const SizedBox(height: 16),
+        if (transactions.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text('Belum ada transaksi.'),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          )
+        else
+          ...transactions.map((t) {
+            final isIncome = t['type'] == 'income';
+            final data = t['data'];
+            final String title = isIncome
+                ? (data as Pemasukan).judul
+                : (data as Pengeluaran).nama;
+            final num rawAmount = isIncome
+                ? (data as Pemasukan).jumlah
+                : (data as Pengeluaran).nominal;
+            final double amount = rawAmount.toDouble();
+            final DateTime date = isIncome
+                ? (data as Pemasukan).tanggal
+                : (data as Pengeluaran).tanggal;
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+              ),
+              child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isIncome
+                          ? const Color(0xFF4CAF50).withValues(alpha: 0.1)
+                          : const Color(0xFFF44336).withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isIncome
+                          ? Icons.arrow_downward_rounded
+                          : Icons.arrow_upward_rounded,
+                      color: isIncome
+                          ? const Color(0xFF4CAF50)
+                          : const Color(0xFFF44336),
+                      size: 20,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        Text(
+                          DateFormat('dd MMMM yyyy').format(date),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Text(
-                    value,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),
+                    (isIncome ? '+ ' : '- ') +
+                        NumberHelpers.formatCurrency(amount.toInt()),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: isIncome
+                          ? const Color(0xFF4CAF50)
+                          : const Color(0xFFF44336),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
+      ],
     );
   }
 }

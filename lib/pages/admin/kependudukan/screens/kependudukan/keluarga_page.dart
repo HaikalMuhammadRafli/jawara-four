@@ -3,9 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 
 import '../../../../../data/models/keluarga_model.dart';
-import '../../../../../data/models/warga_model.dart';
 import '../../../../../data/repositories/keluarga_repository.dart';
-import '../../../../../data/repositories/warga_repository.dart';
 
 class KeluargaPage extends StatefulWidget {
   const KeluargaPage({super.key});
@@ -16,7 +14,7 @@ class KeluargaPage extends StatefulWidget {
 
 class _KeluargaPageState extends State<KeluargaPage> {
   final KeluargaRepository _repository = KeluargaRepository();
-  final WargaRepository _wargaRepository = WargaRepository();
+
   String _searchQuery = '';
   String _selectedFilter = 'Semua';
 
@@ -239,7 +237,10 @@ class _KeluargaPageState extends State<KeluargaPage> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +297,10 @@ class _KeluargaPageState extends State<KeluargaPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -403,4 +407,3 @@ class _KeluargaPageState extends State<KeluargaPage> {
     );
   }
 }
-

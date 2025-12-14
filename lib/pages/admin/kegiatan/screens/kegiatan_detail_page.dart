@@ -49,7 +49,11 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         ),
         title: const Text(
           'Detail Kegiatan',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black87),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
         centerTitle: true,
       ),
@@ -64,6 +68,10 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
             const SizedBox(height: 16),
             _buildDescriptionCard(),
             const SizedBox(height: 16),
+            if (widget.kegiatan.status != 'Terlaksana') ...[
+              _buildSelesaikanButton(context),
+              const SizedBox(height: 16),
+            ],
             _buildActionButtons(context),
           ],
         ),
@@ -115,14 +123,21 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: kategoriColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   widget.kegiatan.kategori,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kategoriColor),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: kategoriColor,
+                  ),
                 ),
               ),
             ],
@@ -145,10 +160,16 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         children: [
           const Text(
             'Informasi Kegiatan',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 16),
           _buildInfoRow('Nama Kegiatan', widget.kegiatan.nama),
+          const SizedBox(height: 12),
+          _buildInfoRow('Status', widget.kegiatan.status),
           const SizedBox(height: 12),
           _buildInfoRow('Kategori', widget.kegiatan.kategori),
           const SizedBox(height: 12),
@@ -158,7 +179,10 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
           const SizedBox(height: 12),
           _buildInfoRow('Jumlah Peserta', '${widget.kegiatan.peserta} orang'),
           const SizedBox(height: 12),
-          _buildInfoRow('Tanggal', DateHelpers.formatDate(widget.kegiatan.tanggal)),
+          _buildInfoRow(
+            'Tanggal',
+            DateHelpers.formatDate(widget.kegiatan.tanggal),
+          ),
         ],
       ),
     );
@@ -177,12 +201,20 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         children: [
           const Text(
             'Deskripsi Kegiatan',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             widget.kegiatan.deskripsi,
-            style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.5),
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+              height: 1.5,
+            ),
           ),
         ],
       ),
@@ -213,9 +245,15 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
     return Row(
       children: [
         Expanded(
-          child: _buildActionButton(context, 'Edit Kegiatan', Icons.edit_outlined, Colors.blue, () {
-            context.pushNamed('admin-kegiatan-edit', extra: widget.kegiatan);
-          }),
+          child: _buildActionButton(
+            context,
+            'Edit Kegiatan',
+            Icons.edit_outlined,
+            Colors.blue,
+            () {
+              context.pushNamed('admin-kegiatan-edit', extra: widget.kegiatan);
+            },
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -253,7 +291,11 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
             const SizedBox(height: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -268,7 +310,11 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         Flexible(
           child: Text(
@@ -290,9 +336,13 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Text('Hapus Kegiatan'),
-          content: const Text('Apakah Anda yakin ingin menghapus kegiatan ini?'),
+          content: const Text(
+            'Apakah Anda yakin ingin menghapus kegiatan ini?',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
@@ -323,7 +373,9 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                       backgroundColor: AppColors.success,
                       behavior: SnackBarBehavior.floating,
                       duration: const Duration(seconds: 3),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   );
 
@@ -343,7 +395,9 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
                       backgroundColor: AppColors.error,
                       behavior: SnackBarBehavior.floating,
                       duration: const Duration(seconds: 4),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   );
                 } finally {
@@ -357,7 +411,9 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               child: const Text('Hapus'),
             ),
@@ -365,5 +421,86 @@ class _KegiatanDetailPageState extends State<KegiatanDetailPage> {
         );
       },
     );
+  }
+
+  Widget _buildSelesaikanButton(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      decoration: BoxDecoration(
+        color: AppColors.success,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.success.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _updateStatusKegiatan(),
+          borderRadius: BorderRadius.circular(12),
+          child: const Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
+                SizedBox(width: 12),
+                Text(
+                  'Selesaikan Kegiatan',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _updateStatusKegiatan() async {
+    try {
+      final updatedKegiatan = widget.kegiatan.copyWith(status: 'Terlaksana');
+      await _repository.updateKegiatan(
+        widget.kegiatan.id,
+        updatedKegiatan.toMap(),
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.check_circle_outline, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Kegiatan telah diselesaikan'),
+            ],
+          ),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      Navigator.pop(context); // Go back to refresh list or stay? Usually back.
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal: $e'), backgroundColor: AppColors.error),
+      );
+    }
   }
 }

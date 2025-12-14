@@ -599,7 +599,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           ),
           Switch(
             value: _isBroadcast,
-            activeColor: AppColors.info,
+            activeThumbColor: AppColors.info,
             onChanged: (value) {
               setState(() {
                 _isBroadcast = value;
@@ -652,7 +652,7 @@ class _IuranTagihanFormPageState extends State<IuranTagihanFormPage> {
           ),
           Switch(
             value: _useTargetCalculator,
-            activeColor: AppColors.primary,
+            activeThumbColor: AppColors.primary,
             onChanged: (value) {
               setState(() {
                 _useTargetCalculator = value;

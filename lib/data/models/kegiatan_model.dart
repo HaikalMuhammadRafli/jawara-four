@@ -9,6 +9,7 @@ class Kegiatan {
   final DateTime tanggal;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final String status;
 
   Kegiatan({
     required this.id,
@@ -21,6 +22,7 @@ class Kegiatan {
     required this.tanggal,
     required this.createdAt,
     this.updatedAt,
+    this.status = 'Belum Terlaksana',
   });
 
   Map<String, dynamic> toMap() {
@@ -34,6 +36,7 @@ class Kegiatan {
       'tanggal': tanggal.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+      'status': status,
     };
   }
 
@@ -46,11 +49,16 @@ class Kegiatan {
       penanggungJawab: map['penanggungJawab'] as String? ?? '',
       lokasi: map['lokasi'] as String? ?? '',
       peserta: map['peserta'] as int? ?? 0,
-      tanggal: map['tanggal'] != null ? DateTime.parse(map['tanggal'] as String) : DateTime.now(),
+      tanggal: map['tanggal'] != null
+          ? DateTime.parse(map['tanggal'] as String)
+          : DateTime.now(),
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'] as String)
           : DateTime.now(),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt'] as String) : null,
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'] as String)
+          : null,
+      status: map['status'] as String? ?? 'Belum Terlaksana',
     );
   }
 
@@ -65,6 +73,7 @@ class Kegiatan {
     DateTime? tanggal,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? status,
   }) {
     return Kegiatan(
       id: id ?? this.id,
@@ -77,6 +86,7 @@ class Kegiatan {
       tanggal: tanggal ?? this.tanggal,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      status: status ?? this.status,
     );
   }
 }
