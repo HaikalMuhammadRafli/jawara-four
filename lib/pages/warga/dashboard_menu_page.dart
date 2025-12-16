@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 import 'package:jawara_four/data/models/broadcast_model.dart';
 import 'package:jawara_four/data/models/kegiatan_model.dart';
@@ -8,7 +9,6 @@ import 'package:jawara_four/data/repositories/broadcast_repository.dart';
 import 'package:jawara_four/data/repositories/kegiatan_repository.dart';
 import 'package:jawara_four/data/repositories/user_repository.dart';
 import 'package:jawara_four/services/auth_service.dart';
-import 'package:jawara_four/utils/date_helpers.dart';
 
 class WargaDashboardMenuPage extends StatelessWidget {
   const WargaDashboardMenuPage({super.key});
@@ -16,20 +16,41 @@ class WargaDashboardMenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Soft gray background
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildWelcomeSection(),
-              const SizedBox(height: 24),
-              _buildBentoGrid(context),
-              const SizedBox(height: 24),
-              _buildActivitySection(context),
-            ],
-          ),
+      backgroundColor: const Color(0xFF1E88E5), // Admin Blue Theme
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                child: _buildWelcomeSection(),
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.8,
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8),
+                  _buildBentoGrid(context),
+                  const SizedBox(height: 24),
+                  _buildActivitySection(context),
+                  const SizedBox(height: 80), // Bottom padding
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -45,59 +66,40 @@ class WargaDashboardMenuPage extends StatelessWidget {
           ? userRepository.getUserProfileStream(currentUser.uid)
           : Stream.value(null),
       builder: (context, snapshot) {
-        final userProfile = snapshot.data;
         final displayName =
             currentUser?.displayName ??
             currentUser?.email?.split('@')[0] ??
             'Warga';
-        final role = userProfile?.role.value ?? '';
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
                 Text(
-                  'Halo, $displayName 👋',
+                  'Halo, $displayName',
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
+                    color: Colors.white,
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'Selamat datang di Dashboard Warga',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary.withValues(alpha: 0.8),
-                    letterSpacing: 0.2,
-                  ),
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.waving_hand_rounded,
+                  color: Colors.amber,
+                  size: 28,
                 ),
               ],
             ),
-            Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                  width: 2,
-                ),
-              ),
-              child: CircleAvatar(
-                radius: 24,
-                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                child: Text(
-                  displayName.isNotEmpty ? displayName[0].toUpperCase() : 'W',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+            const SizedBox(height: 4),
+            Text(
+              'Selamat Datang di Dashboard Warga',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white.withValues(alpha: 0.9),
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
@@ -107,74 +109,71 @@ class WargaDashboardMenuPage extends StatelessWidget {
   }
 
   Widget _buildBentoGrid(BuildContext context) {
-    return SizedBox(
-      height: 340, // Fixed height for consistency
-      child: Row(
-        children: [
-          // Left Column: Quick Actions (2/3 width)
-          Expanded(
-            flex: 2,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildBentoActionCard(
-                          context,
-                          'Aspirasi',
-                          Icons.campaign_rounded,
-                          const Color(0xFF5C6BC0), // Indigo
-                          () => context.pushNamed('warga-aspirasi-form'),
-                        ),
+    return Column(
+      children: [
+        // Highlight Card (Full Width)
+        SizedBox(height: 180, child: _buildHighlightCard(context)),
+        const SizedBox(height: 16),
+        // Quick Actions Grid (2x2)
+        SizedBox(
+          height: 240,
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildBentoActionCard(
+                        context,
+                        'Aspirasi',
+                        Icons.campaign_rounded,
+                        const Color(0xFF5C6BC0), // Indigo
+                        () => context.pushNamed('warga-aspirasi-form'),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildBentoActionCard(
-                          context,
-                          'Kegiatan',
-                          Icons.event_note_rounded,
-                          const Color(0xFF26A69A), // Teal
-                          () => context.pushNamed('warga-kegiatan'),
-                        ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildBentoActionCard(
+                        context,
+                        'Kegiatan',
+                        Icons.event_note_rounded,
+                        const Color(0xFF26A69A), // Teal
+                        () => context.pushNamed('warga-kegiatan'),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildBentoActionCard(
-                          context,
-                          'Keuangan',
-                          Icons.account_balance_wallet_rounded,
-                          const Color(0xFF66BB6A), // Green
-                          () => context.pushNamed('warga-keuangan'),
-                        ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildBentoActionCard(
+                        context,
+                        'Keuangan',
+                        Icons.account_balance_wallet_rounded,
+                        const Color(0xFF66BB6A), // Green
+                        () => context.pushNamed('warga-keuangan'),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildBentoActionCard(
-                          context,
-                          'Broadcast',
-                          Icons.notifications_active_rounded,
-                          const Color(0xFFFFA726), // Orange
-                          () => context.pushNamed('warga-broadcast'),
-                        ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildBentoActionCard(
+                        context,
+                        'Broadcast',
+                        Icons.notifications_active_rounded,
+                        const Color(0xFFFFA726), // Orange
+                        () => context.pushNamed('warga-broadcast'),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          // Right Column: Latest Query/Info (1/3 width) - e.g. Next Activity Highlight
-          Expanded(flex: 1, child: _buildHighlightCard(context)),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -189,19 +188,12 @@ class WargaDashboardMenuPage extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -212,14 +204,14 @@ class WargaDashboardMenuPage extends StatelessWidget {
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: color, size: 28),
+                child: Icon(icon, color: color, size: 24),
               ),
               const SizedBox(height: 12),
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                   letterSpacing: -0.2,
                 ),
@@ -232,7 +224,7 @@ class WargaDashboardMenuPage extends StatelessWidget {
   }
 
   Widget _buildHighlightCard(BuildContext context) {
-    // Shows the nearest upcoming activity or broadcast count
+    // Shows the nearest upcoming activity in a Calendar Style
     final kegiatanRepo = KegiatanRepository();
 
     return StreamBuilder<List<Map<String, dynamic>>>(
@@ -249,80 +241,182 @@ class WargaDashboardMenuPage extends StatelessWidget {
         upcoming.sort((a, b) => a.tanggal.compareTo(b.tanggal));
         final nearest = upcoming.isNotEmpty ? upcoming.first : null;
 
+        // Default if no event
+        final date = nearest?.tanggal ?? DateTime.now();
+
+        // Use DateFormat for safe parsing
+        final monthName = DateFormat(
+          'MMMM',
+          'id_ID',
+        ).format(date); // "Desember"
+        final dayName = DateFormat('EEEE', 'id_ID').format(date); // "Senin"
+        final dayNumber = date.day.toString();
+
+        final eventName = nearest?.nama ?? 'Tidak Ada Jadwal';
+        final eventTime = nearest != null
+            ? '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}'
+            : '--:--';
+        final eventCategory = nearest?.kategori ?? 'Umum';
+
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [const Color(0xFF42A5F5), const Color(0xFF1E88E5)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF1E88E5).withValues(alpha: 0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+            // Removed Shadow
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Blue "Binder" Strip Top
               Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF1976D2), // Calendar Blue
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-                child: const Icon(
-                  Icons.star_rounded,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                nearest != null ? 'Segera Hadir' : 'Tidak Ada',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                nearest?.nama ?? 'Kegiatan',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  height: 1.2,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              if (nearest != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    DateHelpers.formatDateShort(nearest.tanggal),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E88E5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.event_available_rounded,
+                      color: Colors.white,
+                      size: 18,
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '$dayName, $monthName'.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              // Body
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                child: Row(
+                  children: [
+                    // Big Date with faint background
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE3F2FD), // Light Blue
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        dayNumber,
+                        style: const TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF1565C0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    // Event Details
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: nearest != null
+                                      ? const Color(
+                                          0xFF1565C0,
+                                        ).withValues(alpha: 0.1)
+                                      : Colors.grey.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  eventCategory,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: nearest != null
+                                        ? const Color(0xFF1565C0)
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              if (nearest != null)
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time_rounded,
+                                      size: 12,
+                                      color: Colors.grey,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      eventTime,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            eventName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF333333),
+                              height: 1.2,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          // Location or placeholder
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                size: 14,
+                                color: Colors.grey[600],
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  nearest?.lokasi ?? 'Lokasi tidak tersedia',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         );
@@ -387,15 +481,8 @@ class WargaDashboardMenuPage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
