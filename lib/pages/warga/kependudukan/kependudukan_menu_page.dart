@@ -11,7 +11,8 @@ class WargaKependudukanMenuPage extends StatefulWidget {
   const WargaKependudukanMenuPage({super.key});
 
   @override
-  State<WargaKependudukanMenuPage> createState() => _WargaKependudukanMenuPageState();
+  State<WargaKependudukanMenuPage> createState() =>
+      _WargaKependudukanMenuPageState();
 }
 
 class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
@@ -20,17 +21,54 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.background,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
+    return Scaffold(
+      backgroundColor: const Color(0xFF1E88E5),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildStatsSection(),
-            const SizedBox(height: 20),
-            _buildAspirasiFormCard(context),
-            const SizedBox(height: 20),
-            _buildAspirasiListCard(context),
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Kependudukan',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.85,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
+                child: Column(
+                  children: [
+                    _buildHeroSection(context),
+                    const SizedBox(height: 24),
+                    _buildStatsSection(),
+                    const SizedBox(height: 24),
+                    _buildAspirasiListCard(context),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -51,9 +89,15 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
             .map((data) => Aspirasi.fromMap(data))
             .toList();
         final totalAspirasi = aspirasiList.length;
-        final menunggu = aspirasiList.where((a) => a.status == StatusAspirasi.pending).length;
-        final diproses = aspirasiList.where((a) => a.status == StatusAspirasi.diproses).length;
-        final selesai = aspirasiList.where((a) => a.status == StatusAspirasi.selesai).length;
+        final menunggu = aspirasiList
+            .where((a) => a.status == StatusAspirasi.pending)
+            .length;
+        final diproses = aspirasiList
+            .where((a) => a.status == StatusAspirasi.diproses)
+            .length;
+        final selesai = aspirasiList
+            .where((a) => a.status == StatusAspirasi.selesai)
+            .length;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +123,10 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.info.withValues(alpha: 0.3), width: 2),
+                border: Border.all(
+                  color: AppColors.info.withValues(alpha: 0.3),
+                  width: 2,
+                ),
               ),
               child: Row(
                 children: [
@@ -87,13 +134,20 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [AppColors.info, AppColors.info.withValues(alpha: 0.8)],
+                        colors: [
+                          AppColors.info,
+                          AppColors.info.withValues(alpha: 0.8),
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: const Icon(Icons.feedback_outlined, color: Colors.white, size: 32),
+                    child: const Icon(
+                      Icons.feedback_outlined,
+                      color: Colors.white,
+                      size: 32,
+                    ),
                   ),
                   const SizedBox(width: 20),
                   Expanded(
@@ -171,13 +225,21 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        border: Border.all(
+          color: AppColors.divider.withValues(alpha: 0.6),
+          width: 1.5,
+        ),
       ),
       child: Column(
         children: [
@@ -185,12 +247,18 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.1),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
+              border: Border.all(
+                color: color.withValues(alpha: 0.25),
+                width: 1.5,
+              ),
             ),
             child: Icon(icon, color: color, size: 22),
           ),
@@ -221,68 +289,69 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
     );
   }
 
-  Widget _buildAspirasiFormCard(BuildContext context) {
+  Widget _buildHeroSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider, width: 1),
+        gradient: LinearGradient(
+          colors: [const Color(0xFF1E88E5), const Color(0xFF1565C0)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.info.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.info.withValues(alpha: 0.3)),
-                ),
-                child: const Icon(Icons.add_comment, color: AppColors.info, size: 24),
-              ),
-              const SizedBox(width: 16),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Buat Aspirasi Baru',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Sampaikan keluhan atau saran Anda',
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.campaign_rounded,
+              color: Colors.white,
+              size: 32,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
+          const Text(
+            'Suarakan Aspirasi Anda',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Partisipasi aktif Anda membantu membangun lingkungan yang lebih baik untuk kita semua.',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white.withValues(alpha: 0.9),
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                context.pushNamed('warga-aspirasi-form');
-              },
+            child: ElevatedButton(
+              onPressed: () => context.pushNamed('warga-aspirasi-form'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.info,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF1565C0),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              icon: const Icon(Icons.add),
-              label: const Text(
-                'Buat Aspirasi',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              child: const Text(
+                'Buat Aspirasi Baru',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -347,7 +416,10 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
                   child: const Center(
                     child: Text(
                       'Belum ada aspirasi yang diajukan',
-                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 )
@@ -381,7 +453,9 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(aspirasi.status).withValues(alpha: 0.1),
+                  color: _getStatusColor(
+                    aspirasi.status,
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -408,18 +482,28 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
                     const SizedBox(height: 4),
                     Text(
                       DateHelpers.formatDate(aspirasi.createdAt),
-                      style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(aspirasi.status).withValues(alpha: 0.1),
+                  color: _getStatusColor(
+                    aspirasi.status,
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: _getStatusColor(aspirasi.status).withValues(alpha: 0.3),
+                    color: _getStatusColor(
+                      aspirasi.status,
+                    ).withValues(alpha: 0.3),
                   ),
                 ),
                 child: Text(
@@ -436,7 +520,11 @@ class _WargaKependudukanMenuPageState extends State<WargaKependudukanMenuPage> {
           const SizedBox(height: 12),
           Text(
             aspirasi.isi,
-            style: TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.5),
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:jawara_four/colors/app_colors.dart';
 import 'package:jawara_four/data/models/kegiatan_model.dart';
 import 'package:jawara_four/data/repositories/broadcast_repository.dart';
@@ -20,24 +19,77 @@ class _WargaKegiatanMenuPageState extends State<WargaKegiatanMenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.background,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 30, 16, 40),
+    return Scaffold(
+      backgroundColor: const Color(0xFF1E88E5),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildStatsSection(),
-            const SizedBox(height: 20),
-            _buildMenuGrid(context),
-            const SizedBox(height: 20),
-            _buildRecentActivities(),
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                child: _buildHeader(context),
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.85,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHorizontalStats(),
+                    const SizedBox(height: 24),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _buildTimelineSection(),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatsSection() {
+  Widget _buildHeader(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Kegiatan Warga',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+            letterSpacing: -0.5,
+          ),
+        ),
+        Text(
+          'Jadwal & Agenda Terbaru',
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.white.withValues(alpha: 0.8),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHorizontalStats() {
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: _kegiatanRepository.getKegiatanStream(),
       builder: (context, kegiatanSnapshot) {
@@ -49,113 +101,47 @@ class _WargaKegiatanMenuPageState extends State<WargaKegiatanMenuPage> {
 
             final activeKegiatan =
                 kegiatanSnapshot.data?.where((k) {
-                  final String? kategori = k['kategori'] as String?;
-                  return kategori != 'Selesai';
+                  final String? status = k['status'] as String?;
+                  return status != 'Terlaksana';
                 }).length ??
                 0;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Ringkasan Kegiatan',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+            final finishedKegiatan = totalKegiatan - activeKegiatan;
+
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  _buildStatPill(
+                    'Total',
+                    NumberHelpers.formatNumber(totalKegiatan),
+                    Icons.dashboard_rounded,
+                    AppColors.primary,
                   ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary.withValues(alpha: 0.1),
-                        AppColors.primary.withValues(alpha: 0.05),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
+                  const SizedBox(width: 12),
+                  _buildStatPill(
+                    'Aktif',
+                    NumberHelpers.formatNumber(activeKegiatan),
+                    Icons.timer,
+                    const Color(0xFFFFA726),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.8)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: const Icon(Icons.event_note_rounded, color: Colors.white, size: 32),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Total Kegiatan',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              NumberHelpers.formatNumber(totalKegiatan),
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary,
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Agenda Terjadwal',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  const SizedBox(width: 12),
+                  _buildStatPill(
+                    'Selesai',
+                    NumberHelpers.formatNumber(finishedKegiatan),
+                    Icons.check_circle,
+                    const Color(0xFF66BB6A),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildStatCard(
-                        'Aktif',
-                        NumberHelpers.formatNumber(activeKegiatan),
-                        Icons.pending_actions_rounded,
-                        AppColors.softOrange,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildStatCard(
-                        'Broadcast',
-                        NumberHelpers.formatNumber(totalBroadcast),
-                        Icons.campaign_rounded,
-                        AppColors.softPurple,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  _buildStatPill(
+                    'Broadcast',
+                    NumberHelpers.formatNumber(totalBroadcast),
+                    Icons.campaign,
+                    const Color(0xFFEF5350),
+                  ),
+                ],
+              ),
             );
           },
         );
@@ -163,138 +149,59 @@ class _WargaKegiatanMenuPageState extends State<WargaKegiatanMenuPage> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatPill(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.6), width: 1.5),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
-      child: Column(
+      child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 18),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                  height: 1,
+                ),
               ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withValues(alpha: 0.25), width: 1.5),
-            ),
-            child: Icon(icon, color: color, size: 26),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: color,
-              letterSpacing: -0.8,
-              height: 1.1,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
-            ),
-            textAlign: TextAlign.center,
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuGrid(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Menu Kegiatan',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildMenuCard(
-                context,
-                'Kegiatan',
-                Icons.event_note_rounded,
-                AppColors.primary,
-                'warga-kegiatan',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildMenuCard(
-                context,
-                'Broadcast',
-                Icons.campaign_rounded,
-                AppColors.softPurple,
-                'warga-broadcast',
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color color,
-    String routeName,
-  ) {
-    return GestureDetector(
-      onTap: () => context.pushNamed(routeName),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.divider, width: 1),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecentActivities() {
+  Widget _buildTimelineSection() {
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: _kegiatanRepository.getKegiatanStream(),
       builder: (context, snapshot) {
@@ -303,162 +210,186 @@ class _WargaKegiatanMenuPageState extends State<WargaKegiatanMenuPage> {
         }).toList();
 
         kegiatanList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        final recentItems = kegiatanList.take(10).toList();
 
-        final recentItems = kegiatanList.take(5).toList();
-
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.divider, width: 1),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Kegiatan Terbaru',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => context.pushNamed('warga-kegiatan'),
-                    child: Text(
-                      'Lihat Semua',
-                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 16),
+              child: Text(
+                'Timeline',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
               ),
-              const SizedBox(height: 20),
-              if (recentItems.isEmpty)
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundGray.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Belum ada kegiatan terbaru',
-                      style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+            if (recentItems.isEmpty)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Belum ada kegiatan terbaru',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
                     ),
-                  ),
-                )
-              else
-                ...recentItems.map(
-                  (item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildActivityItem(item),
                   ),
                 ),
-            ],
-          ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: recentItems.length,
+                itemBuilder: (context, index) {
+                  final item = recentItems[index];
+                  final isLast = index == recentItems.length - 1;
+                  return _buildTimelineItem(item, isLast);
+                },
+              ),
+          ],
         );
       },
     );
   }
 
-  Widget _buildActivityItem(Kegiatan item) {
-    return GestureDetector(
-      onTap: () => context.pushNamed('warga-kegiatan-detail', extra: item),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.backgroundGray,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.divider, width: 1),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: _getKategoryColor(item.kategori).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(Icons.event, color: _getKategoryColor(item.kategori), size: 20),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.nama,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.penanggungJawab,
-                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+  Widget _buildTimelineItem(Kegiatan item, bool isLast) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Timeline Line
+          SizedBox(
+            width: 40,
+            child: Column(
               children: [
-                Text(
-                  DateHelpers.formatDateShort(item.tanggal),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 4),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  width: 12,
+                  height: 12,
                   decoration: BoxDecoration(
-                    color: _getKategoryColor(item.kategori).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                     border: Border.all(
-                      color: _getKategoryColor(item.kategori).withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Text(
-                    item.kategori,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: _getKategoryColor(item.kategori),
+                      color: _getCategoryColor(item.kategori),
+                      width: 3,
                     ),
                   ),
                 ),
+                if (!isLast)
+                  Expanded(
+                    child: Container(
+                      width: 2,
+                      color: Colors.grey.withValues(alpha: 0.2),
+                    ),
+                  ),
               ],
             ),
-          ],
-        ),
+          ),
+          // Content
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _getCategoryColor(
+                              item.kategori,
+                            ).withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            item.kategori,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: _getCategoryColor(item.kategori),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          DateHelpers.formatDateShort(item.createdAt),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      item.nama,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          size: 14,
+                          color: Colors.grey[600],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          item.penanggungJawab,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Color _getKategoryColor(String kategori) {
+  Color _getCategoryColor(String kategori) {
     switch (kategori.toLowerCase()) {
-      case 'terjadwal':
+      case 'kerja bakti':
         return AppColors.primary;
-      case 'berlangsung':
-        return AppColors.softOrange;
-      case 'selesai':
+      case 'rapat':
+        return AppColors.secondary;
+      case 'lomba':
+        return AppColors.error;
+      case 'sosialisasi':
         return AppColors.success;
       default:
-        return AppColors.textSecondary;
+        return AppColors.primary;
     }
   }
 }
