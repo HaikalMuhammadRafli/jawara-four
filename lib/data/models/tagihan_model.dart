@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 enum StatusTagihan {
   pending('Pending'),
   lunas('Lunas'),
-  terlambat('Terlambat');
+  terlambat('Terlambat'),
+  menungguKonfirmasi('Menunggu Konfirmasi');
 
   final String value;
   const StatusTagihan(this.value);

@@ -14,6 +14,30 @@ class TagihanRepository {
     });
   }
 
+  Stream<List<Tagihan>> getTagihanByWargaStream(
+    String wargaId, {
+    String? keluargaId,
+  }) {
+    // Collect all valid IDs to query
+    final List<String> targetIds = ['broadcast', wargaId];
+    if (keluargaId != null && keluargaId.isNotEmpty) {
+      targetIds.add(keluargaId);
+    }
+
+    return _firestore
+        .collection('tagihan')
+        .where('warga', whereIn: targetIds)
+        .where('status', whereIn: ['Pending', 'Terlambat'])
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Tagihan.fromMap(data);
+          }).toList();
+        });
+  }
+
   Future<void> addTagihan(Tagihan tagihan) async {
     try {
       await _firestore.collection('tagihan').add(tagihan.toMap());

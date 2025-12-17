@@ -235,4 +235,23 @@ class KeluargaRepository {
       throw Exception('Gagal mengambil keluarga: $e');
     }
   }
+
+  Future<Keluarga?> getKeluargaByWargaId(String wargaId) async {
+    try {
+      final snapshot = await _firestore
+          .collection(_collection)
+          .where('anggotaIds', arrayContains: wargaId)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final data = snapshot.docs.first.data();
+        data['id'] = snapshot.docs.first.id;
+        return Keluarga.fromMap(data);
+      }
+      return null;
+    } catch (e) {
+      throw Exception('Gagal mengambil keluarga: $e');
+    }
+  }
 }
