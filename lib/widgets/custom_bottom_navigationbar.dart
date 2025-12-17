@@ -43,7 +43,12 @@ class CustomBottomNavigationbar extends StatelessWidget {
             context,
           ),
           _buildNavItem(Icons.event_outlined, Icons.event, 3, context),
-          _buildNavItem(Icons.more_horiz_outlined, Icons.more_horiz, 4, context),
+          _buildNavItem(
+            Icons.more_horiz_outlined,
+            Icons.more_horiz,
+            4,
+            context,
+          ),
         ],
       ),
     );
@@ -80,10 +85,13 @@ class CustomBottomNavigationbar extends StatelessWidget {
 
     // Admin routes - check for main routes and their sub-routes
     if (location == '/admin/dashboard') return 0;
-    if (location == '/admin/kependudukan' || location?.startsWith('/admin/kependudukan/') == true) {
+    if (location == '/admin/kependudukan' ||
+        location?.startsWith('/admin/kependudukan/') == true) {
       return 1;
     }
-    if (location == '/admin/keuangan' || location?.startsWith('/admin/keuangan/') == true) return 2;
+    if (location == '/admin/keuangan' ||
+        location?.startsWith('/admin/keuangan/') == true)
+      return 2;
     if (location == '/admin/kegiatan-broadcast' ||
         location?.startsWith('/admin/kegiatan') == true ||
         location?.startsWith('/admin/broadcast') == true) {
@@ -92,10 +100,13 @@ class CustomBottomNavigationbar extends StatelessWidget {
 
     // Warga routes - check for main routes and their sub-routes
     if (location == '/warga/dashboard') return 0;
-    if (location == '/warga/kependudukan' || location?.startsWith('/warga/kependudukan/') == true) {
+    if (location == '/warga/kependudukan' ||
+        location?.startsWith('/warga/kependudukan/') == true) {
       return 1;
     }
-    if (location == '/warga/keuangan' || location?.startsWith('/warga/keuangan/') == true) return 2;
+    if (location == '/warga/keuangan' ||
+        location?.startsWith('/warga/keuangan/') == true)
+      return 2;
     if (location == '/warga/kegiatan' ||
         location?.startsWith('/warga/kegiatan') == true ||
         location?.startsWith('/warga/broadcast') == true) {
@@ -131,7 +142,9 @@ class CustomBottomNavigationbar extends StatelessWidget {
         context.goNamed(isWarga ? 'warga-keuangan' : 'admin-keuangan');
         break;
       case 3:
-        context.goNamed(isWarga ? 'warga-kegiatan-broadcast' : 'admin-kegiatan-broadcast');
+        context.goNamed(
+          isWarga ? 'warga-kegiatan-broadcast' : 'admin-kegiatan-broadcast',
+        );
         break;
       case 4:
         _showAllMenus(context, isWarga);
@@ -147,18 +160,35 @@ class CustomBottomNavigationbar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Semua Menu', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Semua Menu',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             // Only show admin menus if not warga
             if (!isWarga) ...[
+              _buildMenuTile(
+                context,
+                Icons.camera_alt_outlined,
+                'Face Detection',
+                () {
+                  Navigator.pop(context);
+                  context.pushNamed('admin-detection');
+                },
+              ),
               _buildMenuTile(context, Icons.history, 'Log Aktifitas', () {
                 Navigator.pop(context);
                 context.pushNamed('admin-log-aktifitas');
               }),
-              _buildMenuTile(context, Icons.supervised_user_circle, 'Daftar Pengguna', () {
-                Navigator.pop(context);
-                context.pushNamed('admin-daftar-pengguna');
-              }),
+              _buildMenuTile(
+                context,
+                Icons.supervised_user_circle,
+                'Daftar Pengguna',
+                () {
+                  Navigator.pop(context);
+                  context.pushNamed('admin-daftar-pengguna');
+                },
+              ),
             ],
             _buildMenuTile(context, Icons.logout, 'Log Out', () {
               Navigator.pop(context);
@@ -170,7 +200,12 @@ class CustomBottomNavigationbar extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuTile(BuildContext context, IconData icon, String title, VoidCallback onTap) {
+  Widget _buildMenuTile(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
     return ListTile(leading: Icon(icon), title: Text(title), onTap: onTap);
   }
 }

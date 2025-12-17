@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jawara_four/data/models/aspirasi_model.dart';
@@ -51,6 +52,7 @@ import 'package:jawara_four/pages/admin/keuangan/screens/keuangan_pengeluaran_fo
 import 'package:jawara_four/pages/admin/keuangan/screens/laporan_keuangan_page.dart';
 import 'package:jawara_four/pages/admin/keuangan/screens/pemasukan_lain_form_page.dart';
 import 'package:jawara_four/pages/admin/keuangan/screens/pemasukan_lain_page.dart';
+import 'package:jawara_four/pages/admin/lainnya/screens/detection_page.dart';
 import 'package:jawara_four/pages/admin/lainnya/screens/log_aktifitas_page.dart';
 import 'package:jawara_four/pages/admin/lainnya/screens/pengguna_form_page.dart';
 import 'package:jawara_four/pages/admin/lainnya/screens/pengguna_page.dart';
@@ -745,6 +747,59 @@ final GoRouter appRouter = GoRouter(
         appBar: CustomPushAppbar(title: 'Tambah Pengguna Baru'),
         child: PenggunaFormPage(),
       ),
+    ),
+    GoRoute(
+      path: '/admin/detection',
+      name: 'admin-detection',
+      builder: (context, state) {
+        return FutureBuilder<List<CameraDescription>>(
+          future: availableCameras(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                backgroundColor: Color(0xFF212121),
+                body: Center(
+                  child: CircularProgressIndicator(color: Color(0xFF1E88E5)),
+                ),
+              );
+            }
+
+            if (snapshot.hasError || !snapshot.hasData) {
+              return Scaffold(
+                backgroundColor: const Color(0xFF212121),
+                appBar: AppBar(
+                  backgroundColor: const Color(0xFF1E88E5),
+                  title: const Text('Error'),
+                ),
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Tidak dapat mengakses kamera',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Kembali'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return DetectionPage(cameras: snapshot.data!);
+          },
+        );
+      },
     ),
 
     // ===========================================================
